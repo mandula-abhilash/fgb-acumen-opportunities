@@ -17,13 +17,11 @@ export default function DashboardLayout({ children }) {
   return (
     <MainLayout>
       <GoogleMapsProvider>
-        <div className="h-[calc(100vh-3.5rem)]">
-          <div className="grid h-full grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 p-6">
-            <div className="hidden lg:block h-full">
-              <DashboardNav activeTab={getActiveTab()} />
-            </div>
-            <main className="space-y-6 overflow-y-auto">{children}</main>
+        <div className="h-[calc(100vh-3.5rem)] flex">
+          <div className="hidden lg:block h-full border-r">
+            <DashboardNav activeTab={getActiveTab()} />
           </div>
+          <main className="flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </GoogleMapsProvider>
     </MainLayout>

@@ -17,7 +17,7 @@ export function DesktopNav({ activeTab }) {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-3 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-accent hover:text-accent-foreground"
+        className="absolute -right-3 top-3 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-accent hover:text-accent-foreground z-50"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <ChevronsLeftRight
@@ -33,21 +33,19 @@ export function DesktopNav({ activeTab }) {
 
       <div
         className={cn(
-          "flex h-full flex-col border rounded-lg transition-all duration-300 ease-in-out",
+          "h-full transition-all duration-300 ease-in-out overflow-y-auto",
           isCollapsed ? "w-16" : "w-60"
         )}
       >
-        <div className="p-2">
-          <div className="flex flex-col space-y-2">
-            {navItems.map((item) => (
-              <NavItem
-                key={item.id}
-                item={item}
-                isActive={activeTab === item.id}
-                isCollapsed={isCollapsed}
-              />
-            ))}
-          </div>
+        <div className="space-y-2 py-2">
+          {navItems.map((item) => (
+            <NavItem
+              key={item.id}
+              item={item}
+              isActive={activeTab === item.id}
+              isCollapsed={isCollapsed}
+            />
+          ))}
         </div>
       </div>
     </div>
