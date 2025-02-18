@@ -37,3 +37,9 @@ Provide secure cross-origin resource sharing (CORS) to enable frontend-backend c
 Add comments and maintain clear documentation for all endpoints and middleware.
 
 Avoid unnecessary dependencies; install new packages only when critical for functionality.
+
+To Run the Next.js Application
+
+```
+cd frontend && npm install && npm run dev
+```
