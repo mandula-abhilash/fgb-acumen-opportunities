@@ -60,7 +60,7 @@ export default function LoginPage() {
     <MainLayout>
       <main className="flex items-center justify-center min-h-[calc(100vh-7rem)] px-4 md:px-8">
         <div className="w-full max-w-md">
-          <div className="rounded-lg border bg-card p-8">
+          <div className="rounded-lg border bg-card p-8 md:my-10">
             <div className="space-y-2 text-center mb-8">
               <h1 className="text-3xl font-bold">Welcome Back</h1>
               <p className="text-muted-foreground">Sign in to your account</p>

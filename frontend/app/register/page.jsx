@@ -75,85 +75,93 @@ export default function RegisterPage() {
     <MainLayout>
       <main className="flex items-center justify-center min-h-[calc(100vh-7rem)] px-4 md:px-8">
         <div className="w-full max-w-md">
-          <div className="rounded-lg border bg-card p-8">
-            <div className="space-y-2 text-center mb-8">
+          <div className="rounded-lg border bg-card p-8 md:my-10">
+            <div className="space-y-2 text-center mb-10">
               <h1 className="text-3xl font-bold">Create an Account</h1>
               <p className="text-muted-foreground">
                 Register to request site assessments
               </p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  {...register("name")}
-                  className={errors.name ? "border-destructive" : ""}
-                />
-                {errors.name && (
-                  <p className="text-sm text-destructive">{errors.name}</p>
-                )}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    {...register("name")}
+                    className={errors.name ? "border-destructive" : ""}
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-destructive">{errors.name}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    className={errors.email ? "border-destructive" : ""}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register("password")}
+                    className={errors.password ? "border-destructive" : ""}
+                  />
+                  {errors.password && (
+                    <p className="text-sm text-destructive">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    {...register("confirmPassword")}
+                    className={
+                      errors.confirmPassword ? "border-destructive" : ""
+                    }
+                  />
+                  {errors.confirmPassword && (
+                    <p className="text-sm text-destructive">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  className={errors.email ? "border-destructive" : ""}
-                />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password")}
-                  className={errors.password ? "border-destructive" : ""}
-                />
-                {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  {...register("confirmPassword")}
-                  className={errors.confirmPassword ? "border-destructive" : ""}
-                />
-                {errors.confirmPassword && (
-                  <p className="text-sm text-destructive">
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Registering..." : "Register"}
-              </Button>
-
-              <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{" "}
-                <Link
-                  href="/login"
-                  className="text-havelock-blue hover:underline"
+              <div className="space-y-6">
+                <Button
+                  type="submit"
+                  className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
+                  disabled={isSubmitting}
                 >
-                  Sign in
-                </Link>
-              </p>
+                  {isSubmitting ? "Registering..." : "Register"}
+                </Button>
+
+                <p className="text-center text-sm text-muted-foreground">
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="text-havelock-blue hover:underline"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </div>
             </form>
           </div>
         </div>

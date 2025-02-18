@@ -12,20 +12,25 @@ export const viewport = {
 };
 
 export const metadata = {
-  metadataBase: new URL("https://fgbacumen.com"),
+  metadataBase: new URL("https://opportunities.fgbacumen.com/"),
   title: {
-    default: "FGB Acumen - Site Assessment Reports",
+    default: "FGB Acumen - Opportunities Hub",
     template: "%s | FGB Acumen",
   },
   description:
-    "Professional site assessment services with comprehensive reporting. Trust FGB Acumen for detailed insights and professional assessments.",
+    "Explore live development projects, including Section 106 and grant-funded schemes, with FGB Acumen's Opportunities Hub. Designed for Registered Providers (Housing Associations), our platform offers tailored opportunities, expert insights, and essential tools to streamline affordable housing delivery across the UK.",
   keywords: [
-    "site assessment",
-    "property assessment",
-    "land survey",
-    "professional assessment",
-    "site reports",
-    "property analysis",
+    "affordable housing",
+    "housing associations",
+    "registered providers",
+    "Section 106 opportunities",
+    "grant-funded housing",
+    "housing development projects",
+    "affordable housing schemes",
+    "community housing",
+    "social housing opportunities",
+    "housing investment UK",
+    "property development UK",
   ],
   authors: [{ name: "FGB Acumen" }],
   creator: "FGB Acumen",
@@ -60,25 +65,24 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_GB",
-    url: "https://fgbacumen.com",
-    title: "FGB Acumen - Site Assessment Reports",
-    description:
-      "Professional site assessment services with comprehensive reporting. Trust FGB Acumen for detailed insights and professional assessments.",
-    siteName: "FGB Acumen",
+    url: "https://opportunities.fgbacumen.com/",
+    title: "FGB Acumen - Opportunities Hub",
+    description: `Explore live development projects, including Section 106 and grant-funded schemes, with FGB Acumen's Opportunities Hub. Designed for Registered Providers (Housing Associations), our platform offers tailored opportunities, expert insights, and essential tools to streamline affordable housing delivery across the UK.`,
+    siteName: "FGB Acumen - Opportunities Hub",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "FGB Acumen - Professional Site Assessment Services",
+        alt: "FGB Acumen - Opportunities Hub | Affordable Housing Development Insights & Projects",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FGB Acumen - Site Assessment Reports",
+    title: "FGB Acumen - Site Opportunities Hub",
     description:
-      "Professional site assessment services with comprehensive reporting. Trust FGB Acumen for detailed insights and professional assessments.",
+      "Explore live development projects, including Section 106 and grant-funded schemes, with FGB Acumen's Opportunities Hub. Designed for Registered Providers (Housing Associations), our platform offers tailored opportunities, expert insights, and essential tools to streamline affordable housing delivery across the UK.",
     images: ["/twitter-image.jpg"],
   },
   verification: {

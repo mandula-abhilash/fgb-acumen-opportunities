@@ -1,7 +1,7 @@
 {
-  "name": "FGB Acumen - Site Assessment Reports",
+  "name": "FGB Acumen - Opportunities Hub",
   "short_name": "FGB Acumen",
-  "description": "Professional site assessment services with comprehensive reporting",
+  "description": "Explore live development projects, including Section 106 and grant-funded schemes, with FGB Acumen's Opportunities Hub. Designed for Registered Providers (Housing Associations), our platform offers tailored opportunities, expert insights, and essential tools to streamline affordable housing delivery across the UK.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
