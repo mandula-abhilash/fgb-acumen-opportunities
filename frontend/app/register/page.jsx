@@ -73,7 +73,7 @@ export default function RegisterPage() {
 
   return (
     <MainLayout>
-      <main className="flex items-center justify-center min-h-[calc(100vh-3.5rem)] px-4 md:px-8">
+      <main className="flex items-center justify-center min-h-[calc(100vh-7rem)] px-4 md:px-8">
         <div className="w-full max-w-md">
           <div className="rounded-lg border bg-card p-8">
             <div className="space-y-2 text-center mb-8">
@@ -158,6 +158,14 @@ export default function RegisterPage() {
           </div>
         </div>
       </main>
+
+      <footer className="border-t bg-background/60 backdrop-blur-sm h-14">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-center h-14 text-sm text-muted-foreground">
+            © 2024 FGB Acumen. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </MainLayout>
   );
 }
