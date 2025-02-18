@@ -69,10 +69,10 @@ export const buyerItems = [
   ...commonItems,
 ];
 
-// Admin gets access to all items
+// Admin gets access to all items, with buyer menu first
 export const adminItems = [
-  ...sellerItems.filter((item) => item.id !== "profile"),
   ...buyerItems.filter((item) => item.id !== "profile"),
+  ...sellerItems.filter((item) => item.id !== "profile"),
   ...commonItems,
 ];
 
