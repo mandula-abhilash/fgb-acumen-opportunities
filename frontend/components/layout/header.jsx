@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { CirclePower, Coins, Menu } from "lucide-react";
+import { CirclePower, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +14,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { MobileNav } from "@/components/dashboard-nav/mobile-nav";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
@@ -28,7 +22,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, tokens, logout, loading } = useAuth();
+  const { user, logout, loading } = useAuth();
   const isLoggedIn = !!user;
 
   const getActiveTab = () => {
@@ -80,32 +74,15 @@ export function Header() {
         <div className="hidden md:flex items-center space-x-4">
           <ThemeToggle />
           {isLoggedIn ? (
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/pricing">
-                      <Button variant="outline" size="sm" className="space-x-2">
-                        <Coins className="h-4 w-4" />
-                        <span>{tokens} Tokens</span>
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Click to buy more tokens</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full"
-                onClick={handleLogout}
-              >
-                <CirclePower className="h-6 w-6" />
-                <span className="sr-only">Logout</span>
-              </Button>
-            </>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={handleLogout}
+            >
+              <CirclePower className="h-6 w-6" />
+              <span className="sr-only">Logout</span>
+            </Button>
           ) : (
             <>
               <Link href="/login">
@@ -142,15 +119,6 @@ export function Header() {
                       activeTab={getActiveTab()}
                       onClose={() => setIsOpen(false)}
                     />
-                    <Link href="/pricing">
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start space-x-2"
-                      >
-                        <Coins className="h-4 w-4" />
-                        <span>{tokens} Tokens</span>
-                      </Button>
-                    </Link>
                     <Button
                       variant="ghost"
                       className="justify-start"

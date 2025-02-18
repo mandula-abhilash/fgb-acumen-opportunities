@@ -2,46 +2,19 @@
 
 import { createContext, useContext, useEffect } from "react";
 
-import { WelcomeBonusModal } from "@/components/welcome-bonus-modal";
-
 import { useAuth } from "../hooks/useAuth";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const auth = useAuth();
-  const {
-    user,
-    checkSession,
-    fetchTokens,
-    showWelcomeModal,
-    setShowWelcomeModal,
-  } = auth;
+  const { checkSession } = auth;
 
   useEffect(() => {
     checkSession();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetchTokens();
-    }
-  }, [user]);
-
-  return (
-    <AuthContext.Provider value={auth}>
-      {children}
-      <WelcomeBonusModal
-        open={showWelcomeModal}
-        onOpenChange={(isOpen) => {
-          setShowWelcomeModal(isOpen);
-          if (!isOpen) {
-            fetchTokens();
-          }
-        }}
-      />
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
 
 export function useAuthContext() {

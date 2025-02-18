@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +20,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default function ProfilePage() {
-  const { user, tokens, loading } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -47,32 +45,6 @@ export default function ProfilePage() {
     <div>
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
       <div className="grid gap-6">
-        {/* Token Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Tokens</CardTitle>
-            <CardDescription>
-              Use tokens to generate site assessment reports
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Coins className="h-5 w-5 text-web-orange" />
-                <span className="text-2xl font-bold">{tokens} Tokens</span>
-              </div>
-              <Link href="/pricing">
-                <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
-                  Buy More Tokens
-                </Button>
-              </Link>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Each report requires 50 tokens to generate
-            </p>
-          </CardContent>
-        </Card>
-
         {/* Profile Settings Card */}
         <Card>
           <CardHeader>
@@ -86,7 +58,13 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" defaultValue={user.email} />
+              <Input
+                id="email"
+                type="email"
+                defaultValue={user.email}
+                disabled
+                className="opacity-50 cursor-not-allowed"
+              />
             </div>
             <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
               Save Changes
