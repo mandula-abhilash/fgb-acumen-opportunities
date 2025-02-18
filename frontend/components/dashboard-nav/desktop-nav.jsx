@@ -33,11 +33,11 @@ export function DesktopNav({ activeTab }) {
 
       <div
         className={cn(
-          "h-full transition-all duration-300 ease-in-out overflow-y-auto",
+          "h-full transition-all duration-300 ease-in-out overflow-y-auto p-4",
           isCollapsed ? "w-16" : "w-60"
         )}
       >
-        <div className="space-y-2 py-2">
+        <div className="flex flex-col space-y-2 py-2">
           {navItems.map((item) => (
             <NavItem
               key={item.id}
