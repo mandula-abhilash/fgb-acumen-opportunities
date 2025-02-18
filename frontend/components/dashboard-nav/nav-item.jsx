@@ -43,9 +43,12 @@ export function NavItem({ item, isActive, isCollapsed }) {
     <Link href={item.href}>
       <Button
         variant={isActive ? "secondary" : "ghost"}
-        className={cn("w-full justify-start", isActive && "bg-secondary")}
+        className={cn(
+          "w-full justify-start h-9 px-2",
+          isActive && "bg-secondary"
+        )}
       >
-        <Icon className="mr-2 h-4 w-4" />
+        <Icon className="h-4 w-4 mr-2" />
         {item.label}
       </Button>
     </Link>
