@@ -8,6 +8,13 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { MainLayout } from "@/components/layout/main-layout";
 
@@ -24,6 +31,7 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: (data) => {
@@ -41,6 +49,9 @@ export default function RegisterPage() {
       ) {
         errors.password = "Password must be 8-100 characters";
       }
+      if (!data.role) {
+        errors.role = "Please select your role";
+      }
       return {
         values: data,
         errors: { ...errors, ...validatePasswords(data) },
@@ -50,10 +61,20 @@ export default function RegisterPage() {
 
   const onSubmit = async (data) => {
     try {
+      if (!data.role) {
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "Please select your role to continue.",
+        });
+        return;
+      }
+
       await registerUser({
         name: data.name,
         email: data.email,
         password: data.password,
+        role: data.role === "developer" ? "seller" : "buyer",
       });
 
       toast({
@@ -78,15 +99,34 @@ export default function RegisterPage() {
           <div className="rounded-lg border bg-card p-8 md:my-10">
             <div className="space-y-2 text-center mb-10">
               <h1 className="text-3xl font-bold">Create an Account</h1>
-              <p className="text-muted-foreground">
-                Register to request site assessments
-              </p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="role">
+                    I am a <span className="text-destructive">*</span>
+                  </Label>
+                  <Select onValueChange={(value) => setValue("role", value)}>
+                    <SelectTrigger
+                      className={errors.role ? "border-destructive" : ""}
+                    >
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="developer">Developer</SelectItem>
+                      <SelectItem value="buyer">Housing Association</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.role && (
+                    <p className="text-sm text-destructive">{errors.role}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="name">
+                    Full Name <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="name"
                     {...register("name")}
@@ -98,7 +138,9 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">
+                    Email <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -111,7 +153,9 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">
+                    Password <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="password"
                     type="password"
@@ -126,7 +170,9 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword">
+                    Confirm Password <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="confirmPassword"
                     type="password"
