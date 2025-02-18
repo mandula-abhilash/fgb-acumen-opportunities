@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FileStack, FileText, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,14 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const icons = {
-  FileText,
-  FileStack,
-  User,
-};
-
 export function NavItem({ item, isActive, isCollapsed }) {
-  const Icon = icons[item.icon];
+  const Icon = item.icon;
 
   if (isCollapsed) {
     return (

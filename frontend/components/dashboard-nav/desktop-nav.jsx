@@ -5,12 +5,59 @@ import { ChevronsLeftRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { NavItem } from "./nav-item";
-import { navItems } from "./nav-items";
+import { getNavItems } from "./nav-items";
 
-export function DesktopNav({ activeTab }) {
+export function DesktopNav({ activeTab, role = "buyer" }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [filters, setFilters] = useState({});
+  const navItems = getNavItems(role);
+
+  const handleFilterChange = (filterKey, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterKey]: value,
+    }));
+  };
+
+  const renderFilterInput = (item) => {
+    if (item.options) {
+      return (
+        <Select
+          value={filters[item.filterKey] || ""}
+          onValueChange={(value) => handleFilterChange(item.filterKey, value)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder={item.placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            {item.options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
+
+    return (
+      <Input
+        placeholder={item.placeholder}
+        value={filters[item.filterKey] || ""}
+        onChange={(e) => handleFilterChange(item.filterKey, e.target.value)}
+      />
+    );
+  };
 
   return (
     <div className="relative h-full">
@@ -38,14 +85,40 @@ export function DesktopNav({ activeTab }) {
         )}
       >
         <div className="flex flex-col space-y-2 py-2">
-          {navItems.map((item) => (
-            <NavItem
-              key={item.id}
-              item={item}
-              isActive={activeTab === item.id}
-              isCollapsed={isCollapsed}
-            />
-          ))}
+          {navItems.map((item) => {
+            if (item.section) {
+              if (!isCollapsed) {
+                return (
+                  <div key={item.section} className="space-y-4">
+                    <h3 className="text-sm font-semibold text-muted-foreground px-2">
+                      {item.section}
+                    </h3>
+                    {item.items.map((subItem) => (
+                      <div key={subItem.id} className="space-y-2 px-2">
+                        <div className="flex items-center gap-2">
+                          <subItem.icon className="h-4 w-4" />
+                          <span className="text-sm font-medium">
+                            {subItem.label}
+                          </span>
+                        </div>
+                        {renderFilterInput(subItem)}
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+              return null;
+            }
+
+            return (
+              <NavItem
+                key={item.id}
+                item={item}
+                isActive={activeTab === item.id}
+                isCollapsed={isCollapsed}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

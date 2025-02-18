@@ -24,5 +24,5 @@ export function DashboardNav({ activeTab }) {
     return null;
   }
 
-  return <DesktopNav activeTab={activeTab} />;
+  return <DesktopNav activeTab={activeTab} role={user.role} />;
 }
