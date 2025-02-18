@@ -45,9 +45,9 @@ export default function RegisterPage() {
       if (
         !data.password ||
         data.password.length < 8 ||
-        data.password.length > 100
+        data.password.length > 30
       ) {
-        errors.password = "Password must be 8-100 characters";
+        errors.password = "Password must be 8-30 characters";
       }
       if (!data.role) {
         errors.role = "Please select your role";
