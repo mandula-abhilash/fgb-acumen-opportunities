@@ -9,6 +9,7 @@ import { Building2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { PageHeader } from "@/components/layout/page-header";
 
 // Dummy data for demonstration
 const opportunities = [
@@ -180,12 +181,7 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 py-4 px-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Live Opportunities</h2>
-          {renderActionButton()}
-        </div>
-      </div>
+      <PageHeader title="Live Opportunities">{renderActionButton()}</PageHeader>
 
       <div className="flex-1 overflow-y-auto px-6">
         <div className="grid gap-4 py-4">

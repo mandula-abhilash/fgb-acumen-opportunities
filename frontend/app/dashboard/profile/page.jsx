@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { PageHeader } from "@/components/layout/page-header";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -42,35 +43,37 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-      <div className="grid gap-6">
-        {/* Profile Settings Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>Update your profile details</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input id="name" defaultValue={user.name} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                defaultValue={user.email}
-                disabled
-                className="opacity-50 cursor-not-allowed"
-              />
-            </div>
-            <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
-              Save Changes
-            </Button>
-          </CardContent>
-        </Card>
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
+      <PageHeader title="Profile Settings" />
+
+      <div className="flex-1 overflow-y-auto px-6">
+        <div className="grid gap-6 py-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>Update your profile details</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" defaultValue={user.name} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  defaultValue={user.email}
+                  disabled
+                  className="opacity-50 cursor-not-allowed"
+                />
+              </div>
+              <Button className="bg-web-orange hover:bg-web-orange/90 text-white">
+                Save Changes
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
