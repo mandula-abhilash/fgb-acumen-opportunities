@@ -1,6 +1,8 @@
+"use client";
+
 import {
-  Briefcase,
   Building2,
+  Calendar,
   Filter,
   Globe,
   Heart,
@@ -16,7 +18,7 @@ const commonTopItems = [
   {
     id: "live-opportunities",
     label: "Live Opportunities",
-    icon: Briefcase,
+    icon: Building2,
     href: "/dashboard/opportunities",
   },
 ];
@@ -131,6 +133,18 @@ export const buyerItems = [
           { value: "heads-of-terms", label: "Heads of Terms Agreed" },
           { value: "contracts-exchanged", label: "Contracts Exchanged" },
           { value: "purchase-completed", label: "Purchase Completed" },
+        ],
+      },
+      {
+        id: "start-date-filter",
+        label: "Start on Site Date",
+        icon: Calendar,
+        type: "date-range",
+        filterKey: "startDate",
+        modes: [
+          { value: "before", label: "Before" },
+          { value: "after", label: "After" },
+          { value: "between", label: "Between" },
         ],
       },
     ],

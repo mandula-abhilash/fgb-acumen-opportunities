@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Toggle } from "@/components/ui/toggle";
+import { DateFilter } from "@/components/filters/date-filter";
 import { MultiSelectFilter } from "@/components/filters/multi-select-filter";
 import { PlotsFilter } from "@/components/filters/plots-filter";
 import { SelectFilter } from "@/components/filters/select-filter";
@@ -95,6 +96,8 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
         );
       case "plots-range":
         return <PlotsFilter item={item} value={value} onChange={onChange} />;
+      case "date-range":
+        return <DateFilter item={item} value={value} onChange={onChange} />;
       case "filter":
         if (item.options) {
           if (item.multiple) {
