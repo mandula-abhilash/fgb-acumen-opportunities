@@ -11,6 +11,7 @@ import {
   Plus,
   ScrollText,
   Store,
+  Timer,
 } from "lucide-react";
 
 // Common items that appear at the top of the navigation for all user types
@@ -141,6 +142,18 @@ export const buyerItems = [
         icon: Calendar,
         type: "date-range",
         filterKey: "startDate",
+        modes: [
+          { value: "before", label: "Before" },
+          { value: "after", label: "After" },
+          { value: "between", label: "Between" },
+        ],
+      },
+      {
+        id: "handover-date-filter",
+        label: "Handover Dates",
+        icon: Timer,
+        type: "date-range",
+        filterKey: "handoverDate",
         modes: [
           { value: "before", label: "Before" },
           { value: "after", label: "After" },
