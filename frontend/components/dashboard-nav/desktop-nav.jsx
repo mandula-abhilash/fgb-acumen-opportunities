@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronsLeftRight, Filter, Pencil, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -23,7 +23,26 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
   const [filters, setFilters] = useState({});
   const [plotsErrors, setPlotsErrors] = useState({});
   const [editingPlots, setEditingPlots] = useState(false);
+  const plotsFilterRef = useRef(null);
   const navItems = getNavItems(role);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        plotsFilterRef.current &&
+        !plotsFilterRef.current.contains(event.target)
+      ) {
+        if (isValidPlotFilter(filters.plots)) {
+          setEditingPlots(false);
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [filters.plots]);
 
   const validateNumber = (value) => {
     if (value === "") return true;
@@ -57,12 +76,11 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     if (filterKey === "plots") {
       let updatedPlots;
       if (subKey === "mode") {
-        // Reset values when changing modes
         updatedPlots = { mode: value };
+        setEditingPlots(true);
       } else {
         updatedPlots = { ...filters.plots, [subKey]: value };
 
-        // Validate number input
         if (value !== "" && !validateNumber(value)) {
           setPlotsErrors({
             ...plotsErrors,
@@ -72,18 +90,9 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
         }
       }
 
-      // Clear errors when input is valid
       setPlotsErrors({});
-
-      // Validate the entire range
       const rangeErrors = validatePlotRange(updatedPlots.mode, updatedPlots);
       setPlotsErrors(rangeErrors);
-
-      const hasNoErrors = Object.keys(rangeErrors).length === 0;
-      if (hasNoErrors && isValidPlotFilter(updatedPlots)) {
-        setEditingPlots(false);
-      }
-
       setFilters({ ...filters, [filterKey]: updatedPlots });
     } else {
       setFilters({
@@ -100,7 +109,10 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     if (mode === "between") {
       return min && max && Number(min) < Number(max);
     }
-    return single && single.length > 0;
+    if (mode === "more-than" || mode === "less-than") {
+      return single && single.toString().length > 0;
+    }
+    return false;
   };
 
   const clearPlotsFilter = () => {
@@ -168,7 +180,7 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     }
 
     return (
-      <div className="space-y-3">
+      <div ref={plotsFilterRef} className="space-y-3">
         <div className="flex items-center justify-between">
           <Select
             value={mode}
