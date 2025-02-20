@@ -1,9 +1,8 @@
 import {
+  Briefcase,
   Building2,
-  Filter,
   Globe,
   Heart,
-  Home,
   Map,
   Plus,
   ScrollText,
@@ -11,7 +10,17 @@ import {
   User,
 } from "lucide-react";
 
-const commonItems = [
+// Common items that appear at the top of the navigation for all user types
+const commonTopItems = [
+  {
+    id: "live-opportunities",
+    label: "Live Opportunities",
+    icon: Briefcase,
+    href: "/dashboard/opportunities",
+  },
+];
+
+const commonBottomItems = [
   {
     id: "profile",
     label: "Profile",
@@ -21,22 +30,18 @@ const commonItems = [
 ];
 
 export const sellerItems = [
-  {
-    id: "my-sites",
-    label: "My Sites",
-    icon: Home,
-    href: "/dashboard/sites",
-  },
+  ...commonTopItems,
   {
     id: "submit-site",
     label: "Submit New Site",
     icon: Plus,
     href: "/dashboard/sites/new",
   },
-  ...commonItems,
+  ...commonBottomItems,
 ];
 
 export const buyerItems = [
+  ...commonTopItems,
   {
     id: "explore-map",
     label: "Explore on Map",
@@ -50,7 +55,7 @@ export const buyerItems = [
     href: "/dashboard/shortlisted",
   },
   {
-    section: "Filters",
+    section: "FILTERS",
     items: [
       {
         id: "region-filter",
@@ -146,14 +151,23 @@ export const buyerItems = [
       },
     ],
   },
-  ...commonItems,
+  ...commonBottomItems,
 ];
 
 // Admin gets access to all items, with buyer menu first
 export const adminItems = [
-  ...buyerItems.filter((item) => item.id !== "profile"),
-  ...sellerItems.filter((item) => item.id !== "profile"),
-  ...commonItems,
+  ...commonTopItems,
+  ...buyerItems.filter(
+    (item) =>
+      !commonTopItems.find((c) => c.id === item.id) &&
+      !commonBottomItems.find((c) => c.id === item.id)
+  ),
+  ...sellerItems.filter(
+    (item) =>
+      !commonTopItems.find((c) => c.id === item.id) &&
+      !commonBottomItems.find((c) => c.id === item.id)
+  ),
+  ...commonBottomItems,
 ];
 
 export function getNavItems(role) {
@@ -165,6 +179,6 @@ export function getNavItems(role) {
     case "admin":
       return adminItems;
     default:
-      return commonItems;
+      return commonBottomItems;
   }
 }
