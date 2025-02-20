@@ -17,6 +17,7 @@ import {
 export function PlotsFilter({ item, value, onChange }) {
   const [errors, setErrors] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
 
   const validateNumber = (value) => {
     if (value === "") return true;
@@ -53,7 +54,7 @@ export function PlotsFilter({ item, value, onChange }) {
       updatedValue = { mode: newValue };
       setErrors({});
     } else {
-      updatedValue = { ...value, [subKey]: newValue };
+      updatedValue = { ...localValue, [subKey]: newValue };
 
       if (newValue !== "" && !validateNumber(newValue)) {
         setErrors((prev) => ({
@@ -67,7 +68,7 @@ export function PlotsFilter({ item, value, onChange }) {
       setErrors(rangeErrors);
     }
 
-    onChange(updatedValue);
+    setLocalValue(updatedValue);
   };
 
   const isValidFilter = (filter) => {
@@ -85,6 +86,7 @@ export function PlotsFilter({ item, value, onChange }) {
 
   const clearFilter = () => {
     onChange(undefined);
+    setLocalValue(undefined);
     setErrors({});
     setIsEditing(false);
   };
@@ -115,17 +117,18 @@ export function PlotsFilter({ item, value, onChange }) {
     return null;
   };
 
-  const handleClose = () => {
-    if (isValidFilter(value)) {
+  const handleApplyFilter = () => {
+    if (isValidFilter(localValue)) {
+      onChange(localValue);
       setIsEditing(false);
     }
   };
 
   const summary = getFilterSummary(value);
-  const isValid = isValidFilter(value);
-  const mode = value?.mode;
+  const isValid = isValidFilter(localValue);
+  const mode = localValue?.mode || value?.mode;
 
-  if (isValid && !isEditing) {
+  if (value && !isEditing) {
     return (
       <div className="flex items-center gap-2 bg-secondary rounded-md p-2">
         <span className="flex-1 text-sm">{summary}</span>
@@ -133,7 +136,10 @@ export function PlotsFilter({ item, value, onChange }) {
           variant="ghost"
           size="icon"
           className="h-6 w-6"
-          onClick={() => setIsEditing(true)}
+          onClick={() => {
+            setLocalValue(value);
+            setIsEditing(true);
+          }}
         >
           <Pencil className="h-3 w-3" />
           <span className="sr-only">Edit filter</span>
@@ -189,7 +195,7 @@ export function PlotsFilter({ item, value, onChange }) {
               type="number"
               min="0"
               placeholder={item.fields.min.placeholder}
-              value={value?.min || ""}
+              value={localValue?.min || ""}
               onChange={(e) => handleChange("min", e.target.value)}
               className={cn(errors.min && "border-destructive")}
             />
@@ -202,7 +208,7 @@ export function PlotsFilter({ item, value, onChange }) {
               type="number"
               min="0"
               placeholder={item.fields.max.placeholder}
-              value={value?.max || ""}
+              value={localValue?.max || ""}
               onChange={(e) => handleChange("max", e.target.value)}
               className={cn(errors.max && "border-destructive")}
             />
@@ -223,7 +229,7 @@ export function PlotsFilter({ item, value, onChange }) {
                 ? item.fields.single.moreThan.placeholder
                 : item.fields.single.lessThan.placeholder
             }
-            value={value?.single || ""}
+            value={localValue?.single || ""}
             onChange={(e) => handleChange("single", e.target.value)}
             className={cn(errors.single && "border-destructive")}
           />
@@ -242,8 +248,8 @@ export function PlotsFilter({ item, value, onChange }) {
           <Button
             variant="secondary"
             className="w-full text-sm"
-            onClick={handleClose}
-            disabled={!isValidFilter(value)}
+            onClick={handleApplyFilter}
+            disabled={!isValidFilter(localValue)}
           >
             Apply Filter
           </Button>
