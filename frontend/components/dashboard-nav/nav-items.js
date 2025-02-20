@@ -65,18 +65,36 @@ export const buyerItems = [
         ],
       },
       {
-        id: "type-filter",
-        label: "Property Type",
+        id: "plots-filter",
+        label: "Number of Plots",
         icon: Filter,
-        type: "filter",
-        filterKey: "propertyTypes",
-        placeholder: "Select property types...",
-        multiple: true,
-        options: [
-          { value: "residential", label: "Residential" },
-          { value: "commercial", label: "Commercial" },
-          { value: "mixed", label: "Mixed Use" },
+        type: "plots-range",
+        filterKey: "plots",
+        modes: [
+          { value: "between", label: "Between" },
+          { value: "more-than", label: "More than" },
+          { value: "less-than", label: "Less than" },
         ],
+        fields: {
+          min: {
+            label: "Minimum Plots",
+            placeholder: "Min plots",
+          },
+          max: {
+            label: "Maximum Plots",
+            placeholder: "Max plots",
+          },
+          single: {
+            moreThan: {
+              label: "Minimum Plots",
+              placeholder: "Enter minimum plots",
+            },
+            lessThan: {
+              label: "Maximum Plots",
+              placeholder: "Enter maximum plots",
+            },
+          },
+        },
       },
     ],
   },

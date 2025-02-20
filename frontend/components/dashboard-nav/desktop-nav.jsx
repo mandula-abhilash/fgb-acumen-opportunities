@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronsLeftRight } from "lucide-react";
+import { ChevronsLeftRight, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,17 +21,191 @@ import { getNavItems } from "./nav-items";
 export function DesktopNav({ activeTab, role = "buyer" }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [filters, setFilters] = useState({});
+  const [plotsErrors, setPlotsErrors] = useState({});
   const navItems = getNavItems(role);
 
-  const handleFilterChange = (filterKey, value) => {
-    const updatedFilters = {
-      ...filters,
-      [filterKey]: value,
-    };
-    setFilters(updatedFilters);
+  const validateNumber = (value) => {
+    if (value === "") return true;
+    const num = Number(value);
+    return !isNaN(num) && num >= 0 && Number.isInteger(num);
+  };
+
+  const validatePlotRange = (mode, values) => {
+    const errors = {};
+
+    if (mode === "between") {
+      if (!values.min && !values.max) {
+        errors.general = "Please enter both minimum and maximum values";
+      } else if (!values.min) {
+        errors.min = "Please enter minimum value";
+      } else if (!values.max) {
+        errors.max = "Please enter maximum value";
+      } else if (Number(values.min) >= Number(values.max)) {
+        errors.general = "Minimum value must be less than maximum value";
+      }
+    } else if (mode === "more-than" && !values.single) {
+      errors.single = "Please enter a value";
+    } else if (mode === "less-than" && !values.single) {
+      errors.single = "Please enter a value";
+    }
+
+    return errors;
+  };
+
+  const handleFilterChange = (filterKey, value, subKey = null) => {
+    if (filterKey === "plots") {
+      let updatedPlots;
+      if (subKey === "mode") {
+        // Reset values when changing modes
+        updatedPlots = { mode: value };
+      } else {
+        updatedPlots = { ...filters.plots, [subKey]: value };
+
+        // Validate number input
+        if (value !== "" && !validateNumber(value)) {
+          setPlotsErrors({
+            ...plotsErrors,
+            [subKey]: "Please enter a valid positive whole number",
+          });
+          return;
+        }
+      }
+
+      // Clear errors when input is valid
+      setPlotsErrors({});
+
+      // Validate the entire range
+      const rangeErrors = validatePlotRange(updatedPlots.mode, updatedPlots);
+      setPlotsErrors(rangeErrors);
+
+      setFilters({ ...filters, [filterKey]: updatedPlots });
+    } else {
+      setFilters({
+        ...filters,
+        [filterKey]: subKey
+          ? { ...filters[filterKey], [subKey]: value }
+          : value,
+      });
+    }
+  };
+
+  const clearPlotsFilter = () => {
+    setFilters({ ...filters, plots: undefined });
+    setPlotsErrors({});
+  };
+
+  const renderPlotsFilter = (item) => {
+    const plotsFilter = filters.plots || {};
+    const mode = plotsFilter.mode;
+
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Select
+            value={mode}
+            onValueChange={(value) =>
+              handleFilterChange("plots", value, "mode")
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select filter type" />
+            </SelectTrigger>
+            <SelectContent>
+              {item.modes.map((mode) => (
+                <SelectItem key={mode.value} value={mode.value}>
+                  {mode.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {mode && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 ml-2"
+              onClick={clearPlotsFilter}
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Clear filter</span>
+            </Button>
+          )}
+        </div>
+
+        {mode === "between" && (
+          <div className="space-y-2">
+            <div>
+              <Input
+                type="number"
+                min="0"
+                placeholder={item.fields.min.placeholder}
+                value={plotsFilter.min || ""}
+                onChange={(e) =>
+                  handleFilterChange("plots", e.target.value, "min")
+                }
+                className={cn(plotsErrors.min && "border-destructive")}
+              />
+              {plotsErrors.min && (
+                <p className="text-xs text-destructive mt-1">
+                  {plotsErrors.min}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                type="number"
+                min="0"
+                placeholder={item.fields.max.placeholder}
+                value={plotsFilter.max || ""}
+                onChange={(e) =>
+                  handleFilterChange("plots", e.target.value, "max")
+                }
+                className={cn(plotsErrors.max && "border-destructive")}
+              />
+              {plotsErrors.max && (
+                <p className="text-xs text-destructive mt-1">
+                  {plotsErrors.max}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {(mode === "more-than" || mode === "less-than") && (
+          <div>
+            <Input
+              type="number"
+              min="0"
+              placeholder={
+                mode === "more-than"
+                  ? item.fields.single.moreThan.placeholder
+                  : item.fields.single.lessThan.placeholder
+              }
+              value={plotsFilter.single || ""}
+              onChange={(e) =>
+                handleFilterChange("plots", e.target.value, "single")
+              }
+              className={cn(plotsErrors.single && "border-destructive")}
+            />
+            {plotsErrors.single && (
+              <p className="text-xs text-destructive mt-1">
+                {plotsErrors.single}
+              </p>
+            )}
+          </div>
+        )}
+
+        {plotsErrors.general && (
+          <p className="text-xs text-destructive">{plotsErrors.general}</p>
+        )}
+      </div>
+    );
   };
 
   const renderFilterInput = (item) => {
+    if (item.type === "plots-range") {
+      return renderPlotsFilter(item);
+    }
+
     if (item.options) {
       if (item.multiple) {
         return (
