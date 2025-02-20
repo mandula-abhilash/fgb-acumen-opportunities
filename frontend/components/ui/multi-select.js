@@ -138,7 +138,14 @@ export function MultiSelect({
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start" sideOffset={4}>
+        <PopoverContent
+          className="w-[200px] p-0"
+          align="start"
+          side="bottom"
+          sideOffset={4}
+          avoidCollisions={false}
+          collisionPadding={20}
+        >
           <Command>
             <CommandInput
               placeholder="Search..."
