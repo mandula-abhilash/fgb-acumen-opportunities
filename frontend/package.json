@@ -1,5 +1,5 @@
 {
-  "name": "site-assessment-app",
+  "name": "fgb-acumen-opportunities",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -40,9 +40,10 @@
     "@react-google-maps/api": "^2.20.3",
     "@stripe/stripe-js": "^2.4.0",
     "axios": "^1.7.9",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
+    "date-fns": "^3.3.1",
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^11.11.17",
     "input-otp": "^1.4.1",
@@ -57,7 +58,7 @@
     "recharts": "^2.13.3",
     "sonner": "^1.7.0",
     "stripe": "^14.18.0",
-    "tailwind-merge": "^2.2.1",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "use-places-autocomplete": "^4.0.1",
     "vaul": "^1.1.1",
