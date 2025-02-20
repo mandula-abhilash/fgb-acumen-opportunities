@@ -29,7 +29,6 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
       [filterKey]: value,
     };
     setFilters(updatedFilters);
-    console.log("Updated Filters:", updatedFilters);
   };
 
   const renderFilterInput = (item) => {

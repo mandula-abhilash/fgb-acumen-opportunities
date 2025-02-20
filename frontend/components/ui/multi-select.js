@@ -11,7 +11,6 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command";
 import {
@@ -32,37 +31,32 @@ export function MultiSelect({
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
 
-  console.log("Current selected values:", selected);
-  console.log("Is dropdown open:", open);
-
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredOptions = React.useMemo(
+    () =>
+      options.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [options, searchQuery]
   );
 
   const handleUnselect = (item) => {
-    console.log("Unselecting item:", item);
     onChange(selected.filter((i) => i !== item));
   };
 
   const handleSelect = (currentValue) => {
-    console.log("Selecting value:", currentValue);
     if (selected.includes(currentValue)) {
-      console.log("Removing from selection");
       onChange(selected.filter((item) => item !== currentValue));
     } else {
-      console.log("Adding to selection");
       onChange([...selected, currentValue]);
     }
   };
 
   const handleClear = (e) => {
-    console.log("Clearing all selections");
     e.stopPropagation();
     onChange([]);
   };
 
   const toggleAll = () => {
-    console.log("Toggling all options");
     if (selected.length === options.length) {
       onChange([]);
     } else {
@@ -93,10 +87,12 @@ export function MultiSelect({
                 {selected.slice(0, maxCount).map((value) => {
                   const option = options.find((opt) => opt.value === value);
                   return (
-                    <Badge variant="secondary" key={value} className="m-1">
+                    <Badge variant="secondary" key={value} className="m-1 pr-1">
                       {option?.label}
-                      <button
-                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-0.5"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             handleUnselect(value);
@@ -113,7 +109,7 @@ export function MultiSelect({
                         }}
                       >
                         <X className="h-3 w-3 hover:text-foreground" />
-                      </button>
+                      </span>
                     </Badge>
                   );
                 })}
@@ -126,13 +122,14 @@ export function MultiSelect({
               <div className="flex items-center gap-2">
                 {selected.length > 0 && (
                   <>
-                    <Button
-                      variant="ghost"
+                    <span
+                      role="button"
+                      tabIndex={0}
                       onClick={handleClear}
-                      className="h-auto p-1 hover:bg-transparent"
+                      className="h-auto p-1 cursor-pointer hover:bg-transparent"
                     >
                       <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                    </Button>
+                    </span>
                     <Separator orientation="vertical" className="h-4" />
                   </>
                 )}
@@ -149,13 +146,22 @@ export function MultiSelect({
               onValueChange={setSearchQuery}
             />
             <CommandList className="max-h-[200px] overflow-y-auto">
-              <CommandEmpty>No results found.</CommandEmpty>
+              {searchQuery && filteredOptions.length === 0 && (
+                <CommandEmpty>No results found.</CommandEmpty>
+              )}
               <CommandGroup>
                 <div
+                  role="button"
+                  tabIndex={0}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleAll();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      toggleAll();
+                    }
                   }}
                   className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 >
@@ -178,10 +184,17 @@ export function MultiSelect({
                 {filteredOptions.map((option) => (
                   <div
                     key={option.value}
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleSelect(option.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSelect(option.value);
+                      }
                     }}
                     className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                   >
@@ -199,6 +212,15 @@ export function MultiSelect({
                   </div>
                 ))}
               </CommandGroup>
+              <div className="p-2 border-t">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-center"
+                  onClick={() => setOpen(false)}
+                >
+                  Close
+                </Button>
+              </div>
             </CommandList>
           </Command>
         </PopoverContent>

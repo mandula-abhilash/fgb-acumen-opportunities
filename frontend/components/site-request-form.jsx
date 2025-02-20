@@ -48,13 +48,11 @@ export function SiteRequestForm() {
 
       const requestData = {
         ...data,
-        siteName: data.siteName || selectedAddress, // Use provided site name or fall back to address
+        siteName: data.siteName || selectedAddress,
         siteLocation: selectedAddress,
         coordinates: selectedLocation,
         boundary: polygonPath,
       };
-
-      console.log("Assessment Request Data:", requestData);
 
       toast({
         title: "Request Submitted",
