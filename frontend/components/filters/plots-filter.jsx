@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Pencil, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -17,22 +17,6 @@ import {
 export function PlotsFilter({ item, value, onChange }) {
   const [errors, setErrors] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const filterRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        if (isValidFilter(value)) {
-          setIsEditing(false);
-        }
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [value]);
 
   const validateNumber = (value) => {
     if (value === "") return true;
@@ -168,7 +152,7 @@ export function PlotsFilter({ item, value, onChange }) {
   }
 
   return (
-    <div ref={filterRef} className="space-y-3">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Select
           value={mode || ""}
