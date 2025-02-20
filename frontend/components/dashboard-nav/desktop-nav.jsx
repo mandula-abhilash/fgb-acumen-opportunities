@@ -25,6 +25,27 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     }));
   };
 
+  const hasActiveFilter = (item) => {
+    const value = filters[item.filterKey];
+    if (!value) return false;
+
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    if (typeof value === "object") {
+      // For plots filter
+      return (
+        value.mode &&
+        ((value.mode === "between" && value.min && value.max) ||
+          ((value.mode === "more-than" || value.mode === "less-than") &&
+            value.single))
+      );
+    }
+
+    return value.trim().length > 0;
+  };
+
   const renderFilterInput = (item) => {
     const value = filters[item.filterKey];
     const onChange = (newValue) => handleFilterChange(item.filterKey, newValue);
@@ -89,9 +110,12 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
                       <div key={subItem.id} className="space-y-2 px-2">
                         <div className="flex items-center gap-2">
                           <subItem.icon className="h-4 w-4" />
-                          <span className="text-sm font-medium">
+                          <span className="text-sm font-medium flex-1">
                             {subItem.label}
                           </span>
+                          {hasActiveFilter(subItem) && (
+                            <div className="h-2 w-2 rounded-full bg-blue-500" />
+                          )}
                         </div>
                         {renderFilterInput(subItem)}
                       </div>
