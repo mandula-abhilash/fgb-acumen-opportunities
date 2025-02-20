@@ -9,9 +9,13 @@ import { MainLayout } from "@/components/layout/main-layout";
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const getActiveTab = () => {
+    if (pathname.includes("/opportunities")) return "live-opportunities";
     if (pathname.includes("/requests")) return "my-requests";
     if (pathname.includes("/profile")) return "profile";
-    return "new-request";
+    if (pathname.includes("/explore")) return "explore-map";
+    if (pathname.includes("/shortlisted")) return "shortlisted";
+    if (pathname.includes("/sites/new")) return "submit-site";
+    return "live-opportunities";
   };
 
   return (
@@ -21,7 +25,7 @@ export default function DashboardLayout({ children }) {
           <div className="hidden lg:block h-full border-r">
             <DashboardNav activeTab={getActiveTab()} />
           </div>
-          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
         </div>
       </GoogleMapsProvider>
     </MainLayout>
