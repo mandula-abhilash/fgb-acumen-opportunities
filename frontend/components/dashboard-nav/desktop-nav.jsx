@@ -6,6 +6,7 @@ import { ChevronsLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -23,14 +24,28 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
   const navItems = getNavItems(role);
 
   const handleFilterChange = (filterKey, value) => {
-    setFilters((prev) => ({
-      ...prev,
+    const updatedFilters = {
+      ...filters,
       [filterKey]: value,
-    }));
+    };
+    setFilters(updatedFilters);
+    console.log("Updated Filters:", updatedFilters);
   };
 
   const renderFilterInput = (item) => {
     if (item.options) {
+      if (item.multiple) {
+        return (
+          <MultiSelect
+            options={item.options}
+            selected={filters[item.filterKey] || []}
+            onChange={(value) => handleFilterChange(item.filterKey, value)}
+            placeholder={item.placeholder}
+            maxCount={3}
+          />
+        );
+      }
+
       return (
         <Select
           value={filters[item.filterKey] || ""}
