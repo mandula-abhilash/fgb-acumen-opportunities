@@ -164,8 +164,14 @@ export function PlotsFilter({ item, value, onChange }) {
           value={mode || ""}
           onValueChange={(value) => handleChange("mode", value)}
         >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select filter type" />
+          <SelectTrigger className="w-full h-9 text-sm">
+            <SelectValue
+              placeholder={
+                <span className="text-muted-foreground">
+                  Select filter type
+                </span>
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             {item.modes.map((mode) => (
@@ -197,7 +203,7 @@ export function PlotsFilter({ item, value, onChange }) {
               placeholder={item.fields.min.placeholder}
               value={localValue?.min || ""}
               onChange={(e) => handleChange("min", e.target.value)}
-              className={cn(errors.min && "border-destructive")}
+              className={cn("h-9", errors.min && "border-destructive")}
             />
             {errors.min && (
               <p className="text-xs text-destructive mt-1">{errors.min}</p>
@@ -210,7 +216,7 @@ export function PlotsFilter({ item, value, onChange }) {
               placeholder={item.fields.max.placeholder}
               value={localValue?.max || ""}
               onChange={(e) => handleChange("max", e.target.value)}
-              className={cn(errors.max && "border-destructive")}
+              className={cn("h-9", errors.max && "border-destructive")}
             />
             {errors.max && (
               <p className="text-xs text-destructive mt-1">{errors.max}</p>
@@ -231,7 +237,7 @@ export function PlotsFilter({ item, value, onChange }) {
             }
             value={localValue?.single || ""}
             onChange={(e) => handleChange("single", e.target.value)}
-            className={cn(errors.single && "border-destructive")}
+            className={cn("h-9", errors.single && "border-destructive")}
           />
           {errors.single && (
             <p className="text-xs text-destructive mt-1">{errors.single}</p>
@@ -247,7 +253,7 @@ export function PlotsFilter({ item, value, onChange }) {
         <div className="pt-2">
           <Button
             variant="secondary"
-            className="w-full text-sm"
+            className="w-full text-sm h-9"
             onClick={handleApplyFilter}
             disabled={!isValidFilter(localValue)}
           >
