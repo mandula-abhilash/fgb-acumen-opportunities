@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 
 import visdakSesamModule from "visdak-sesam";
 import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
+import siteRoutes from "./routes/siteRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -66,6 +67,9 @@ const startServer = async () => {
     app.use("/api/subscriptions", subscriptionRoutes);
     app.use("/api/transactions", transactionRoutes);
     app.use("/api/checkout", checkoutRoutes);
+
+    // Mount the sites routes
+    app.use("/api/sites", siteRoutes);
 
     // Example of a protected route
     app.get("/api/protected", middleware.protect, (req, res) => {
