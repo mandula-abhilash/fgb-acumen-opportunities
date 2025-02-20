@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronsLeftRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { MultiSelectFilter } from "@/components/filters/multi-select-filter";
 import { PlotsFilter } from "@/components/filters/plots-filter";
 import { SelectFilter } from "@/components/filters/select-filter";
@@ -16,6 +20,9 @@ import { getNavItems } from "./nav-items";
 export function DesktopNav({ activeTab, role = "buyer" }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [filters, setFilters] = useState({});
+  const [viewMode, setViewMode] = useState("list");
+  const [showShortlisted, setShowShortlisted] = useState(false);
+  const router = useRouter();
   const navItems = getNavItems(role);
 
   const handleFilterChange = (filterKey, value) => {
@@ -23,6 +30,14 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
       ...prev,
       [filterKey]: value,
     }));
+  };
+
+  const handleViewModeChange = (value) => {
+    if (!value) return;
+    setViewMode(value);
+    router.push(
+      value === "map" ? "/dashboard/explore" : "/dashboard/opportunities"
+    );
   };
 
   const hasActiveFilter = (item) => {
@@ -51,6 +66,45 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     const onChange = (newValue) => handleFilterChange(item.filterKey, newValue);
 
     switch (item.type) {
+      case "toggle":
+        return (
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={handleViewModeChange}
+            className="justify-start border rounded-md p-1 w-full"
+          >
+            {item.options.map((option) => {
+              const Icon = option.icon;
+              return (
+                <ToggleGroupItem
+                  key={option.value}
+                  value={option.value}
+                  className="flex-1 h-8"
+                >
+                  <Icon className="h-4 w-4 mr-2" />
+                  {option.label}
+                </ToggleGroupItem>
+              );
+            })}
+          </ToggleGroup>
+        );
+      case "checkbox":
+        return (
+          <div className="flex items-center space-x-2 px-2 py-1">
+            <Checkbox
+              id={item.id}
+              checked={showShortlisted}
+              onCheckedChange={setShowShortlisted}
+            />
+            <label
+              htmlFor={item.id}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {item.label}
+            </label>
+          </div>
+        );
       case "plots-range":
         return <PlotsFilter item={item} value={value} onChange={onChange} />;
       case "filter":
@@ -120,6 +174,17 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
                         {renderFilterInput(subItem)}
                       </div>
                     ))}
+                  </div>
+                );
+              }
+              return null;
+            }
+
+            if (item.type === "toggle" || item.type === "checkbox") {
+              if (!isCollapsed) {
+                return (
+                  <div key={item.id} className="px-2">
+                    {renderFilterInput(item)}
                   </div>
                 );
               }

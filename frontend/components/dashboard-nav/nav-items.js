@@ -4,6 +4,7 @@ import {
   Filter,
   Globe,
   Heart,
+  List,
   Map,
   Plus,
   ScrollText,
@@ -25,16 +26,19 @@ export const sellerItems = [...commonTopItems];
 export const buyerItems = [
   ...commonTopItems,
   {
-    id: "explore-map",
-    label: "Explore on Map",
-    icon: Map,
-    href: "/dashboard/explore",
+    id: "view-mode",
+    label: "View Mode",
+    type: "toggle",
+    options: [
+      { value: "list", label: "List View", icon: List },
+      { value: "map", label: "Map View", icon: Map },
+    ],
   },
   {
     id: "shortlisted",
-    label: "Shortlisted Sites",
+    label: "Show Shortlisted Only",
     icon: Heart,
-    href: "/dashboard/shortlisted",
+    type: "checkbox",
   },
   {
     section: "FILTERS",
