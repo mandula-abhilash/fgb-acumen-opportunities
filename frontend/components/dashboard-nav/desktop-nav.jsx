@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronsLeftRight, X } from "lucide-react";
+import { ChevronsLeftRight, Filter, Pencil, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [filters, setFilters] = useState({});
   const [plotsErrors, setPlotsErrors] = useState({});
+  const [editingPlots, setEditingPlots] = useState(false);
   const navItems = getNavItems(role);
 
   const validateNumber = (value) => {
@@ -78,25 +79,93 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
       const rangeErrors = validatePlotRange(updatedPlots.mode, updatedPlots);
       setPlotsErrors(rangeErrors);
 
+      const hasNoErrors = Object.keys(rangeErrors).length === 0;
+      if (hasNoErrors && isValidPlotFilter(updatedPlots)) {
+        setEditingPlots(false);
+      }
+
       setFilters({ ...filters, [filterKey]: updatedPlots });
     } else {
       setFilters({
         ...filters,
-        [filterKey]: subKey
-          ? { ...filters[filterKey], [subKey]: value }
-          : value,
+        [filterKey]: value,
       });
     }
+  };
+
+  const isValidPlotFilter = (plotFilter) => {
+    if (!plotFilter || !plotFilter.mode) return false;
+
+    const { mode, min, max, single } = plotFilter;
+    if (mode === "between") {
+      return min && max && Number(min) < Number(max);
+    }
+    return single && single.length > 0;
   };
 
   const clearPlotsFilter = () => {
     setFilters({ ...filters, plots: undefined });
     setPlotsErrors({});
+    setEditingPlots(false);
+  };
+
+  const getPlotsFilterSummary = (filterValue) => {
+    if (!filterValue) return null;
+
+    const { mode, min, max, single } = filterValue;
+    if (!mode) return null;
+
+    switch (mode) {
+      case "between":
+        if (min && max && !plotsErrors.general) {
+          return `Between ${min} and ${max} plots`;
+        }
+        break;
+      case "more-than":
+        if (single && !plotsErrors.single) {
+          return `More than ${single} plots`;
+        }
+        break;
+      case "less-than":
+        if (single && !plotsErrors.single) {
+          return `Less than ${single} plots`;
+        }
+        break;
+    }
+    return null;
   };
 
   const renderPlotsFilter = (item) => {
     const plotsFilter = filters.plots || {};
     const mode = plotsFilter.mode;
+    const summary = getPlotsFilterSummary(plotsFilter);
+    const isValid = isValidPlotFilter(plotsFilter);
+
+    if (isValid && !editingPlots) {
+      return (
+        <div className="flex items-center gap-2 bg-secondary rounded-md p-2">
+          <span className="flex-1 text-sm">{summary}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => setEditingPlots(true)}
+          >
+            <Pencil className="h-3 w-3" />
+            <span className="sr-only">Edit filter</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={clearPlotsFilter}
+          >
+            <X className="h-3 w-3" />
+            <span className="sr-only">Clear filter</span>
+          </Button>
+        </div>
+      );
+    }
 
     return (
       <div className="space-y-3">
