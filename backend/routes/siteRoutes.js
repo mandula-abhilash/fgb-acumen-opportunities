@@ -6,8 +6,11 @@ import {
   updateSite,
   deleteSite,
 } from "../controllers/siteController.js";
+import visdakSesamModule from "visdak-sesam";
 
 const router = express.Router();
+const { middleware } = visdakSesamModule();
+const { protect, admin } = middleware;
 
 router.route("/").post(protect, createSite).get(protect, getSites);
 

@@ -71,16 +71,6 @@ const startServer = async () => {
     // Mount the sites routes
     app.use("/api/sites", siteRoutes);
 
-    // Example of a protected route
-    app.get("/api/protected", middleware.protect, (req, res) => {
-      res.json({ message: "This is a protected route.", user: req.user });
-    });
-
-    // Example of an admin-only route
-    app.get("/api/admin", middleware.protect, middleware.admin, (req, res) => {
-      res.json({ message: "This is an admin-only route.", user: req.user });
-    });
-
     // Catch-all for undefined routes
     app.use((req, res) => {
       res.status(404).json({ error: "Route not found" });
