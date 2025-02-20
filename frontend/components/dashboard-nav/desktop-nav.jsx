@@ -41,6 +41,32 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     router.push(`/dashboard/opportunities?${params.toString()}`);
   };
 
+  const isValidDateFilter = (value) => {
+    if (!value || !value.mode) return false;
+
+    const { mode, startDate, endDate, single } = value;
+    if (mode === "between") {
+      return startDate && endDate && new Date(startDate) < new Date(endDate);
+    }
+    if (mode === "before" || mode === "after") {
+      return single && single.toString().length > 0;
+    }
+    return false;
+  };
+
+  const isValidPlotsFilter = (value) => {
+    if (!value || !value.mode) return false;
+
+    const { mode, min, max, single } = value;
+    if (mode === "between") {
+      return min && max && Number(min) < Number(max);
+    }
+    if (mode === "more-than" || mode === "less-than") {
+      return single && single.toString().length > 0;
+    }
+    return false;
+  };
+
   const hasActiveFilter = (item) => {
     const value = filters[item.filterKey];
     if (!value) return false;
@@ -50,12 +76,12 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     }
 
     if (typeof value === "object") {
-      return (
-        value.mode &&
-        ((value.mode === "between" && value.min && value.max) ||
-          ((value.mode === "more-than" || value.mode === "less-than") &&
-            value.single))
-      );
+      if (item.type === "date-range") {
+        return isValidDateFilter(value);
+      }
+      if (item.type === "plots-range") {
+        return isValidPlotsFilter(value);
+      }
     }
 
     return value.trim().length > 0;
