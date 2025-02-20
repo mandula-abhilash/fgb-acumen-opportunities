@@ -29,10 +29,8 @@ export const buyerItems = [
     id: "view-mode",
     label: "View Mode",
     type: "toggle",
-    options: [
-      { value: "list", label: "List View", icon: List },
-      { value: "map", label: "Map View", icon: Map },
-    ],
+    icon: List,
+    mapIcon: Map,
   },
   {
     id: "shortlisted",

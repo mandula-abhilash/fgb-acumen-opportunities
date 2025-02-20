@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronsLeftRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Toggle } from "@/components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { MultiSelectFilter } from "@/components/filters/multi-select-filter";
 import { PlotsFilter } from "@/components/filters/plots-filter";
 import { SelectFilter } from "@/components/filters/select-filter";
@@ -20,9 +19,11 @@ import { getNavItems } from "./nav-items";
 export function DesktopNav({ activeTab, role = "buyer" }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [filters, setFilters] = useState({});
-  const [viewMode, setViewMode] = useState("list");
   const [showShortlisted, setShowShortlisted] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const viewMode = searchParams.get("view") || "list";
   const navItems = getNavItems(role);
 
   const handleFilterChange = (filterKey, value) => {
@@ -32,12 +33,11 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     }));
   };
 
-  const handleViewModeChange = (value) => {
-    if (!value) return;
-    setViewMode(value);
-    router.push(
-      value === "map" ? "/dashboard/explore" : "/dashboard/opportunities"
-    );
+  const handleViewModeChange = () => {
+    const params = new URLSearchParams(searchParams);
+    const newMode = viewMode === "list" ? "map" : "list";
+    params.set("view", newMode);
+    router.push(`/dashboard/opportunities?${params.toString()}`);
   };
 
   const hasActiveFilter = (item) => {
@@ -49,7 +49,6 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
     }
 
     if (typeof value === "object") {
-      // For plots filter
       return (
         value.mode &&
         ((value.mode === "between" && value.min && value.max) ||
@@ -67,27 +66,16 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
 
     switch (item.type) {
       case "toggle":
+        const Icon = viewMode === "list" ? item.mapIcon : item.icon;
         return (
-          <ToggleGroup
-            type="single"
-            value={viewMode}
-            onValueChange={handleViewModeChange}
-            className="justify-start border rounded-md p-1 w-full"
+          <Toggle
+            pressed={viewMode === "map"}
+            onPressedChange={handleViewModeChange}
+            className="w-full justify-start h-9 px-2"
           >
-            {item.options.map((option) => {
-              const Icon = option.icon;
-              return (
-                <ToggleGroupItem
-                  key={option.value}
-                  value={option.value}
-                  className="flex-1 h-8"
-                >
-                  <Icon className="h-4 w-4 mr-2" />
-                  {option.label}
-                </ToggleGroupItem>
-              );
-            })}
-          </ToggleGroup>
+            <Icon className="h-4 w-4 mr-2" />
+            {viewMode === "list" ? "Explore on Map" : "View as List"}
+          </Toggle>
         );
       case "checkbox":
         return (

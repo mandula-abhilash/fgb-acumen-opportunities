@@ -10,40 +10,6 @@ import { Card } from "@/components/ui/card";
 import { MapLoading } from "@/components/site-map/loading";
 import { MapControls } from "@/components/site-map/map-controls";
 
-// Dummy data for demonstration
-const opportunities = [
-  {
-    id: 1,
-    title: "Riverside Development Site",
-    location: "Manchester City Center",
-    coordinates: { lat: 53.4808, lng: -2.2426 },
-    plots: 120,
-    planningStatus: "Outline Approval",
-    purchaseStatus: "Land Offer Stage",
-    price: "£4.2M",
-  },
-  {
-    id: 2,
-    title: "Urban Regeneration Project",
-    location: "Liverpool Docklands",
-    coordinates: { lat: 53.4084, lng: -2.9916 },
-    plots: 85,
-    planningStatus: "Full Approval",
-    purchaseStatus: "Heads of Terms Agreed",
-    price: "£3.8M",
-  },
-  {
-    id: 3,
-    title: "City Center Development",
-    location: "Leeds City Square",
-    coordinates: { lat: 53.7967, lng: -1.5483 },
-    plots: 150,
-    planningStatus: "Full Approval",
-    purchaseStatus: "Purchase Completed",
-    price: "£5.2M",
-  },
-];
-
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
@@ -67,7 +33,7 @@ const defaultMapOptions = {
   mapTypeId: "hybrid",
 };
 
-export function ExploreMap() {
+export function ExploreMap({ opportunities }) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState(null);
   const [mapType, setMapType] = useState("hybrid");
@@ -101,7 +67,7 @@ export function ExploreMap() {
   }
 
   return (
-    <Card className="h-full relative rounded-md overflow-hidden">
+    <Card className="h-[calc(100vh-14rem)] relative rounded-md overflow-hidden">
       <div className="h-full">
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
