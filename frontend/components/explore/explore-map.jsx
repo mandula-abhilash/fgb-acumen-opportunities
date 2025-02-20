@@ -13,7 +13,6 @@ import { MapControls } from "@/components/site-map/map-controls";
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
-  borderRadius: "0.375rem",
 };
 
 const defaultCenter = {
@@ -67,68 +66,66 @@ export function ExploreMap({ opportunities }) {
   }
 
   return (
-    <Card className="h-[calc(100vh-14rem)] relative rounded-md overflow-hidden">
-      <div className="h-full">
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          zoom={zoomLevel}
-          center={defaultCenter}
-          onLoad={handleMapLoad}
-          options={defaultMapOptions}
-        >
-          {opportunities.map((opportunity) => (
-            <Marker
-              key={opportunity.id}
-              position={opportunity.coordinates}
-              onClick={() => setSelectedOpportunity(opportunity)}
-            />
-          ))}
+    <div className="h-full">
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        zoom={zoomLevel}
+        center={defaultCenter}
+        onLoad={handleMapLoad}
+        options={defaultMapOptions}
+      >
+        {opportunities?.map((opportunity) => (
+          <Marker
+            key={opportunity.id}
+            position={opportunity.coordinates}
+            onClick={() => setSelectedOpportunity(opportunity)}
+          />
+        ))}
 
-          {selectedOpportunity && (
-            <InfoWindow
-              position={selectedOpportunity.coordinates}
-              onCloseClick={() => setSelectedOpportunity(null)}
-            >
-              <div className="p-2 max-w-sm">
-                <h3 className="font-semibold mb-2">
-                  {selectedOpportunity.title}
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-muted-foreground">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    <span>{selectedOpportunity.location}</span>
-                  </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <Building2 className="h-4 w-4 mr-1" />
-                    <span>{selectedOpportunity.plots} plots</span>
-                  </div>
-                  <div className="flex justify-between items-center mt-3">
-                    <span className="font-bold text-web-orange">
-                      {selectedOpportunity.price}
-                    </span>
-                    <Button
-                      size="sm"
-                      className="bg-web-orange hover:bg-web-orange/90 text-white"
-                      onClick={() => {
-                        // Handle view details
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </div>
+        {selectedOpportunity && (
+          <InfoWindow
+            position={selectedOpportunity.coordinates}
+            onCloseClick={() => setSelectedOpportunity(null)}
+          >
+            <div className="p-2 max-w-sm">
+              <h3 className="font-semibold mb-2">
+                {selectedOpportunity.title}
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center text-muted-foreground">
+                  <MapPin className="h-4 w-4 mr-1" />
+                  <span>{selectedOpportunity.location}</span>
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <Building2 className="h-4 w-4 mr-1" />
+                  <span>{selectedOpportunity.plots} plots</span>
+                </div>
+                <div className="flex justify-between items-center mt-3">
+                  <span className="font-bold text-web-orange">
+                    {selectedOpportunity.price}
+                  </span>
+                  <Button
+                    size="sm"
+                    className="bg-web-orange hover:bg-web-orange/90 text-white"
+                    onClick={() => {
+                      // Handle view details
+                    }}
+                  >
+                    View Details
+                  </Button>
                 </div>
               </div>
-            </InfoWindow>
-          )}
+            </div>
+          </InfoWindow>
+        )}
 
-          <MapControls
-            mapType={mapType}
-            zoomLevel={zoomLevel}
-            onMapTypeChange={handleMapTypeChange}
-            onZoomChange={handleZoomChange}
-          />
-        </GoogleMap>
-      </div>
-    </Card>
+        <MapControls
+          mapType={mapType}
+          zoomLevel={zoomLevel}
+          onMapTypeChange={handleMapTypeChange}
+          onZoomChange={handleZoomChange}
+        />
+      </GoogleMap>
+    </div>
   );
 }

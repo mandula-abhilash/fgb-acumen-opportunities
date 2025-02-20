@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Building2, MapPin } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -82,9 +83,18 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <PageHeader title="Live Opportunities">{renderActionButton()}</PageHeader>
+      {viewMode === "list" && (
+        <PageHeader title="Live Opportunities">
+          {renderActionButton()}
+        </PageHeader>
+      )}
 
-      <div className="flex-1 overflow-y-auto px-6">
+      <div
+        className={cn(
+          "flex-1 overflow-y-auto",
+          viewMode === "list" ? "px-6" : ""
+        )}
+      >
         {viewMode === "list" ? (
           <div className="grid gap-4 py-4">
             {opportunities.map((opportunity) => (
@@ -157,7 +167,7 @@ export default function OpportunitiesPage() {
             ))}
           </div>
         ) : (
-          <div className="py-4">
+          <div className="h-full">
             <ExploreMap opportunities={opportunities} />
           </div>
         )}
