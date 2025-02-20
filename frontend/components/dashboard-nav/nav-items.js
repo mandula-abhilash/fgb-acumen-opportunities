@@ -1,13 +1,13 @@
 import {
   Briefcase,
   Building2,
+  Filter,
   Globe,
   Heart,
   Map,
   Plus,
   ScrollText,
   Store,
-  User,
 } from "lucide-react";
 
 // Common items that appear at the top of the navigation for all user types
@@ -20,25 +20,7 @@ const commonTopItems = [
   },
 ];
 
-const commonBottomItems = [
-  {
-    id: "profile",
-    label: "Profile",
-    icon: User,
-    href: "/dashboard/profile",
-  },
-];
-
-export const sellerItems = [
-  ...commonTopItems,
-  {
-    id: "submit-site",
-    label: "Submit New Site",
-    icon: Plus,
-    href: "/dashboard/sites/new",
-  },
-  ...commonBottomItems,
-];
+export const sellerItems = [...commonTopItems];
 
 export const buyerItems = [
   ...commonTopItems,
@@ -151,23 +133,15 @@ export const buyerItems = [
       },
     ],
   },
-  ...commonBottomItems,
 ];
 
 // Admin gets access to all items, with buyer menu first
 export const adminItems = [
   ...commonTopItems,
-  ...buyerItems.filter(
-    (item) =>
-      !commonTopItems.find((c) => c.id === item.id) &&
-      !commonBottomItems.find((c) => c.id === item.id)
-  ),
+  ...buyerItems.filter((item) => !commonTopItems.find((c) => c.id === item.id)),
   ...sellerItems.filter(
-    (item) =>
-      !commonTopItems.find((c) => c.id === item.id) &&
-      !commonBottomItems.find((c) => c.id === item.id)
+    (item) => !commonTopItems.find((c) => c.id === item.id)
   ),
-  ...commonBottomItems,
 ];
 
 export function getNavItems(role) {
@@ -179,6 +153,6 @@ export function getNavItems(role) {
     case "admin":
       return adminItems;
     default:
-      return commonBottomItems;
+      return commonTopItems;
   }
 }

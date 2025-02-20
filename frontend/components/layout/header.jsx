@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { CirclePower, Menu } from "lucide-react";
+import { CirclePower, Menu, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MobileNav } from "@/components/dashboard-nav/mobile-nav";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
@@ -26,9 +32,13 @@ export function Header() {
   const isLoggedIn = !!user;
 
   const getActiveTab = () => {
+    if (pathname.includes("/opportunities")) return "live-opportunities";
     if (pathname.includes("/requests")) return "my-requests";
     if (pathname.includes("/profile")) return "profile";
-    return "new-request";
+    if (pathname.includes("/explore")) return "explore-map";
+    if (pathname.includes("/shortlisted")) return "shortlisted";
+    if (pathname.includes("/sites/new")) return "submit-site";
+    return "live-opportunities";
   };
 
   const handleLogout = async () => {
@@ -71,18 +81,48 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-2">
           <ThemeToggle />
           {isLoggedIn ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-              onClick={handleLogout}
-            >
-              <CirclePower className="h-6 w-6" />
-              <span className="sr-only">Logout</span>
-            </Button>
+            <>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href="/dashboard/profile">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                      >
+                        <User className="h-5 w-5" />
+                        <span className="sr-only">Profile</span>
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Profile</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                      onClick={handleLogout}
+                    >
+                      <CirclePower className="h-5 w-5" />
+                      <span className="sr-only">Logout</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Logout</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </>
           ) : (
             <>
               <Link href="/login">
@@ -98,7 +138,7 @@ export function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden flex items-center space-x-4">
+        <div className="md:hidden flex items-center space-x-2">
           <ThemeToggle />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
