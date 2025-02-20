@@ -103,7 +103,7 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
               if (!isCollapsed) {
                 return (
                   <div key={item.section} className="space-y-4">
-                    <h3 className="text-sm font-semibold text-muted-foreground px-2">
+                    <h3 className="text-sm font-semibold px-2 uppercase tracking-wider text-havelock-blue">
                       {item.section}
                     </h3>
                     {item.items.map((subItem) => (
