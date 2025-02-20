@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { Building2, MapPin, Plus } from "lucide-react";
+import { Building2, MapPin } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,10 +62,9 @@ export default function OpportunitiesPage() {
     if (user?.role === "seller" || user?.role === "admin") {
       return (
         <Button
-          className="bg-web-orange hover:bg-web-orange/90 text-white"
+          className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
           onClick={() => router.push("/dashboard/sites/new")}
         >
-          <Plus className="h-4 w-4 mr-2" />
           Submit New Site
         </Button>
       );

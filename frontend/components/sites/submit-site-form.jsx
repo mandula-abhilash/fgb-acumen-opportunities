@@ -543,13 +543,15 @@ export function SubmitSiteForm() {
             </div>
           </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-web-orange hover:bg-web-orange/90 text-white"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Site"}
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Site"}
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </form>
