@@ -94,7 +94,7 @@ export function DesktopNav({ activeTab, role = "buyer" }) {
       <div
         className={cn(
           "h-full transition-all duration-300 ease-in-out overflow-y-auto p-2",
-          isCollapsed ? "w-16" : "w-60"
+          isCollapsed ? "w-16" : "w-72"
         )}
       >
         <div className="flex flex-col space-y-2 py-2">
