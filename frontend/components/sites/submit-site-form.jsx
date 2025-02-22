@@ -193,516 +193,501 @@ export function SubmitSiteForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Form Fields - Takes 2 columns */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>
-                Enter the fundamental details about the site
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="siteName">
-                    Site Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="siteName"
-                    {...register("siteName")}
-                    className={errors.siteName ? "border-destructive" : ""}
-                  />
-                  {errors.siteName && (
-                    <p className="text-sm text-destructive">
-                      {errors.siteName.message}
-                    </p>
-                  )}
-                </div>
+      <div className="flex flex-col space-y-6 mx-auto">
+        {/* Site Location Map */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Site Location</CardTitle>
+            <CardDescription>
+              Search for and mark the site location on the map
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="h-[400px]">
+              <SiteMap
+                onLocationSelect={handleLocationSelect}
+                onPolygonComplete={handlePolygonComplete}
+                selectedLocation={selectedLocation}
+                polygonPath={polygonPath}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-                <div className="space-y-2">
-                  <Label htmlFor="siteAddress">
-                    Site Address <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="siteAddress"
-                    {...register("siteAddress")}
-                    className={errors.siteAddress ? "border-destructive" : ""}
-                  />
-                  {errors.siteAddress && (
-                    <p className="text-sm text-destructive">
-                      {errors.siteAddress.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="opportunityType">
-                    Opportunity Type <span className="text-destructive">*</span>
-                  </Label>
-                  <Select
-                    onValueChange={(value) =>
-                      setValue("opportunityType", value)
-                    }
-                  >
-                    <SelectTrigger
-                      className={
-                        errors.opportunityType ? "border-destructive" : ""
-                      }
-                    >
-                      <SelectValue placeholder="Select opportunity type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {opportunityTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.opportunityType && (
-                    <p className="text-sm text-destructive">
-                      {errors.opportunityType.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="plots">
-                    Number of Plots <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="plots"
-                    type="number"
-                    min="1"
-                    {...register("plots", { valueAsNumber: true })}
-                    className={errors.plots ? "border-destructive" : ""}
-                  />
-                  {errors.plots && (
-                    <p className="text-sm text-destructive">
-                      {errors.plots.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+            <CardDescription>
+              Enter the fundamental details about the site
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="googleMapsLink">
-                  Google Maps Link <span className="text-destructive">*</span>
+                <Label htmlFor="siteName">
+                  Site Name <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  id="googleMapsLink"
-                  type="url"
-                  {...register("googleMapsLink")}
-                  className={errors.googleMapsLink ? "border-destructive" : ""}
-                  placeholder="https://maps.google.com/..."
+                  id="siteName"
+                  {...register("siteName")}
+                  className={errors.siteName ? "border-destructive" : ""}
                 />
-                {errors.googleMapsLink && (
+                {errors.siteName && (
                   <p className="text-sm text-destructive">
-                    {errors.googleMapsLink.message}
+                    {errors.siteName.message}
                   </p>
                 )}
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Developer Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Developer Information</CardTitle>
-              <CardDescription>
-                Enter details about the developer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="developerName">
-                    Developer Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="developerName"
-                    {...register("developerName")}
-                    className={errors.developerName ? "border-destructive" : ""}
-                  />
-                  {errors.developerName && (
-                    <p className="text-sm text-destructive">
-                      {errors.developerName.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="developerRegion">Developer Region</Label>
-                  <Select
-                    onValueChange={(value) =>
-                      setValue("developerRegion", value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select developer region" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {regions.map((region) => (
-                        <SelectItem key={region.value} value={region.value}>
-                          {region.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
 
               <div className="space-y-2">
-                <Label htmlFor="developerInfo">Developer Information</Label>
-                <Textarea
-                  id="developerInfo"
-                  {...register("developerInfo")}
-                  placeholder="Enter additional information about the developer..."
-                  className="min-h-[100px]"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Location Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location Details</CardTitle>
-              <CardDescription>
-                Specify the location and planning details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>
-                    LPA <span className="text-destructive">*</span>
-                  </Label>
-                  <MultiSelect
-                    options={lpaOptions}
-                    selected={watch("lpa")}
-                    onChange={(value) => setValue("lpa", value)}
-                    placeholder="Select LPA..."
-                  />
-                  {errors.lpa && (
-                    <p className="text-sm text-destructive">
-                      {errors.lpa.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label>
-                    Region <span className="text-destructive">*</span>
-                  </Label>
-                  <MultiSelect
-                    options={regions}
-                    selected={watch("region")}
-                    onChange={(value) => setValue("region", value)}
-                    placeholder="Select regions..."
-                  />
-                  {errors.region && (
-                    <p className="text-sm text-destructive">
-                      {errors.region.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="siteContext">Site Context</Label>
-                <Textarea
-                  id="siteContext"
-                  {...register("siteContext")}
-                  placeholder="Describe the site context..."
-                  className="min-h-[100px]"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Planning Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Planning Information</CardTitle>
-              <CardDescription>
-                Enter planning and development details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="planningStatus">
-                    Planning Status <span className="text-destructive">*</span>
-                  </Label>
-                  <Select
-                    onValueChange={(value) => setValue("planningStatus", value)}
-                  >
-                    <SelectTrigger
-                      className={
-                        errors.planningStatus ? "border-destructive" : ""
-                      }
-                    >
-                      <SelectValue placeholder="Select planning status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {planningStatuses.map((status) => (
-                        <SelectItem key={status.value} value={status.value}>
-                          {status.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.planningStatus && (
-                    <p className="text-sm text-destructive">
-                      {errors.planningStatus.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="landPurchaseStatus">
-                    Land Purchase Status{" "}
-                    <span className="text-destructive">*</span>
-                  </Label>
-                  <Select
-                    onValueChange={(value) =>
-                      setValue("landPurchaseStatus", value)
-                    }
-                  >
-                    <SelectTrigger
-                      className={
-                        errors.landPurchaseStatus ? "border-destructive" : ""
-                      }
-                    >
-                      <SelectValue placeholder="Select land purchase status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {landPurchaseStatuses.map((status) => (
-                        <SelectItem key={status.value} value={status.value}>
-                          {status.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.landPurchaseStatus && (
-                    <p className="text-sm text-destructive">
-                      {errors.landPurchaseStatus.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="planningOverview">Planning Overview</Label>
-                <Textarea
-                  id="planningOverview"
-                  {...register("planningOverview")}
-                  placeholder="Provide an overview of the planning status..."
-                  className="min-h-[100px]"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="proposedDevelopment">
-                  Proposed Development
+                <Label htmlFor="siteAddress">
+                  Site Address <span className="text-destructive">*</span>
                 </Label>
-                <Textarea
-                  id="proposedDevelopment"
-                  {...register("proposedDevelopment")}
-                  placeholder="Describe the proposed development..."
-                  className="min-h-[100px]"
+                <Input
+                  id="siteAddress"
+                  {...register("siteAddress")}
+                  className={errors.siteAddress ? "border-destructive" : ""}
                 />
+                {errors.siteAddress && (
+                  <p className="text-sm text-destructive">
+                    {errors.siteAddress.message}
+                  </p>
+                )}
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Tenure Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tenure Information</CardTitle>
-              <CardDescription>
-                Specify tenure types and accommodation details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="opportunityType">
+                  Opportunity Type <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  onValueChange={(value) => setValue("opportunityType", value)}
+                >
+                  <SelectTrigger
+                    className={
+                      errors.opportunityType ? "border-destructive" : ""
+                    }
+                  >
+                    <SelectValue placeholder="Select opportunity type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {opportunityTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.opportunityType && (
+                  <p className="text-sm text-destructive">
+                    {errors.opportunityType.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="plots">
+                  Number of Plots <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="plots"
+                  type="number"
+                  min="1"
+                  {...register("plots", { valueAsNumber: true })}
+                  className={errors.plots ? "border-destructive" : ""}
+                />
+                {errors.plots && (
+                  <p className="text-sm text-destructive">
+                    {errors.plots.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="googleMapsLink">
+                Google Maps Link <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="googleMapsLink"
+                type="url"
+                {...register("googleMapsLink")}
+                className={errors.googleMapsLink ? "border-destructive" : ""}
+                placeholder="https://maps.google.com/..."
+              />
+              {errors.googleMapsLink && (
+                <p className="text-sm text-destructive">
+                  {errors.googleMapsLink.message}
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Developer Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Developer Information</CardTitle>
+            <CardDescription>Enter details about the developer</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="developerName">
+                  Developer Name <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="developerName"
+                  {...register("developerName")}
+                  className={errors.developerName ? "border-destructive" : ""}
+                />
+                {errors.developerName && (
+                  <p className="text-sm text-destructive">
+                    {errors.developerName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="developerRegion">Developer Region</Label>
+                <Select
+                  onValueChange={(value) => setValue("developerRegion", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select developer region" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regions.map((region) => (
+                      <SelectItem key={region.value} value={region.value}>
+                        {region.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="developerInfo">Developer Information</Label>
+              <Textarea
+                id="developerInfo"
+                {...register("developerInfo")}
+                placeholder="Enter additional information about the developer..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Location Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Location Details</CardTitle>
+            <CardDescription>
+              Specify the location and planning details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label>
-                  Tenures <span className="text-destructive">*</span>
+                  LPA <span className="text-destructive">*</span>
                 </Label>
                 <MultiSelect
-                  options={tenureTypes}
-                  selected={watch("tenures")}
-                  onChange={(value) => setValue("tenures", value)}
-                  placeholder="Select tenure types..."
+                  options={lpaOptions}
+                  selected={watch("lpa")}
+                  onChange={(value) => setValue("lpa", value)}
+                  placeholder="Select LPA..."
                 />
-                {errors.tenures && (
+                {errors.lpa && (
                   <p className="text-sm text-destructive">
-                    {errors.tenures.message}
+                    {errors.lpa.message}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="detailedTenureAccommodation">
-                  Detailed Tenure & Accommodation
+                <Label>
+                  Region <span className="text-destructive">*</span>
                 </Label>
-                <Textarea
-                  id="detailedTenureAccommodation"
-                  {...register("detailedTenureAccommodation")}
-                  placeholder="Provide detailed information about tenure and accommodation..."
-                  className="min-h-[100px]"
+                <MultiSelect
+                  options={regions}
+                  selected={watch("region")}
+                  onChange={(value) => setValue("region", value)}
+                  placeholder="Select regions..."
                 />
+                {errors.region && (
+                  <p className="text-sm text-destructive">
+                    {errors.region.message}
+                  </p>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Commercial Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Commercial Information</CardTitle>
-              <CardDescription>
-                Enter payment terms and agent details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="siteContext">Site Context</Label>
+              <Textarea
+                id="siteContext"
+                {...register("siteContext")}
+                placeholder="Describe the site context..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Planning Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Planning Information</CardTitle>
+            <CardDescription>
+              Enter planning and development details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="paymentTerms">Payment Terms</Label>
-                <Textarea
-                  id="paymentTerms"
-                  {...register("paymentTerms")}
-                  placeholder="Specify the payment terms..."
-                  className="min-h-[100px]"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="agentTerms">Agent Terms</Label>
-                <Textarea
-                  id="agentTerms"
-                  {...register("agentTerms")}
-                  placeholder="Specify the agent terms..."
-                  className="min-h-[100px]"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Project Timeline */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Timeline</CardTitle>
-              <CardDescription>
-                Set project milestones and dates
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Start on Site Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !watch("startOnSiteDate") && "text-muted-foreground"
-                        )}
-                      >
-                        {watch("startOnSiteDate") ? (
-                          watch("startOnSiteDate").toLocaleDateString()
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={watch("startOnSiteDate")}
-                        onSelect={(date) => setValue("startOnSiteDate", date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Handover Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !watch("handoverDate") && "text-muted-foreground"
-                        )}
-                      >
-                        {watch("handoverDate") ? (
-                          watch("handoverDate").toLocaleDateString()
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={watch("handoverDate")}
-                        onSelect={(date) => setValue("handoverDate", date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                <Label htmlFor="planningStatus">
+                  Planning Status <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  onValueChange={(value) => setValue("planningStatus", value)}
+                >
+                  <SelectTrigger
+                    className={
+                      errors.planningStatus ? "border-destructive" : ""
+                    }
+                  >
+                    <SelectValue placeholder="Select planning status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {planningStatuses.map((status) => (
+                      <SelectItem key={status.value} value={status.value}>
+                        {status.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.planningStatus && (
+                  <p className="text-sm text-destructive">
+                    {errors.planningStatus.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="projectProgramme">Project Programme</Label>
-                <Textarea
-                  id="projectProgramme"
-                  {...register("projectProgramme")}
-                  placeholder="Describe the project timeline and key milestones..."
-                  className="min-h-[100px]"
-                />
+                <Label htmlFor="landPurchaseStatus">
+                  Land Purchase Status{" "}
+                  <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  onValueChange={(value) =>
+                    setValue("landPurchaseStatus", value)
+                  }
+                >
+                  <SelectTrigger
+                    className={
+                      errors.landPurchaseStatus ? "border-destructive" : ""
+                    }
+                  >
+                    <SelectValue placeholder="Select land purchase status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {landPurchaseStatuses.map((status) => (
+                      <SelectItem key={status.value} value={status.value}>
+                        {status.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.landPurchaseStatus && (
+                  <p className="text-sm text-destructive">
+                    {errors.landPurchaseStatus.message}
+                  </p>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Site"}
-            </Button>
-          </div>
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="planningOverview">Planning Overview</Label>
+              <Textarea
+                id="planningOverview"
+                {...register("planningOverview")}
+                placeholder="Provide an overview of the planning status..."
+                className="min-h-[100px]"
+              />
+            </div>
 
-        {/* Map Column - Takes 1 column */}
-        <div className="lg:h-[calc(100vh-8rem)] sticky top-24">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Site Location</CardTitle>
-              <CardDescription>
-                Search for and mark the site location on the map
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="h-[calc(100%-5rem)]">
-                <SiteMap
-                  onLocationSelect={handleLocationSelect}
-                  onPolygonComplete={handlePolygonComplete}
-                  selectedLocation={selectedLocation}
-                  polygonPath={polygonPath}
-                />
+            <div className="space-y-2">
+              <Label htmlFor="proposedDevelopment">Proposed Development</Label>
+              <Textarea
+                id="proposedDevelopment"
+                {...register("proposedDevelopment")}
+                placeholder="Describe the proposed development..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tenure Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Tenure Information</CardTitle>
+            <CardDescription>
+              Specify tenure types and accommodation details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label>
+                Tenures <span className="text-destructive">*</span>
+              </Label>
+              <MultiSelect
+                options={tenureTypes}
+                selected={watch("tenures")}
+                onChange={(value) => setValue("tenures", value)}
+                placeholder="Select tenure types..."
+              />
+              {errors.tenures && (
+                <p className="text-sm text-destructive">
+                  {errors.tenures.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="detailedTenureAccommodation">
+                Detailed Tenure & Accommodation
+              </Label>
+              <Textarea
+                id="detailedTenureAccommodation"
+                {...register("detailedTenureAccommodation")}
+                placeholder="Provide detailed information about tenure and accommodation..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Commercial Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Commercial Information</CardTitle>
+            <CardDescription>
+              Enter payment terms and agent details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="paymentTerms">Payment Terms</Label>
+              <Textarea
+                id="paymentTerms"
+                {...register("paymentTerms")}
+                placeholder="Specify the payment terms..."
+                className="min-h-[100px]"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="agentTerms">Agent Terms</Label>
+              <Textarea
+                id="agentTerms"
+                {...register("agentTerms")}
+                placeholder="Specify the agent terms..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Project Timeline */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Project Timeline</CardTitle>
+            <CardDescription>Set project milestones and dates</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>Start on Site Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !watch("startOnSiteDate") && "text-muted-foreground"
+                      )}
+                    >
+                      {watch("startOnSiteDate") ? (
+                        watch("startOnSiteDate").toLocaleDateString()
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={watch("startOnSiteDate")}
+                      onSelect={(date) => setValue("startOnSiteDate", date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
-            </CardContent>
-          </Card>
+
+              <div className="space-y-2">
+                <Label>Handover Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !watch("handoverDate") && "text-muted-foreground"
+                      )}
+                    >
+                      {watch("handoverDate") ? (
+                        watch("handoverDate").toLocaleDateString()
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={watch("handoverDate")}
+                      onSelect={(date) => setValue("handoverDate", date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="projectProgramme">Project Programme</Label>
+              <Textarea
+                id="projectProgramme"
+                {...register("projectProgramme")}
+                placeholder="Describe the project timeline and key milestones..."
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Site"}
+          </Button>
         </div>
       </div>
     </form>
