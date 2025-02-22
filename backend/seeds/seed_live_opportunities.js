@@ -31,7 +31,7 @@ export function seed(knex) {
           project_programme: "Project schedule",
           agent_terms: "Agent terms info",
           geom: knex.raw("ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)"),
-          user_id: "123e4567-e89b-12d3-a456-426614174000",
+          mongo_user_id: "65fb123456789abcdef12345", // Example MongoDB ObjectId
         },
       ]);
     })

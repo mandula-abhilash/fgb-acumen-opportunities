@@ -26,13 +26,9 @@ export function up(knex) {
     // PostGIS support
     table.specificType("geom", "GEOMETRY(Point, 4326)");
 
-    // Foreign Key
-    table
-      .uuid("user_id")
-      .notNullable()
-      .references("id")
-      .inTable("users")
-      .onDelete("CASCADE");
+    // MongoDB User Reference (storing MongoDB's ObjectId as string)
+    table.string("mongo_user_id").notNullable();
+    table.index("mongo_user_id");
 
     table.timestamps(true, true);
   });
