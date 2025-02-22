@@ -93,19 +93,29 @@ export function SubmitSiteForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4">
       <div className="flex flex-col space-y-6 mx-auto">
-        <SiteLocation
-          onLocationSelect={handleLocationSelect}
-          onPolygonComplete={handlePolygonComplete}
-          selectedLocation={selectedLocation}
-          polygonPath={polygonPath}
-        />
+        {/* Map and Basic Information Section */}
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+          {/* Basic Information - Takes 1 column on desktop */}
+          <div className="order-1 lg:order-1">
+            <BasicInformation
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              opportunityTypes={opportunityTypes}
+              selectedAddress={selectedAddress}
+            />
+          </div>
 
-        <BasicInformation
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          opportunityTypes={opportunityTypes}
-        />
+          {/* Map - Takes 2 columns on desktop */}
+          <div className="order-2 lg:order-2 lg:col-span-2 h-[400px] lg:h-full">
+            <SiteLocation
+              onLocationSelect={handleLocationSelect}
+              onPolygonComplete={handlePolygonComplete}
+              selectedLocation={selectedLocation}
+              polygonPath={polygonPath}
+            />
+          </div>
+        </div>
 
         <DeveloperInformation
           register={register}

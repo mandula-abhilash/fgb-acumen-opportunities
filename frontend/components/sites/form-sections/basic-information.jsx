@@ -22,9 +22,10 @@ export function BasicInformation({
   setValue,
   errors,
   opportunityTypes,
+  selectedAddress,
 }) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Basic Information</CardTitle>
         <CardDescription>
@@ -32,7 +33,7 @@ export function BasicInformation({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="siteName">
               Site Name <span className="text-destructive">*</span>
@@ -62,6 +63,11 @@ export function BasicInformation({
               <p className="text-sm text-destructive">
                 {errors.siteAddress.message}
               </p>
+            )}
+            {selectedAddress && (
+              <div className="mt-2 p-3 rounded-md border bg-muted/50">
+                <p className="text-sm break-words">{selectedAddress}</p>
+              </div>
             )}
           </div>
 
@@ -107,24 +113,24 @@ export function BasicInformation({
               <p className="text-sm text-destructive">{errors.plots.message}</p>
             )}
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="googleMapsLink">
-            Google Maps Link <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="googleMapsLink"
-            type="url"
-            {...register("googleMapsLink")}
-            className={errors.googleMapsLink ? "border-destructive" : ""}
-            placeholder="https://maps.google.com/..."
-          />
-          {errors.googleMapsLink && (
-            <p className="text-sm text-destructive">
-              {errors.googleMapsLink.message}
-            </p>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="googleMapsLink">
+              Google Maps Link <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="googleMapsLink"
+              type="url"
+              {...register("googleMapsLink")}
+              className={errors.googleMapsLink ? "border-destructive" : ""}
+              placeholder="https://maps.google.com/..."
+            />
+            {errors.googleMapsLink && (
+              <p className="text-sm text-destructive">
+                {errors.googleMapsLink.message}
+              </p>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
