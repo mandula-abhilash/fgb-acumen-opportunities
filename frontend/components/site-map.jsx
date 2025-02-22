@@ -48,6 +48,7 @@ export function SiteMap({
   onPolygonComplete,
   selectedLocation,
   polygonPath,
+  placeholder = "Search for a location...",
 }) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState(null);
@@ -262,7 +263,7 @@ export function SiteMap({
                   handleSearchClear();
                 }
               }}
-              placeholder="Search for a location..."
+              placeholder={placeholder}
               className="w-full bg-white text-black border-2 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
             />
             {value && (

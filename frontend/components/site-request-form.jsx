@@ -194,6 +194,7 @@ export function SiteRequestForm() {
             onPolygonComplete={handlePolygonComplete}
             selectedLocation={selectedLocation}
             polygonPath={polygonPath}
+            placeholder="Search for and mark the site location on the map"
           />
         </div>
       </div>

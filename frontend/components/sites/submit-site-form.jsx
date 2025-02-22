@@ -94,9 +94,9 @@ export function SubmitSiteForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4">
       <div className="flex flex-col space-y-6 mx-auto">
         {/* Map and Basic Information Section */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
           {/* Basic Information - Takes 1 column on desktop */}
-          <div className="order-1 lg:order-1">
+          <div className="order-1 lg:order-1 h-[400px] lg:h-full">
             <BasicInformation
               register={register}
               setValue={setValue}

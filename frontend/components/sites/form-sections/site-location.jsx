@@ -16,20 +16,15 @@ export function SiteLocation({
   polygonPath,
 }) {
   return (
-    <Card className="relative">
-      <CardHeader className="relative z-20">
-        <CardTitle>Site Location</CardTitle>
-        <CardDescription>
-          Search for and mark the site location on the map
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="h-[400px]">
+    <Card className="h-full">
+      <CardContent className="p-0 h-full">
+        <div className="h-full">
           <SiteMap
             onLocationSelect={onLocationSelect}
             onPolygonComplete={onPolygonComplete}
             selectedLocation={selectedLocation}
             polygonPath={polygonPath}
+            placeholder="Search for and mark the site location on the map"
           />
         </div>
       </CardContent>
