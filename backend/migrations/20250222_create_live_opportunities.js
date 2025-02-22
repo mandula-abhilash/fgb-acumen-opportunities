@@ -1,6 +1,6 @@
 export function up(knex) {
   return knex.schema.createTable("live_opportunities", (table) => {
-    table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"));
+    table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
     table.string("site_name").notNullable();
     table.string("site_address").notNullable();
     table.specificType("lpa", "text[]").notNullable();
@@ -22,14 +22,8 @@ export function up(knex) {
     table.text("payment_terms");
     table.text("project_programme");
     table.text("agent_terms");
-
-    // PostGIS support
     table.specificType("geom", "GEOMETRY(Point, 4326)");
-
-    // MongoDB User Reference (storing MongoDB's ObjectId as string)
     table.string("mongo_user_id").notNullable();
-    table.index("mongo_user_id");
-
     table.timestamps(true, true);
   });
 }
