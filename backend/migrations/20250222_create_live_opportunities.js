@@ -1,5 +1,5 @@
 export function up(knex) {
-  return knex.schema.createTable("sites", (table) => {
+  return knex.schema.createTable("live_opportunities", (table) => {
     table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"));
     table.string("site_name").notNullable();
     table.string("site_address").notNullable();
@@ -35,5 +35,5 @@ export function up(knex) {
 }
 
 export function down(knex) {
-  return knex.schema.dropTable("sites");
+  return knex.schema.dropTable("live_opportunities");
 }

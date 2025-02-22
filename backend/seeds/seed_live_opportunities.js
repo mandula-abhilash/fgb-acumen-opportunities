@@ -1,12 +1,12 @@
 export function seed(knex) {
   // First, clean the tables
-  return knex("site_files")
+  return knex("live_opportunity_files")
     .del()
-    .then(() => knex("site_tags").del())
-    .then(() => knex("sites").del())
+    .then(() => knex("live_opportunity_tags").del())
+    .then(() => knex("live_opportunities").del())
     .then(() => {
       // Then insert seed data
-      return knex("sites").insert([
+      return knex("live_opportunities").insert([
         {
           id: "123e4567-e89b-12d3-a456-426614174000",
           site_name: "Greenfield Site",
@@ -37,22 +37,22 @@ export function seed(knex) {
     })
     .then(() => {
       // Insert sample tags
-      return knex("site_tags").insert([
+      return knex("live_opportunity_tags").insert([
         {
-          site_id: "123e4567-e89b-12d3-a456-426614174000",
+          opportunity_id: "123e4567-e89b-12d3-a456-426614174000",
           tag: "Affordable Housing",
         },
         {
-          site_id: "123e4567-e89b-12d3-a456-426614174000",
+          opportunity_id: "123e4567-e89b-12d3-a456-426614174000",
           tag: "Section 106",
         },
       ]);
     })
     .then(() => {
       // Insert sample files
-      return knex("site_files").insert([
+      return knex("live_opportunity_files").insert([
         {
-          site_id: "123e4567-e89b-12d3-a456-426614174000",
+          opportunity_id: "123e4567-e89b-12d3-a456-426614174000",
           file_type: "planning_document",
           file_url: "https://example.com/planning.pdf",
           description: "Planning permission document",
