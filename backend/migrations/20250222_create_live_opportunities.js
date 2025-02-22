@@ -1,4 +1,8 @@
-export function up(knex) {
+export async function up(knex) {
+  // Ensure extensions are enabled before creating the table
+  await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+  await knex.raw('CREATE EXTENSION IF NOT EXISTS "postgis"');
+
   return knex.schema.createTable("live_opportunities", (table) => {
     table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
     table.string("site_name").notNullable();
@@ -34,6 +38,6 @@ export function up(knex) {
   });
 }
 
-export function down(knex) {
+export async function down(knex) {
   return knex.schema.dropTable("live_opportunities");
 }
