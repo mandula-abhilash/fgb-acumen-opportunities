@@ -120,6 +120,7 @@ export function SubmitSiteForm() {
         <DeveloperInformation
           register={register}
           setValue={setValue}
+          watch={watch}
           errors={errors}
           regions={regions}
         />

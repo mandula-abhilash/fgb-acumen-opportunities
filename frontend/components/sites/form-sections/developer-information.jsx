@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import {
   Card,
   CardContent,
@@ -7,18 +10,74 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-export function DeveloperInformation({ register, setValue, errors, regions }) {
+export function DeveloperInformation({
+  register,
+  setValue,
+  watch,
+  errors,
+  regions,
+}) {
+  const [developerRegions, setDeveloperRegions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const selectedRegion = watch("developerRegion");
+
+  // This would be replaced with actual API call in production
+  const fetchDeveloperRegions = async (inputValue) => {
+    setIsLoading(true);
+    try {
+      // In a real implementation, this would be an API call
+      // const response = await axios.get(`/api/developer-regions?search=${inputValue}`);
+      // return response.data;
+
+      // For demo purposes, we'll filter the existing regions
+      const filteredRegions = regions
+        .filter((region) =>
+          region.label.toLowerCase().includes(inputValue.toLowerCase())
+        )
+        .map((region) => ({
+          value: region.value,
+          label: region.label,
+        }));
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      return filteredRegions;
+    } catch (error) {
+      console.error("Error fetching developer regions:", error);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCreateRegion = (inputValue) => {
+    // In a real implementation, this would create a new region in the database
+    // and then return the new region object
+    const newRegion = {
+      value: inputValue.toLowerCase().replace(/\s+/g, "-"),
+      label: inputValue,
+    };
+
+    // Update the form value
+    setValue("developerRegion", newRegion);
+
+    // In a real implementation, you would save this to the database
+    // For example:
+    // axios.post('/api/developer-regions', { name: inputValue })
+    //   .then(response => {
+    //     console.log('Region created:', response.data);
+    //   })
+    //   .catch(error => {
+    //     console.error('Error creating region:', error);
+    //   });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -46,21 +105,34 @@ export function DeveloperInformation({ register, setValue, errors, regions }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="developerRegion">Developer Region</Label>
-            <Select
-              onValueChange={(value) => setValue("developerRegion", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select developer region" />
-              </SelectTrigger>
-              <SelectContent>
-                {regions.map((region) => (
-                  <SelectItem key={region.value} value={region.value}>
-                    {region.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="developerRegion">
+              Developer Region
+              <span className="text-xs text-muted-foreground ml-1">
+                (Type to search or create new)
+              </span>
+            </Label>
+            <CreatableSelect
+              placeholder="Select or create a region"
+              loadOptions={fetchDeveloperRegions}
+              onCreateOption={handleCreateRegion}
+              value={
+                selectedRegion
+                  ? {
+                      value: selectedRegion.value || selectedRegion,
+                      label:
+                        selectedRegion.label ||
+                        regions.find((r) => r.value === selectedRegion)
+                          ?.label ||
+                        selectedRegion,
+                    }
+                  : null
+              }
+              onChange={(newValue) =>
+                setValue("developerRegion", newValue?.value || null)
+              }
+              isClearable
+              isLoading={isLoading}
+            />
           </div>
         </div>
 

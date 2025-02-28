@@ -55,6 +55,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",
     "react-resizable-panels": "^2.1.7",
+    "react-select": "^5.10.0",
     "recharts": "^2.13.3",
     "sonner": "^1.7.0",
     "stripe": "^14.18.0",
