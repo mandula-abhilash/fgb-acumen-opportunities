@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { ArrowLeft, Calendar, FileText, Upload } from "lucide-react";
+import { ArrowLeft, Calendar, Coins, FileText, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -42,23 +42,35 @@ import { PageHeader } from "@/components/layout/page-header";
 import { SiteMap } from "@/components/site-map";
 import { fileTypes, opportunityTypes } from "@/components/sites/form-constants";
 
+const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10,14}$/;
+
 const assistedSubmissionSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteAddress: z.string().min(1, "Site address is required"),
   opportunityType: z.string().min(1, "Opportunity type is required"),
   developerName: z.string().min(1, "Developer name is required"),
   contactEmail: z.string().email("Please enter a valid email address"),
-  contactPhone: z.string().optional(),
+  contactPhone: z
+    .string()
+    .optional()
+    .refine((val) => !val || phoneRegex.test(val), {
+      message: "Please enter a valid phone number",
+    }),
   additionalInfo: z.string().optional(),
   initialEOIDate: z.date().optional(),
   bidSubmissionDate: z.date().optional(),
   manageBidsProcess: z.boolean().optional(),
-  queriesContactName: z.string().optional(),
+  queriesContactName: z.string().min(1, "Contact name is required").optional(),
   queriesContactEmail: z
     .string()
     .email("Please enter a valid email address")
     .optional(),
-  queriesContactPhone: z.string().optional(),
+  queriesContactPhone: z
+    .string()
+    .optional()
+    .refine((val) => !val || phoneRegex.test(val), {
+      message: "Please enter a valid phone number",
+    }),
   sitePlanImage: z.string().optional(),
 });
 
@@ -98,6 +110,11 @@ export default function AssistedSubmissionPage() {
   const initialEOIDate = watch("initialEOIDate");
   const bidSubmissionDate = watch("bidSubmissionDate");
   const manageBidsProcess = watch("manageBidsProcess");
+
+  // Calculate payment details
+  const basePrice = 250;
+  const bidManagementFee = manageBidsProcess ? 2750 : 0;
+  const totalPrice = basePrice + bidManagementFee;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -178,7 +195,7 @@ export default function AssistedSubmissionPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <PageHeader title="FGB Assisted Site Submission">
         <div className="flex gap-2">
           <Button
@@ -191,7 +208,7 @@ export default function AssistedSubmissionPage() {
         </div>
       </PageHeader>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div className="flex-1 px-6 py-4 pb-12">
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Assisted Submission Service</CardTitle>
@@ -205,7 +222,7 @@ export default function AssistedSubmissionPage() {
               <h3 className="font-semibold text-blue-700 mb-2">How it works</h3>
               <ol className="list-decimal pl-5 space-y-1 text-sm text-blue-700">
                 <li>Complete this simplified form with basic site details</li>
-                <li>Pay the £250 service fee</li>
+                <li>Pay the service fee</li>
                 <li>
                   Our team will contact you to gather any additional information
                 </li>
@@ -382,7 +399,15 @@ export default function AssistedSubmissionPage() {
                       id="queriesContactName"
                       placeholder="Contact name"
                       {...register("queriesContactName")}
+                      className={
+                        errors.queriesContactName ? "border-destructive" : ""
+                      }
                     />
+                    {errors.queriesContactName && (
+                      <p className="text-sm text-destructive">
+                        {errors.queriesContactName.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -404,7 +429,7 @@ export default function AssistedSubmissionPage() {
                     <p className="text-xs text-muted-foreground ml-6">
                       This includes chasing, handling queries, and providing a
                       tender summary report. This option will incur an
-                      additional fee payable by the buyer.
+                      additional fee of £2,750 payable by the buyer.
                     </p>
                   </div>
                 </div>
@@ -473,7 +498,15 @@ export default function AssistedSubmissionPage() {
                         id="queriesContactPhone"
                         placeholder="Phone number"
                         {...register("queriesContactPhone")}
+                        className={
+                          errors.queriesContactPhone ? "border-destructive" : ""
+                        }
                       />
+                      {errors.queriesContactPhone && (
+                        <p className="text-sm text-destructive">
+                          {errors.queriesContactPhone.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -539,7 +572,16 @@ export default function AssistedSubmissionPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="contactPhone">Phone Number</Label>
-                  <Input id="contactPhone" {...register("contactPhone")} />
+                  <Input
+                    id="contactPhone"
+                    {...register("contactPhone")}
+                    className={errors.contactPhone ? "border-destructive" : ""}
+                  />
+                  {errors.contactPhone && (
+                    <p className="text-sm text-destructive">
+                      {errors.contactPhone.message}
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -553,33 +595,64 @@ export default function AssistedSubmissionPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h3 className="font-semibold">
-                      Assisted Submission Service
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Professional preparation of your site listing
-                    </p>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-semibold">
+                        Assisted Submission Service
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Professional preparation of your site listing
+                      </p>
+                    </div>
+                    <div className="text-lg font-medium">
+                      £{basePrice.toFixed(2)}
+                    </div>
                   </div>
-                  <div className="text-xl font-bold">£250.00</div>
-                </div>
 
-                <div className="flex justify-end mt-6">
-                  <Button
-                    type="submit"
-                    className="bg-web-orange hover:bg-web-orange/90 text-white font-semibold"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Spinner size="sm" className="mr-2" />
-                        Processing...
-                      </>
-                    ) : (
-                      "Pay & Submit"
-                    )}
-                  </Button>
+                  {manageBidsProcess && (
+                    <div className="flex justify-between items-center pt-2 border-t">
+                      <div>
+                        <h3 className="font-semibold">Bids Management Fee</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Managing bids process, chasing, handling queries, and
+                          providing tender summary
+                        </p>
+                      </div>
+                      <div className="text-lg font-medium">
+                        £{bidManagementFee.toFixed(2)}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center pt-3 border-t border-t-2">
+                    <div>
+                      <h3 className="font-bold text-lg">Total</h3>
+                    </div>
+                    <div className="text-xl font-bold text-web-orange">
+                      £{totalPrice.toFixed(2)}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end mt-6">
+                    <Button
+                      type="submit"
+                      className="bg-web-orange hover:bg-web-orange/90 text-white font-semibold"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Spinner size="sm" className="mr-2" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Coins className="h-4 w-4 mr-2" />
+                          Pay & Submit
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
