@@ -195,139 +195,154 @@ export default function AssistedSubmissionPage() {
         </Card>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div className="lg:col-span-1 space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Basic Information</CardTitle>
-                  <CardDescription>
-                    Enter the essential details about your site
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="siteName">
-                      Site Name <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="siteName"
-                      {...register("siteName")}
-                      className={errors.siteName ? "border-destructive" : ""}
-                    />
-                    {errors.siteName && (
-                      <p className="text-sm text-destructive">
-                        {errors.siteName.message}
-                      </p>
-                    )}
-                  </div>
+          {/* First row: Basic Info and Map side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Basic Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Basic Information</CardTitle>
+                <CardDescription>
+                  Enter the essential details about your site
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="siteName">
+                    Site Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="siteName"
+                    {...register("siteName")}
+                    className={errors.siteName ? "border-destructive" : ""}
+                  />
+                  {errors.siteName && (
+                    <p className="text-sm text-destructive">
+                      {errors.siteName.message}
+                    </p>
+                  )}
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="siteAddress">
-                      Site Address <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="siteAddress"
-                      {...register("siteAddress")}
-                      className={errors.siteAddress ? "border-destructive" : ""}
-                    />
-                    {errors.siteAddress && (
-                      <p className="text-sm text-destructive">
-                        {errors.siteAddress.message}
-                      </p>
-                    )}
-                    {selectedAddress && (
-                      <div className="mt-2 p-3 rounded-md border bg-muted/50">
-                        <p className="text-sm break-words">{selectedAddress}</p>
-                      </div>
-                    )}
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="siteAddress">
+                    Site Address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="siteAddress"
+                    {...register("siteAddress")}
+                    className={errors.siteAddress ? "border-destructive" : ""}
+                  />
+                  {errors.siteAddress && (
+                    <p className="text-sm text-destructive">
+                      {errors.siteAddress.message}
+                    </p>
+                  )}
+                  {selectedAddress && (
+                    <div className="mt-2 p-3 rounded-md border bg-muted/50">
+                      <p className="text-sm break-words">{selectedAddress}</p>
+                    </div>
+                  )}
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="opportunityType">
-                      Opportunity Type{" "}
-                      <span className="text-destructive">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setValue("opportunityType", value)
+                <div className="space-y-2">
+                  <Label htmlFor="opportunityType">
+                    Opportunity Type <span className="text-destructive">*</span>
+                  </Label>
+                  <Select
+                    onValueChange={(value) =>
+                      setValue("opportunityType", value)
+                    }
+                  >
+                    <SelectTrigger
+                      className={
+                        errors.opportunityType ? "border-destructive" : ""
                       }
                     >
-                      <SelectTrigger
-                        className={
-                          errors.opportunityType ? "border-destructive" : ""
-                        }
-                      >
-                        <SelectValue placeholder="Select opportunity type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {opportunityTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.opportunityType && (
-                      <p className="text-sm text-destructive">
-                        {errors.opportunityType.message}
-                      </p>
-                    )}
-                  </div>
+                      <SelectValue placeholder="Select opportunity type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {opportunityTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.opportunityType && (
+                    <p className="text-sm text-destructive">
+                      {errors.opportunityType.message}
+                    </p>
+                  )}
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="developerName">
-                      Developer Name <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="developerName"
-                      {...register("developerName")}
-                      className={
-                        errors.developerName ? "border-destructive" : ""
-                      }
-                    />
-                    {errors.developerName && (
-                      <p className="text-sm text-destructive">
-                        {errors.developerName.message}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                <div className="space-y-2">
+                  <Label htmlFor="developerName">
+                    Developer Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="developerName"
+                    {...register("developerName")}
+                    className={errors.developerName ? "border-destructive" : ""}
+                  />
+                  {errors.developerName && (
+                    <p className="text-sm text-destructive">
+                      {errors.developerName.message}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
-                  <CardDescription>
-                    How should we reach you for additional details?
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="contactEmail">
-                      Email <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="contactEmail"
-                      type="email"
-                      {...register("contactEmail")}
-                      className={
-                        errors.contactEmail ? "border-destructive" : ""
-                      }
-                    />
-                    {errors.contactEmail && (
-                      <p className="text-sm text-destructive">
-                        {errors.contactEmail.message}
-                      </p>
-                    )}
-                  </div>
+            {/* Map */}
+            <Card className="h-[500px]">
+              <CardContent className="p-0 h-full">
+                <SiteMap
+                  onLocationSelect={handleLocationSelect}
+                  onPolygonComplete={handlePolygonComplete}
+                  selectedLocation={selectedLocation}
+                  polygonPath={polygonPath}
+                  placeholder="Search for and mark the site location on the map"
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="contactPhone">Phone Number</Label>
-                    <Input id="contactPhone" {...register("contactPhone")} />
-                  </div>
-                </CardContent>
-              </Card>
+          {/* Second row: Contact Info and Response Section side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Contact Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Information</CardTitle>
+                <CardDescription>
+                  How should we reach you for additional details?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="contactEmail">
+                    Email <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="contactEmail"
+                    type="email"
+                    {...register("contactEmail")}
+                    className={errors.contactEmail ? "border-destructive" : ""}
+                  />
+                  {errors.contactEmail && (
+                    <p className="text-sm text-destructive">
+                      {errors.contactEmail.message}
+                    </p>
+                  )}
+                </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="contactPhone">Phone Number</Label>
+                  <Input id="contactPhone" {...register("contactPhone")} />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Response Section */}
+            <div className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Response Section</CardTitle>
@@ -365,23 +380,8 @@ export default function AssistedSubmissionPage() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
 
-            <div className="lg:col-span-2 space-y-6">
-              <Card className="h-full">
-                <CardContent className="p-0 h-full">
-                  <div className="h-full">
-                    <SiteMap
-                      onLocationSelect={handleLocationSelect}
-                      onPolygonComplete={handlePolygonComplete}
-                      selectedLocation={selectedLocation}
-                      polygonPath={polygonPath}
-                      placeholder="Search for and mark the site location on the map"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
+              {/* Payment Information */}
               <Card>
                 <CardHeader>
                   <CardTitle>Payment Information</CardTitle>
