@@ -24,7 +24,7 @@ export function DeveloperInformation({
 }) {
   const [developerRegions, setDeveloperRegions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const selectedRegion = watch("developerRegion");
+  const selectedRegions = watch("developerRegion") || [];
 
   // This would be replaced with actual API call in production
   const fetchDeveloperRegions = async (inputValue) => {
@@ -64,8 +64,14 @@ export function DeveloperInformation({
       label: inputValue,
     };
 
+    // For multi-select, we need to add the new region to the existing selections
+    const currentRegions = Array.isArray(selectedRegions)
+      ? selectedRegions
+      : [];
+    const updatedRegions = [...currentRegions, newRegion];
+
     // Update the form value
-    setValue("developerRegion", newRegion);
+    setValue("developerRegion", updatedRegions);
 
     // In a real implementation, you would save this to the database
     // For example:
@@ -76,6 +82,35 @@ export function DeveloperInformation({
     //   .catch(error => {
     //     console.error('Error creating region:', error);
     //   });
+  };
+
+  // Format the value for the multi-select component
+  const formatSelectedValues = () => {
+    if (!selectedRegions) return [];
+
+    if (!Array.isArray(selectedRegions)) {
+      // Handle single value case
+      return [
+        {
+          value: selectedRegions.value || selectedRegions,
+          label:
+            selectedRegions.label ||
+            regions.find((r) => r.value === selectedRegions)?.label ||
+            selectedRegions,
+        },
+      ];
+    }
+
+    // Handle array case
+    return selectedRegions.map((region) => {
+      if (typeof region === "object" && region !== null) {
+        return region;
+      }
+      return {
+        value: region,
+        label: regions.find((r) => r.value === region)?.label || region,
+      };
+    });
   };
 
   return (
@@ -112,25 +147,13 @@ export function DeveloperInformation({
               </span>
             </Label>
             <CreatableSelect
-              placeholder="Select or create a region"
+              placeholder="Select or create regions"
               loadOptions={fetchDeveloperRegions}
               onCreateOption={handleCreateRegion}
-              value={
-                selectedRegion
-                  ? {
-                      value: selectedRegion.value || selectedRegion,
-                      label:
-                        selectedRegion.label ||
-                        regions.find((r) => r.value === selectedRegion)
-                          ?.label ||
-                        selectedRegion,
-                    }
-                  : null
-              }
-              onChange={(newValue) =>
-                setValue("developerRegion", newValue?.value || null)
-              }
+              value={formatSelectedValues()}
+              onChange={(newValue) => setValue("developerRegion", newValue)}
               isClearable
+              isMulti={true}
               isLoading={isLoading}
             />
           </div>

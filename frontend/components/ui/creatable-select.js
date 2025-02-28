@@ -55,6 +55,7 @@ const CreatableSelect = React.forwardRef(
           ? "var(--primary-foreground)"
           : "var(--foreground)",
         cursor: "pointer",
+        fontSize: "0.875rem", // Match text-sm
         "&:active": {
           backgroundColor: state.isSelected
             ? "var(--primary)"
@@ -64,10 +65,12 @@ const CreatableSelect = React.forwardRef(
       input: (provided) => ({
         ...provided,
         color: "var(--foreground)",
+        fontSize: "0.875rem", // Match text-sm
       }),
       singleValue: (provided) => ({
         ...provided,
         color: "var(--foreground)",
+        fontSize: "0.875rem", // Match text-sm
       }),
       multiValue: (provided) => ({
         ...provided,
@@ -77,7 +80,7 @@ const CreatableSelect = React.forwardRef(
       multiValueLabel: (provided) => ({
         ...provided,
         color: "var(--secondary-foreground)",
-        fontSize: "0.875rem",
+        fontSize: "0.875rem", // Match text-sm
       }),
       multiValueRemove: (provided) => ({
         ...provided,
@@ -101,10 +104,12 @@ const CreatableSelect = React.forwardRef(
       placeholder: (provided) => ({
         ...provided,
         color: "var(--muted-foreground)",
+        fontSize: "0.875rem", // Match text-sm
       }),
       noOptionsMessage: (provided) => ({
         ...provided,
         color: "var(--muted-foreground)",
+        fontSize: "0.875rem", // Match text-sm
       }),
     };
 
