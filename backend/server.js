@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import visdakSesamModule from "visdak-sesam";
 import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
 import siteRoutes from "./routes/siteRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -70,6 +71,9 @@ const startServer = async () => {
 
     // Mount the sites routes
     app.use("/api/sites", siteRoutes);
+
+    // Mount the upload routes
+    app.use("/api/upload", uploadRoutes);
 
     // Catch-all for undefined routes
     app.use((req, res) => {
