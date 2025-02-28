@@ -93,8 +93,8 @@ const CreatableSelect = React.forwardRef(
       multiValueLabel: (provided) => ({
         ...provided,
         color: "hsl(var(--secondary-foreground))",
-        fontSize: "0.75rem", // text-xs for badges
-        padding: "0 0 0 16px", // Increased left padding from 12px to 16px
+        fontSize: "0.875rem", // text-xs for badges
+        paddingLeft: "12px", // Increased left padding for better spacing
         paddingRight: "6px", // Less right padding
         fontWeight: "500",
         display: "flex",
