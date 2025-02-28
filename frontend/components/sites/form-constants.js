@@ -67,6 +67,15 @@ export const landPurchaseStatuses = [
   { value: "purchase-completed", label: "Purchase Completed" },
 ];
 
+export const vatPositions = [
+  { value: "standard", label: "Standard Rate (20%)" },
+  { value: "reduced", label: "Reduced Rate (5%)" },
+  { value: "zero", label: "Zero Rate (0%)" },
+  { value: "exempt", label: "Exempt" },
+  { value: "outside-scope", label: "Outside Scope" },
+  { value: "not-applicable", label: "Not Applicable" },
+];
+
 export const submitSiteSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteAddress: z.string().min(1, "Site address is required"),
@@ -85,14 +94,15 @@ export const submitSiteSchema = z.object({
     .min(1, "Number of plots must be at least 1")
     .int("Number of plots must be a whole number"),
   tenures: z.array(z.string()).min(1, "Please select at least one tenure type"),
-  startOnSiteDate: z.date().optional(),
-  handoverDate: z.date().optional(),
+  firstHandoverDate: z.date().optional(),
+  finalHandoverDate: z.date().optional(),
   developerInfo: z.string().optional(),
   siteContext: z.string().optional(),
   planningOverview: z.string().optional(),
   proposedDevelopment: z.string().optional(),
   detailedTenureAccommodation: z.string().optional(),
   paymentTerms: z.string().optional(),
+  vatPosition: z.string().optional(),
   projectProgramme: z.string().optional(),
   agentTerms: z.string().optional(),
   sitePlanImage: z.string().optional(),

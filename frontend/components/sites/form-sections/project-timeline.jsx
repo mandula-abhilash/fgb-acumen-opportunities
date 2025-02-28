@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,19 +33,19 @@ export function ProjectTimeline({ register, watch, setValue }) {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label>Start on Site Date</Label>
+            <Label>First Handover Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !watch("startOnSiteDate") && "text-muted-foreground"
+                    !watch("firstHandoverDate") && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("startOnSiteDate") ? (
-                    format(watch("startOnSiteDate"), "PPP")
+                  {watch("firstHandoverDate") ? (
+                    format(watch("firstHandoverDate"), "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -54,8 +54,8 @@ export function ProjectTimeline({ register, watch, setValue }) {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={watch("startOnSiteDate")}
-                  onSelect={(date) => setValue("startOnSiteDate", date)}
+                  selected={watch("firstHandoverDate")}
+                  onSelect={(date) => setValue("firstHandoverDate", date)}
                   initialFocus
                 />
               </PopoverContent>
@@ -63,19 +63,19 @@ export function ProjectTimeline({ register, watch, setValue }) {
           </div>
 
           <div className="space-y-2">
-            <Label>Handover Date</Label>
+            <Label>Final Handover Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !watch("handoverDate") && "text-muted-foreground"
+                    !watch("finalHandoverDate") && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("handoverDate") ? (
-                    format(watch("handoverDate"), "PPP")
+                  {watch("finalHandoverDate") ? (
+                    format(watch("finalHandoverDate"), "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -84,8 +84,8 @@ export function ProjectTimeline({ register, watch, setValue }) {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={watch("handoverDate")}
-                  onSelect={(date) => setValue("handoverDate", date)}
+                  selected={watch("finalHandoverDate")}
+                  onSelect={(date) => setValue("finalHandoverDate", date)}
                   initialFocus
                 />
               </PopoverContent>

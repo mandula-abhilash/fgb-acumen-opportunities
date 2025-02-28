@@ -16,6 +16,7 @@ import {
   regions,
   submitSiteSchema,
   tenureTypes,
+  vatPositions,
 } from "./form-constants";
 import { BasicInformation } from "./form-sections/basic-information";
 import { CommercialInformation } from "./form-sections/commercial-information";
@@ -49,6 +50,7 @@ export function SubmitSiteForm() {
       proposedSpecification: "",
       s106Agreement: "",
       googleMapsLink: "",
+      vatPosition: "",
     },
   });
 
@@ -154,7 +156,11 @@ export function SubmitSiteForm() {
           tenureTypes={tenureTypes}
         />
 
-        <CommercialInformation register={register} />
+        <CommercialInformation
+          register={register}
+          setValue={setValue}
+          errors={errors}
+        />
 
         <ProjectTimeline
           register={register}

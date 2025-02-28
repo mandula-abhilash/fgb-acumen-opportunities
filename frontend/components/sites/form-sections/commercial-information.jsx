@@ -8,9 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { vatPositions } from "@/components/sites/form-constants";
 
-export function CommercialInformation({ register }) {
+export function CommercialInformation({ register, setValue, errors }) {
   return (
     <Card>
       <CardHeader>
@@ -28,11 +36,29 @@ export function CommercialInformation({ register }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="agentTerms">Agent Terms</Label>
+          <Label htmlFor="vatPosition">VAT Position</Label>
+          <Select onValueChange={(value) => setValue("vatPosition", value)}>
+            <SelectTrigger
+              className={errors?.vatPosition ? "border-destructive" : ""}
+            >
+              <SelectValue placeholder="Select VAT position" />
+            </SelectTrigger>
+            <SelectContent>
+              {vatPositions.map((position) => (
+                <SelectItem key={position.value} value={position.value}>
+                  {position.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="agentTerms">Agent Terms (if applicable)</Label>
           <Textarea
             id="agentTerms"
             {...register("agentTerms")}
-            placeholder="Specify any agent terms..."
+            placeholder="Specify any agent terms if applicable..."
           />
         </div>
       </CardContent>
