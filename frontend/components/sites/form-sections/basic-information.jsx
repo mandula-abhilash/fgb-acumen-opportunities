@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -24,6 +26,7 @@ export function BasicInformation({
   errors,
   opportunityTypes,
   selectedAddress,
+  selectedLocation,
 }) {
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
@@ -32,6 +35,15 @@ export function BasicInformation({
   const handleUploadError = (error) => {
     console.error("Upload error:", error);
   };
+
+  // Update Google Maps link when location changes
+  useEffect(() => {
+    if (selectedLocation) {
+      const { lat, lng } = selectedLocation;
+      const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+      setValue("googleMapsLink", googleMapsLink);
+    }
+  }, [selectedLocation, setValue]);
 
   return (
     <Card className="h-full">
@@ -77,6 +89,29 @@ export function BasicInformation({
               <div className="mt-2 p-3 rounded-md border bg-muted/50">
                 <p className="text-sm break-words">{selectedAddress}</p>
               </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="googleMapsLink">
+              Google Maps Link <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="googleMapsLink"
+              type="url"
+              {...register("googleMapsLink")}
+              className={errors.googleMapsLink ? "border-destructive" : ""}
+              readOnly
+              disabled
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Search for the address on the map to the right and you can adjust
+              the marker pin by dragging to set the location
+            </p>
+            {errors.googleMapsLink && (
+              <p className="text-sm text-destructive">
+                {errors.googleMapsLink.message}
+              </p>
             )}
           </div>
 
@@ -134,24 +169,6 @@ export function BasicInformation({
             />
             {errors.plots && (
               <p className="text-sm text-destructive">{errors.plots.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="googleMapsLink">
-              Google Maps Link <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="googleMapsLink"
-              type="url"
-              {...register("googleMapsLink")}
-              className={errors.googleMapsLink ? "border-destructive" : ""}
-              placeholder="https://maps.google.com/..."
-            />
-            {errors.googleMapsLink && (
-              <p className="text-sm text-destructive">
-                {errors.googleMapsLink.message}
-              </p>
             )}
           </div>
         </div>

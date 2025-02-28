@@ -48,6 +48,7 @@ export function SubmitSiteForm() {
       sitePlanImage: "",
       proposedSpecification: "",
       s106Agreement: "",
+      googleMapsLink: "",
     },
   });
 
@@ -106,6 +107,7 @@ export function SubmitSiteForm() {
               errors={errors}
               opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
+              selectedLocation={selectedLocation}
             />
           </div>
 
