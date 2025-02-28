@@ -42,6 +42,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { SiteMap } from "@/components/site-map";
 import { fileTypes, opportunityTypes } from "@/components/sites/form-constants";
 
+// Phone regex that only allows numbers and some special characters
 const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10,14}$/;
 
 const assistedSubmissionSchema = z.object({
@@ -138,6 +139,17 @@ export default function AssistedSubmissionPage() {
     setValue("sitePlanImage", fileUrl);
   };
 
+  // Function to validate phone number input
+  const validatePhoneInput = (e) => {
+    const value = e.target.value;
+    // Only allow numbers, +, -, and spaces
+    if (!/^[0-9+\- ]*$/.test(value)) {
+      e.preventDefault();
+      return false;
+    }
+    return true;
+  };
+
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
@@ -195,7 +207,7 @@ export default function AssistedSubmissionPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col">
       <PageHeader title="FGB Assisted Site Submission">
         <div className="flex gap-2">
           <Button
@@ -208,7 +220,7 @@ export default function AssistedSubmissionPage() {
         </div>
       </PageHeader>
 
-      <div className="flex-1 px-6 py-4 pb-12">
+      <div className="flex-1 px-6 py-4">
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Assisted Submission Service</CardTitle>
@@ -501,6 +513,7 @@ export default function AssistedSubmissionPage() {
                         className={
                           errors.queriesContactPhone ? "border-destructive" : ""
                         }
+                        onKeyPress={validatePhoneInput}
                       />
                       {errors.queriesContactPhone && (
                         <p className="text-sm text-destructive">
@@ -576,6 +589,7 @@ export default function AssistedSubmissionPage() {
                     id="contactPhone"
                     {...register("contactPhone")}
                     className={errors.contactPhone ? "border-destructive" : ""}
+                    onKeyPress={validatePhoneInput}
                   />
                   {errors.contactPhone && (
                     <p className="text-sm text-destructive">
@@ -625,7 +639,7 @@ export default function AssistedSubmissionPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center pt-3 border-t border-t-2">
+                  <div className="flex justify-between items-center pt-3 border-t-2">
                     <div>
                       <h3 className="font-bold text-lg">Total</h3>
                     </div>
