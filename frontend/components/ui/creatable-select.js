@@ -86,27 +86,36 @@ const CreatableSelect = React.forwardRef(
         borderRadius: "9999px", // Full rounded for badge look
         margin: "2px 4px 2px 0",
         overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        height: "24px", // Fixed height for consistency
       }),
       multiValueLabel: (provided) => ({
         ...provided,
         color: "hsl(var(--secondary-foreground))",
         fontSize: "0.75rem", // text-xs for badges
-        padding: "2px 6px 2px 8px",
+        padding: "0 0 0 16px", // Increased left padding from 12px to 16px
+        paddingRight: "6px", // Less right padding
         fontWeight: "500",
+        display: "flex",
+        alignItems: "center",
+        height: "100%",
       }),
       multiValueRemove: (provided) => ({
         ...provided,
         color: "hsl(var(--secondary-foreground))",
         opacity: "0.8",
+        padding: "0",
         "&:hover": {
           backgroundColor: "hsl(var(--destructive))",
           color: "hsl(var(--destructive-foreground))",
           opacity: "1",
         },
-        padding: "0 6px",
-        height: "100%",
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        width: "24px", // Fixed width for the remove button
       }),
       indicatorSeparator: () => ({
         display: "none",
@@ -195,6 +204,16 @@ const CreatableSelect = React.forwardRef(
           },
           borderRadius: 4,
         })}
+        components={{
+          MultiValueRemove: ({ innerProps, children }) => (
+            <div
+              {...innerProps}
+              className="flex items-center justify-center h-full w-6 hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
+            >
+              {children || "×"}
+            </div>
+          ),
+        }}
         {...props}
       />
     );
