@@ -125,7 +125,7 @@ export function SubmissionOptionsModal({ open, onOpenChange }) {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg mt-2">
+        {/* <div className="bg-gray-50 p-4 rounded-lg mt-2">
           <h4 className="font-semibold mb-2 flex items-center">
             <Coins className="h-4 w-4 mr-2 text-web-orange" />
             Additional Services
@@ -134,7 +134,7 @@ export function SubmissionOptionsModal({ open, onOpenChange }) {
             FGB can also manage the bids process, chase up queries, and provide
             a tender summary report for an additional fee payable by the buyer.
           </p>
-        </div>
+        </div> */}
       </DialogContent>
     </Dialog>
   );
