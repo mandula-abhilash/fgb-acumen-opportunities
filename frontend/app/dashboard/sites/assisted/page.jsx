@@ -306,77 +306,75 @@ export default function AssistedSubmissionPage() {
             </Card>
           </div>
 
-          {/* Second row: Contact Info and Response Section side by side */}
+          {/* Second row: Response Section on left, Contact Info and Payment on right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Contact Information */}
+            {/* Response Section */}
             <Card>
               <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+                <CardTitle>Response Section</CardTitle>
                 <CardDescription>
-                  How should we reach you for additional details?
+                  Provide details about the bidding process
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="contactEmail">
-                    Email <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="contactEmail"
-                    type="email"
-                    {...register("contactEmail")}
-                    className={errors.contactEmail ? "border-destructive" : ""}
+                  <Label htmlFor="additionalInfo">Additional Information</Label>
+                  <Textarea
+                    id="additionalInfo"
+                    {...register("additionalInfo")}
+                    placeholder="Any additional information you'd like to provide..."
+                    className="min-h-[100px]"
                   />
-                  {errors.contactEmail && (
-                    <p className="text-sm text-destructive">
-                      {errors.contactEmail.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone">Phone Number</Label>
-                  <Input id="contactPhone" {...register("contactPhone")} />
+                  <Label htmlFor="sitePlanImage">Site Plan</Label>
+                  <FileUpload
+                    onUploadComplete={handleSitePlanUpload}
+                    acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
+                    maxFileSize={10 * 1024 * 1024} // 10MB
+                    folder="site-plans"
+                    label="Upload Site Plan"
+                    description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
+                    fileType="mixed"
+                  />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Response Section */}
+            {/* Contact Information and Payment Information */}
             <div className="space-y-6">
+              {/* Contact Information */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Response Section</CardTitle>
+                  <CardTitle>Contact Information</CardTitle>
                   <CardDescription>
-                    Provide details about the bidding process
+                    How should we reach you for additional details?
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="additionalInfo">
-                      Additional Information
+                    <Label htmlFor="contactEmail">
+                      Email <span className="text-destructive">*</span>
                     </Label>
-                    <Textarea
-                      id="additionalInfo"
-                      {...register("additionalInfo")}
-                      placeholder="Any additional information you'd like to provide..."
-                      className="min-h-[100px]"
+                    <Input
+                      id="contactEmail"
+                      type="email"
+                      {...register("contactEmail")}
+                      className={
+                        errors.contactEmail ? "border-destructive" : ""
+                      }
                     />
+                    {errors.contactEmail && (
+                      <p className="text-sm text-destructive">
+                        {errors.contactEmail.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="sitePlanImage">Site Plan</Label>
-                    <FileUpload
-                      onUploadComplete={handleSitePlanUpload}
-                      acceptedFileTypes={[
-                        ...fileTypes.image,
-                        "application/pdf",
-                      ]}
-                      maxFileSize={10 * 1024 * 1024} // 10MB
-                      folder="site-plans"
-                      label="Upload Site Plan"
-                      description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
-                      fileType="mixed"
-                    />
+                    <Label htmlFor="contactPhone">Phone Number</Label>
+                    <Input id="contactPhone" {...register("contactPhone")} />
                   </div>
                 </CardContent>
               </Card>
