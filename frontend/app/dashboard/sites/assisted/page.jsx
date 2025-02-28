@@ -330,147 +330,172 @@ export default function AssistedSubmissionPage() {
             </Card>
           </div>
 
-          {/* Second row: Response Section on left, Contact Info and Payment on right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Response Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Response Section</CardTitle>
-                <CardDescription>
-                  Provide details about the bidding process
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="initialEOIDate">
-                    Date for Initial Expression of Interest
-                  </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !initialEOIDate && "text-muted-foreground"
-                        )}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {initialEOIDate ? (
-                          format(initialEOIDate, "PPP")
-                        ) : (
-                          <span>Select date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={initialEOIDate}
-                        onSelect={(date) => setValue("initialEOIDate", date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bidSubmissionDate">
-                    Date for Bids to be Submitted
-                  </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !bidSubmissionDate && "text-muted-foreground"
-                        )}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {bidSubmissionDate ? (
-                          format(bidSubmissionDate, "PPP")
-                        ) : (
-                          <span>Select date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={bidSubmissionDate}
-                        onSelect={(date) => setValue("bidSubmissionDate", date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="manageBidsProcess"
-                      checked={manageBidsProcess}
-                      onCheckedChange={(checked) => {
-                        setValue("manageBidsProcess", checked);
-                      }}
-                    />
-                    <Label
-                      htmlFor="manageBidsProcess"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      FG+B to manage the bids process (chasing, queries, tender
-                      summary)
-                    </Label>
-                  </div>
-                  <p className="text-xs text-muted-foreground ml-6">
-                    This option will incur an additional fee payable by the
-                    buyer
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="queriesContactName">
-                    Who should queries be sent to?
-                  </Label>
-                  <Input
-                    id="queriesContactName"
-                    placeholder="Contact name"
-                    {...register("queriesContactName")}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Second row: Response Section with fields side by side */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Response Section</CardTitle>
+              <CardDescription>
+                Provide details about the bidding process
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left column of Response Section */}
+                <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="queriesContactEmail">
-                      Contact Email for Queries
+                    <Label htmlFor="initialEOIDate">
+                      Date for Initial Expression of Interest
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !initialEOIDate && "text-muted-foreground"
+                          )}
+                        >
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {initialEOIDate ? (
+                            format(initialEOIDate, "PPP")
+                          ) : (
+                            <span>Select date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <CalendarComponent
+                          mode="single"
+                          selected={initialEOIDate}
+                          onSelect={(date) => setValue("initialEOIDate", date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="queriesContactName">
+                      Who should queries be sent to?
                     </Label>
                     <Input
-                      id="queriesContactEmail"
-                      type="email"
-                      placeholder="Email address"
-                      {...register("queriesContactEmail")}
-                      className={
-                        errors.queriesContactEmail ? "border-destructive" : ""
-                      }
+                      id="queriesContactName"
+                      placeholder="Contact name"
+                      {...register("queriesContactName")}
                     />
-                    {errors.queriesContactEmail && (
-                      <p className="text-sm text-destructive">
-                        {errors.queriesContactEmail.message}
-                      </p>
-                    )}
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="queriesContactPhone">
-                      Contact Phone for Queries
-                    </Label>
-                    <Input
-                      id="queriesContactPhone"
-                      placeholder="Phone number"
-                      {...register("queriesContactPhone")}
-                    />
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="manageBidsProcess"
+                        checked={manageBidsProcess}
+                        onCheckedChange={(checked) => {
+                          setValue("manageBidsProcess", checked);
+                        }}
+                      />
+                      <Label
+                        htmlFor="manageBidsProcess"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        FG+B to manage the bids process
+                      </Label>
+                    </div>
+                    <p className="text-xs text-muted-foreground ml-6">
+                      This includes chasing, handling queries, and providing a
+                      tender summary report. This option will incur an
+                      additional fee payable by the buyer.
+                    </p>
                   </div>
                 </div>
 
+                {/* Right column of Response Section */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="bidSubmissionDate">
+                      Date for Bids to be Submitted
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !bidSubmissionDate && "text-muted-foreground"
+                          )}
+                        >
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {bidSubmissionDate ? (
+                            format(bidSubmissionDate, "PPP")
+                          ) : (
+                            <span>Select date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <CalendarComponent
+                          mode="single"
+                          selected={bidSubmissionDate}
+                          onSelect={(date) =>
+                            setValue("bidSubmissionDate", date)
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="queriesContactEmail">
+                        Contact Email for Queries
+                      </Label>
+                      <Input
+                        id="queriesContactEmail"
+                        type="email"
+                        placeholder="Email address"
+                        {...register("queriesContactEmail")}
+                        className={
+                          errors.queriesContactEmail ? "border-destructive" : ""
+                        }
+                      />
+                      {errors.queriesContactEmail && (
+                        <p className="text-sm text-destructive">
+                          {errors.queriesContactEmail.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="queriesContactPhone">
+                        Contact Phone for Queries
+                      </Label>
+                      <Input
+                        id="queriesContactPhone"
+                        placeholder="Phone number"
+                        {...register("queriesContactPhone")}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="sitePlanImage">Site Plan</Label>
+                    <FileUpload
+                      onUploadComplete={handleSitePlanUpload}
+                      acceptedFileTypes={[
+                        ...fileTypes.image,
+                        "application/pdf",
+                      ]}
+                      maxFileSize={10 * 1024 * 1024} // 10MB
+                      folder="site-plans"
+                      label="Upload Site Plan"
+                      description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
+                      fileType="mixed"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6">
                 <div className="space-y-2">
                   <Label htmlFor="additionalInfo">Additional Information</Label>
                   <Textarea
@@ -480,99 +505,84 @@ export default function AssistedSubmissionPage() {
                     className="min-h-[100px]"
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Third row: Contact Information and Payment Information side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Contact Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Information</CardTitle>
+                <CardDescription>
+                  How should we reach you for additional details?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="contactEmail">
+                    Email <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="contactEmail"
+                    type="email"
+                    {...register("contactEmail")}
+                    className={errors.contactEmail ? "border-destructive" : ""}
+                  />
+                  {errors.contactEmail && (
+                    <p className="text-sm text-destructive">
+                      {errors.contactEmail.message}
+                    </p>
+                  )}
+                </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="sitePlanImage">Site Plan</Label>
-                  <FileUpload
-                    onUploadComplete={handleSitePlanUpload}
-                    acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
-                    maxFileSize={10 * 1024 * 1024} // 10MB
-                    folder="site-plans"
-                    label="Upload Site Plan"
-                    description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
-                    fileType="mixed"
-                  />
+                  <Label htmlFor="contactPhone">Phone Number</Label>
+                  <Input id="contactPhone" {...register("contactPhone")} />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Contact Information and Payment Information */}
-            <div className="space-y-6">
-              {/* Contact Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
-                  <CardDescription>
-                    How should we reach you for additional details?
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="contactEmail">
-                      Email <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="contactEmail"
-                      type="email"
-                      {...register("contactEmail")}
-                      className={
-                        errors.contactEmail ? "border-destructive" : ""
-                      }
-                    />
-                    {errors.contactEmail && (
-                      <p className="text-sm text-destructive">
-                        {errors.contactEmail.message}
-                      </p>
+            {/* Payment Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Information</CardTitle>
+                <CardDescription>
+                  Service fee for FGB assisted submission
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="font-semibold">
+                      Assisted Submission Service
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Professional preparation of your site listing
+                    </p>
+                  </div>
+                  <div className="text-xl font-bold">£250.00</div>
+                </div>
+
+                <div className="flex justify-end mt-6">
+                  <Button
+                    type="submit"
+                    className="bg-web-orange hover:bg-web-orange/90 text-white font-semibold"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" className="mr-2" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Pay & Submit"
                     )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="contactPhone">Phone Number</Label>
-                    <Input id="contactPhone" {...register("contactPhone")} />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Payment Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Information</CardTitle>
-                  <CardDescription>
-                    Service fee for FGB assisted submission
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center mb-4">
-                    <div>
-                      <h3 className="font-semibold">
-                        Assisted Submission Service
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Professional preparation of your site listing
-                      </p>
-                    </div>
-                    <div className="text-xl font-bold">£250.00</div>
-                  </div>
-
-                  <div className="flex justify-end mt-6">
-                    <Button
-                      type="submit"
-                      className="bg-web-orange hover:bg-web-orange/90 text-white font-semibold"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Spinner size="sm" className="mr-2" />
-                          Processing...
-                        </>
-                      ) : (
-                        "Pay & Submit"
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </form>
       </div>
