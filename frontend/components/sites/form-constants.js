@@ -80,7 +80,10 @@ export const submitSiteSchema = z.object({
   region: z.array(z.string()).min(1, "Please select at least one region"),
   planningStatus: z.string().min(1, "Planning status is required"),
   landPurchaseStatus: z.string().min(1, "Land purchase status is required"),
-  plots: z.number().min(1, "Number of plots is required"),
+  plots: z
+    .number()
+    .min(1, "Number of plots must be at least 1")
+    .int("Number of plots must be a whole number"),
   tenures: z.array(z.string()).min(1, "Please select at least one tenure type"),
   startOnSiteDate: z.date().optional(),
   handoverDate: z.date().optional(),

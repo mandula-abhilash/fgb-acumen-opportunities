@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ExternalLink } from "lucide-react";
 
 import {
   Card,
@@ -28,6 +29,8 @@ export function BasicInformation({
   selectedAddress,
   selectedLocation,
 }) {
+  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
   };
@@ -42,6 +45,7 @@ export function BasicInformation({
       const { lat, lng } = selectedLocation;
       const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
       setValue("googleMapsLink", googleMapsLink);
+      setGoogleMapsUrl(googleMapsLink);
     }
   }, [selectedLocation, setValue]);
 
@@ -96,14 +100,29 @@ export function BasicInformation({
             <Label htmlFor="googleMapsLink">
               Google Maps Link <span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="googleMapsLink"
-              type="url"
-              {...register("googleMapsLink")}
-              className={errors.googleMapsLink ? "border-destructive" : ""}
-              readOnly
-              disabled
-            />
+            <div className="relative">
+              <Input
+                id="googleMapsLink"
+                type="url"
+                {...register("googleMapsLink")}
+                className={
+                  errors.googleMapsLink ? "border-destructive pr-10" : "pr-10"
+                }
+                readOnly
+                disabled
+              />
+              {googleMapsUrl && (
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary hover:text-primary/80"
+                  title="Open in Google Maps"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                </a>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               Search for the address on the map to the right and you can adjust
               the marker pin by dragging to set the location
@@ -164,7 +183,32 @@ export function BasicInformation({
               id="plots"
               type="number"
               min="1"
-              {...register("plots", { valueAsNumber: true })}
+              step="1"
+              onKeyDown={(e) => {
+                // Prevent non-numeric input
+                if (
+                  !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|Tab/.test(e.key)
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              onBlur={(e) => {
+                // Ensure value is at least 1
+                const value = parseInt(e.target.value);
+                if (isNaN(value) || value < 1) {
+                  e.target.value = "1";
+                  setValue("plots", 1);
+                } else {
+                  // Ensure it's an integer
+                  e.target.value = Math.floor(value).toString();
+                  setValue("plots", Math.floor(value));
+                }
+              }}
+              {...register("plots", {
+                valueAsNumber: true,
+                validate: (value) =>
+                  value >= 1 || "Number of plots must be at least 1",
+              })}
               className={errors.plots ? "border-destructive" : ""}
             />
             {errors.plots && (
