@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Plus } from "lucide-react";
@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { PageHeader } from "@/components/layout/page-header";
 import { OpportunityCard } from "@/components/opportunities/opportunity-card";
+import { SubmissionOptionsModal } from "@/components/sites/submission-options-modal";
 
 // Dummy data for demonstration
 const opportunities = [
@@ -69,6 +70,7 @@ export default function OpportunitiesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("view") || "list";
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -76,13 +78,18 @@ export default function OpportunitiesPage() {
     }
   }, [loading, user, router]);
 
+  const handleSubmitSiteClick = () => {
+    setShowOptionsModal(true);
+  };
+
   const renderActionButton = () => {
     if (user?.role === "seller" || user?.role === "admin") {
       return (
         <Button
           className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-          onClick={() => router.push("/dashboard/sites/new")}
+          onClick={handleSubmitSiteClick}
         >
+          <Plus className="h-4 w-4 mr-2" />
           Submit New Site
         </Button>
       );
@@ -128,6 +135,11 @@ export default function OpportunitiesPage() {
           </div>
         )}
       </div>
+
+      <SubmissionOptionsModal
+        open={showOptionsModal}
+        onOpenChange={setShowOptionsModal}
+      />
     </div>
   );
 }

@@ -10,9 +10,10 @@ export function Spinner({ className, size = "md", ...props }) {
     >
       <Loader2
         className={cn("animate-spin", {
-          "h-4 w-4": size === "sm",
-          "h-6 w-6": size === "md",
-          "h-8 w-8": size === "lg",
+          "h-3 w-3": size === "sm",
+          "h-4 w-4": size === "md",
+          "h-6 w-6": size === "lg",
+          "h-8 w-8": size === "xl",
         })}
       />
     </div>
