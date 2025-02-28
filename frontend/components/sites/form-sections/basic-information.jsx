@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,6 +25,14 @@ export function BasicInformation({
   opportunityTypes,
   selectedAddress,
 }) {
+  const handleSitePlanUpload = (fileUrl) => {
+    setValue("sitePlanImage", fileUrl);
+  };
+
+  const handleUploadError = (error) => {
+    console.error("Upload error:", error);
+  };
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -69,6 +78,20 @@ export function BasicInformation({
                 <p className="text-sm break-words">{selectedAddress}</p>
               </div>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sitePlanImage">Site Plan Image</Label>
+            <FileUpload
+              onUploadComplete={handleSitePlanUpload}
+              onUploadError={handleUploadError}
+              acceptedFileTypes={["image/jpeg", "image/png", "image/jpg"]}
+              maxFileSize={5 * 1024 * 1024} // 5MB
+              folder="site-plans"
+              label="Upload Site Plan"
+              description="Upload a site plan image (JPEG, PNG, max 5MB)"
+              fileType="image"
+            />
           </div>
 
           <div className="space-y-2">

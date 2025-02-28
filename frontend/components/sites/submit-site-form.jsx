@@ -45,6 +45,9 @@ export function SubmitSiteForm() {
       lpa: [],
       region: [],
       tenures: [],
+      sitePlanImage: "",
+      proposedSpecification: "",
+      s106Agreement: "",
     },
   });
 

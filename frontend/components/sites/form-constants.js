@@ -92,4 +92,21 @@ export const submitSiteSchema = z.object({
   paymentTerms: z.string().optional(),
   projectProgramme: z.string().optional(),
   agentTerms: z.string().optional(),
+  sitePlanImage: z.string().optional(),
+  proposedSpecification: z.string().optional(),
+  s106Agreement: z.string().optional(),
 });
+
+export const fileTypes = {
+  image: ["image/jpeg", "image/png", "image/jpg"],
+  document: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ],
+};
+
+export const maxFileSizes = {
+  image: 5 * 1024 * 1024, // 5MB
+  document: 10 * 1024 * 1024, // 10MB
+};

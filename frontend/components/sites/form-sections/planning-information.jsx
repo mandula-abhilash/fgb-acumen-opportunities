@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FileUpload } from "@/components/ui/file-upload";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -24,6 +25,18 @@ export function PlanningInformation({
   planningStatuses,
   landPurchaseStatuses,
 }) {
+  const handleProposedSpecUpload = (fileUrl) => {
+    setValue("proposedSpecification", fileUrl);
+  };
+
+  const handleS106Upload = (fileUrl) => {
+    setValue("s106Agreement", fileUrl);
+  };
+
+  const handleUploadError = (error) => {
+    console.error("Upload error:", error);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -106,6 +119,28 @@ export function PlanningInformation({
             id="proposedDevelopment"
             {...register("proposedDevelopment")}
             placeholder="Describe the proposed development..."
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="proposedSpecification">Proposed Specification</Label>
+          <FileUpload
+            onUploadComplete={handleProposedSpecUpload}
+            onUploadError={handleUploadError}
+            folder="specifications"
+            label="Upload Proposed Specification"
+            description="Upload a PDF or Word document (max 10MB)"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="s106Agreement">Section 106 Agreement</Label>
+          <FileUpload
+            onUploadComplete={handleS106Upload}
+            onUploadError={handleUploadError}
+            folder="s106-agreements"
+            label="Upload Section 106 Agreement"
+            description="Upload a PDF or Word document (max 10MB)"
           />
         </div>
       </CardContent>

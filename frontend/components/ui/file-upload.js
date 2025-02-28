@@ -1,0 +1,230 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { AlertCircle, Check, FileText, Image, Upload, X } from "lucide-react";
+
+import { uploadFile } from "@/lib/upload";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { fileTypes, maxFileSizes } from "@/components/sites/form-constants";
+
+export function FileUpload({
+  onUploadComplete,
+  onUploadError,
+  acceptedFileTypes = fileTypes.document,
+  maxFileSize = maxFileSizes.document,
+  folder = "documents",
+  className,
+  label = "Upload a file",
+  description = "Drag and drop or click to upload",
+  fileType = "document",
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [error, setError] = useState("");
+  const [uploadComplete, setUploadComplete] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const isImage = fileType === "image";
+  const acceptedTypes = isImage ? fileTypes.image : fileTypes.document;
+  const maxSize = isImage ? maxFileSizes.image : maxFileSizes.document;
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const validateFile = (file) => {
+    if (!file) return "No file selected";
+    if (!acceptedTypes.includes(file.type)) {
+      return `File type not supported. Please upload ${isImage ? "an image" : "a document"} file.`;
+    }
+    if (file.size > maxSize) {
+      return `File size exceeds the maximum limit of ${maxSize / (1024 * 1024)}MB.`;
+    }
+    return null;
+  };
+
+  const handleFileSelect = async (selectedFile) => {
+    setError("");
+    setUploadComplete(false);
+
+    const validationError = validateFile(selectedFile);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setFile(selectedFile);
+
+    try {
+      setUploading(true);
+
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          const newProgress = prev + 5;
+          return newProgress >= 90 ? 90 : newProgress;
+        });
+      }, 100);
+
+      const { fileUrl, key } = await uploadFile(selectedFile, folder);
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      setUploadComplete(true);
+
+      if (onUploadComplete) {
+        onUploadComplete(fileUrl, selectedFile);
+      }
+    } catch (error) {
+      setError("Failed to upload file. Please try again.");
+      if (onUploadError) {
+        onUploadError(error);
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      handleFileSelect(droppedFile);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      handleFileSelect(selectedFile);
+    }
+  };
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    setUploadProgress(0);
+    setUploadComplete(false);
+    setError("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + " B";
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    else return (bytes / 1048576).toFixed(1) + " MB";
+  };
+
+  return (
+    <div className={cn("space-y-2", className)}>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileInputChange}
+        accept={acceptedTypes.join(",")}
+        className="hidden"
+      />
+
+      {!file ? (
+        <div
+          className={cn(
+            "border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors",
+            isDragging
+              ? "border-primary bg-primary/5"
+              : "border-muted-foreground/25 hover:border-primary/50",
+            error && "border-destructive"
+          )}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleButtonClick}
+        >
+          <div className="flex flex-col items-center justify-center space-y-2">
+            {error ? (
+              <AlertCircle className="h-10 w-10 text-destructive" />
+            ) : isImage ? (
+              <Image className="h-10 w-10 text-muted-foreground" />
+            ) : (
+              <FileText className="h-10 w-10 text-muted-foreground" />
+            )}
+            <div className="space-y-1">
+              <p className="text-sm font-medium">{label}</p>
+              <p className="text-xs text-muted-foreground">{description}</p>
+              {error && <p className="text-xs text-destructive">{error}</p>}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleButtonClick();
+              }}
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Select File
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="border rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {isImage ? (
+                <Image className="h-8 w-8 text-primary" />
+              ) : (
+                <FileText className="h-8 w-8 text-primary" />
+              )}
+              <div>
+                <p className="text-sm font-medium truncate max-w-[200px]">
+                  {file.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {formatFileSize(file.size)}
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleRemoveFile}
+              disabled={uploading}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {uploading || uploadComplete ? (
+            <div className="mt-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  {uploadComplete ? "Upload complete" : "Uploading..."}
+                </span>
+                {uploadComplete && <Check className="h-4 w-4 text-green-500" />}
+              </div>
+              <Progress value={uploadProgress} className="h-1" />
+            </div>
+          ) : null}
+        </div>
+      )}
+    </div>
+  );
+}
