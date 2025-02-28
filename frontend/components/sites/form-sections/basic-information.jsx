@@ -185,11 +185,20 @@ export function BasicInformation({
               min="1"
               step="1"
               onKeyDown={(e) => {
-                // Prevent non-numeric input
+                // Allow arrow keys (ArrowUp, ArrowDown) for incrementing/decrementing
                 if (
-                  !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|Tab/.test(e.key)
+                  !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Tab/.test(
+                    e.key
+                  )
                 ) {
                   e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                // Ensure only valid numbers are entered
+                const value = e.target.value;
+                if (value === "" || /^[0-9]+$/.test(value)) {
+                  setValue("plots", value === "" ? "" : parseInt(value, 10));
                 }
               }}
               onBlur={(e) => {
