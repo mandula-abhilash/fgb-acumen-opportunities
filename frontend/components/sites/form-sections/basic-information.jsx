@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { fileTypes } from "@/components/sites/form-constants";
 
 export function BasicInformation({
   register,
@@ -135,16 +136,16 @@ export function BasicInformation({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="sitePlanImage">Site Plan Image</Label>
+            <Label htmlFor="sitePlanImage">Site Plan</Label>
             <FileUpload
               onUploadComplete={handleSitePlanUpload}
               onUploadError={handleUploadError}
-              acceptedFileTypes={["image/jpeg", "image/png", "image/jpg"]}
-              maxFileSize={5 * 1024 * 1024} // 5MB
+              acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
+              maxFileSize={10 * 1024 * 1024} // 10MB
               folder="site-plans"
               label="Upload Site Plan"
-              description="Upload a site plan image (JPEG, PNG, max 5MB)"
-              fileType="image"
+              description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
+              fileType="mixed"
             />
           </div>
 

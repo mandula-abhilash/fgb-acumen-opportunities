@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { fileTypes, maxFileSizes } from "@/components/sites/form-constants";
 
 export function PlanningInformation({
   register,
@@ -127,9 +128,12 @@ export function PlanningInformation({
           <FileUpload
             onUploadComplete={handleProposedSpecUpload}
             onUploadError={handleUploadError}
+            acceptedFileTypes={fileTypes.document}
+            maxFileSize={maxFileSizes.document}
             folder="specifications"
             label="Upload Proposed Specification"
             description="Upload a PDF or Word document (max 10MB)"
+            fileType="document"
           />
         </div>
 
@@ -138,9 +142,12 @@ export function PlanningInformation({
           <FileUpload
             onUploadComplete={handleS106Upload}
             onUploadError={handleUploadError}
+            acceptedFileTypes={fileTypes.document}
+            maxFileSize={maxFileSizes.document}
             folder="s106-agreements"
             label="Upload Section 106 Agreement"
             description="Upload a PDF or Word document (max 10MB)"
+            fileType="document"
           />
         </div>
       </CardContent>

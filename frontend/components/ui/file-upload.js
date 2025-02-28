@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AlertCircle, Check, FileText, Image, Upload, X } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  FileIcon,
+  FileText,
+  Image,
+  Upload,
+  X,
+} from "lucide-react";
 
 import { uploadFile } from "@/lib/upload";
 import { cn } from "@/lib/utils";
@@ -18,7 +26,7 @@ export function FileUpload({
   className,
   label = "Upload a file",
   description = "Drag and drop or click to upload",
-  fileType = "document",
+  fileType = "document", // document, image, or mixed
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState(null);
@@ -28,9 +36,23 @@ export function FileUpload({
   const [uploadComplete, setUploadComplete] = useState(false);
   const fileInputRef = useRef(null);
 
-  const isImage = fileType === "image";
-  const acceptedTypes = isImage ? fileTypes.image : fileTypes.document;
-  const maxSize = isImage ? maxFileSizes.image : maxFileSizes.document;
+  // Determine accepted file types based on fileType
+  let acceptedTypesArray = acceptedFileTypes;
+  let maxSizeValue = maxFileSize;
+  let fileTypeDescription = "file";
+
+  if (fileType === "image") {
+    acceptedTypesArray = fileTypes.image;
+    maxSizeValue = maxFileSizes.image;
+    fileTypeDescription = "image";
+  } else if (fileType === "document") {
+    acceptedTypesArray = fileTypes.document;
+    maxSizeValue = maxFileSizes.document;
+    fileTypeDescription = "document";
+  } else if (fileType === "mixed") {
+    // For mixed type, use the provided acceptedFileTypes
+    fileTypeDescription = "file";
+  }
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -43,11 +65,11 @@ export function FileUpload({
 
   const validateFile = (file) => {
     if (!file) return "No file selected";
-    if (!acceptedTypes.includes(file.type)) {
-      return `File type not supported. Please upload ${isImage ? "an image" : "a document"} file.`;
+    if (!acceptedTypesArray.includes(file.type)) {
+      return `File type not supported. Accepted formats: ${acceptedTypesArray.map((type) => type.split("/")[1].toUpperCase()).join(", ")}`;
     }
-    if (file.size > maxSize) {
-      return `File size exceeds the maximum limit of ${maxSize / (1024 * 1024)}MB.`;
+    if (file.size > maxSizeValue) {
+      return `File size exceeds the maximum limit of ${maxSizeValue / (1024 * 1024)}MB.`;
     }
     return null;
   };
@@ -131,13 +153,33 @@ export function FileUpload({
     else return (bytes / 1048576).toFixed(1) + " MB";
   };
 
+  // Determine the icon to display based on file type
+  const getFileIcon = () => {
+    if (!file) {
+      if (fileType === "image")
+        return <Image className="h-10 w-10 text-muted-foreground" />;
+      if (fileType === "document")
+        return <FileText className="h-10 w-10 text-muted-foreground" />;
+      return <Upload className="h-10 w-10 text-muted-foreground" />;
+    }
+
+    // For uploaded file
+    if (file.type.startsWith("image/")) {
+      return <Image className="h-8 w-8 text-primary" />;
+    } else if (file.type === "application/pdf") {
+      return <FileIcon className="h-8 w-8 text-primary" />;
+    } else {
+      return <FileText className="h-8 w-8 text-primary" />;
+    }
+  };
+
   return (
     <div className={cn("space-y-2", className)}>
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileInputChange}
-        accept={acceptedTypes.join(",")}
+        accept={acceptedTypesArray.join(",")}
         className="hidden"
       />
 
@@ -158,10 +200,8 @@ export function FileUpload({
           <div className="flex flex-col items-center justify-center space-y-2">
             {error ? (
               <AlertCircle className="h-10 w-10 text-destructive" />
-            ) : isImage ? (
-              <Image className="h-10 w-10 text-muted-foreground" />
             ) : (
-              <FileText className="h-10 w-10 text-muted-foreground" />
+              getFileIcon()
             )}
             <div className="space-y-1">
               <p className="text-sm font-medium">{label}</p>
@@ -187,11 +227,7 @@ export function FileUpload({
         <div className="border rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {isImage ? (
-                <Image className="h-8 w-8 text-primary" />
-              ) : (
-                <FileText className="h-8 w-8 text-primary" />
-              )}
+              {getFileIcon()}
               <div>
                 <p className="text-sm font-medium truncate max-w-[200px]">
                   {file.name}
