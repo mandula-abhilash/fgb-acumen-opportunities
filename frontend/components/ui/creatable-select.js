@@ -27,88 +27,118 @@ const CreatableSelect = React.forwardRef(
     const customStyles = {
       control: (provided, state) => ({
         ...provided,
-        backgroundColor: "var(--background)",
-        borderColor: state.isFocused ? "var(--ring)" : "var(--input)",
-        boxShadow: state.isFocused ? "0 0 0 1px var(--ring)" : "none",
+        backgroundColor: "hsl(var(--background))",
+        borderColor: state.isFocused ? "hsl(var(--ring))" : "hsl(var(--input))",
+        boxShadow: state.isFocused ? "0 0 0 1px hsl(var(--ring))" : "none",
         "&:hover": {
-          borderColor: state.isFocused ? "var(--ring)" : "var(--input)",
+          borderColor: state.isFocused
+            ? "hsl(var(--ring))"
+            : "hsl(var(--input))",
         },
         borderRadius: "var(--radius)",
         minHeight: "40px",
+        fontSize: "0.875rem", // Match text-sm
       }),
       menu: (provided) => ({
         ...provided,
-        backgroundColor: "var(--popover)",
-        border: "1px solid var(--border)",
+        backgroundColor: "hsl(var(--background))",
+        border: "1px solid hsl(var(--border))",
         borderRadius: "var(--radius)",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
         zIndex: 50,
+      }),
+      menuList: (provided) => ({
+        ...provided,
+        backgroundColor: "hsl(var(--background))",
+        padding: "4px",
       }),
       option: (provided, state) => ({
         ...provided,
         backgroundColor: state.isSelected
-          ? "var(--primary)"
+          ? "hsl(var(--primary))"
           : state.isFocused
-            ? "var(--accent)"
-            : "transparent",
+            ? "hsl(var(--accent))"
+            : "hsl(var(--background))",
         color: state.isSelected
-          ? "var(--primary-foreground)"
-          : "var(--foreground)",
+          ? "hsl(var(--primary-foreground))"
+          : "hsl(var(--foreground))",
         cursor: "pointer",
         fontSize: "0.875rem", // Match text-sm
         "&:active": {
           backgroundColor: state.isSelected
-            ? "var(--primary)"
-            : "var(--accent)",
+            ? "hsl(var(--primary))"
+            : "hsl(var(--accent))",
         },
       }),
       input: (provided) => ({
         ...provided,
-        color: "var(--foreground)",
+        color: "hsl(var(--foreground))",
         fontSize: "0.875rem", // Match text-sm
       }),
       singleValue: (provided) => ({
         ...provided,
-        color: "var(--foreground)",
+        color: "hsl(var(--foreground))",
         fontSize: "0.875rem", // Match text-sm
       }),
       multiValue: (provided) => ({
         ...provided,
-        backgroundColor: "var(--secondary)",
-        borderRadius: "var(--radius)",
+        backgroundColor: "hsl(var(--secondary))",
+        borderRadius: "9999px", // Full rounded for badge look
+        margin: "2px 4px 2px 0",
+        overflow: "hidden",
       }),
       multiValueLabel: (provided) => ({
         ...provided,
-        color: "var(--secondary-foreground)",
-        fontSize: "0.875rem", // Match text-sm
+        color: "hsl(var(--secondary-foreground))",
+        fontSize: "0.75rem", // text-xs for badges
+        padding: "2px 6px 2px 8px",
+        fontWeight: "500",
       }),
       multiValueRemove: (provided) => ({
         ...provided,
-        color: "var(--secondary-foreground)",
+        color: "hsl(var(--secondary-foreground))",
+        opacity: "0.8",
         "&:hover": {
-          backgroundColor: "var(--destructive)",
-          color: "var(--destructive-foreground)",
+          backgroundColor: "hsl(var(--destructive))",
+          color: "hsl(var(--destructive-foreground))",
+          opacity: "1",
         },
+        padding: "0 6px",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
       }),
       indicatorSeparator: () => ({
         display: "none",
       }),
       dropdownIndicator: (provided) => ({
         ...provided,
-        color: "var(--muted-foreground)",
+        color: "hsl(var(--muted-foreground))",
       }),
       clearIndicator: (provided) => ({
         ...provided,
-        color: "var(--muted-foreground)",
+        color: "hsl(var(--muted-foreground))",
       }),
       placeholder: (provided) => ({
         ...provided,
-        color: "var(--muted-foreground)",
+        color: "hsl(var(--muted-foreground))",
         fontSize: "0.875rem", // Match text-sm
       }),
       noOptionsMessage: (provided) => ({
         ...provided,
-        color: "var(--muted-foreground)",
+        color: "hsl(var(--muted-foreground))",
+        fontSize: "0.875rem", // Match text-sm
+        backgroundColor: "hsl(var(--background))",
+      }),
+      loadingMessage: (provided) => ({
+        ...provided,
+        color: "hsl(var(--muted-foreground))",
+        fontSize: "0.875rem", // Match text-sm
+        backgroundColor: "hsl(var(--background))",
+      }),
+      valueContainer: (provided) => ({
+        ...provided,
+        padding: "2px 8px",
         fontSize: "0.875rem", // Match text-sm
       }),
     };
@@ -141,6 +171,30 @@ const CreatableSelect = React.forwardRef(
         inputValue={inputValue}
         styles={customStyles}
         formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
+        theme={(theme) => ({
+          ...theme,
+          colors: {
+            ...theme.colors,
+            primary: "hsl(var(--primary))",
+            primary75: "hsl(var(--primary) / 0.75)",
+            primary50: "hsl(var(--primary) / 0.5)",
+            primary25: "hsl(var(--accent))",
+            danger: "hsl(var(--destructive))",
+            dangerLight: "hsl(var(--destructive) / 0.3)",
+            neutral0: "hsl(var(--background))",
+            neutral5: "hsl(var(--accent))",
+            neutral10: "hsl(var(--accent))",
+            neutral20: "hsl(var(--border))",
+            neutral30: "hsl(var(--border))",
+            neutral40: "hsl(var(--muted-foreground))",
+            neutral50: "hsl(var(--muted-foreground))",
+            neutral60: "hsl(var(--foreground))",
+            neutral70: "hsl(var(--foreground))",
+            neutral80: "hsl(var(--foreground))",
+            neutral90: "hsl(var(--foreground))",
+          },
+          borderRadius: 4,
+        })}
         {...props}
       />
     );
