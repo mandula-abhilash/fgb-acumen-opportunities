@@ -31,7 +31,7 @@ export function SubmissionOptionsModal({ open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
             Choose Your Submission Method
@@ -125,12 +125,12 @@ export function SubmissionOptionsModal({ open, onOpenChange }) {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg mt-2">
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-2">
           <h4 className="font-semibold mb-2 flex items-center">
             <Coins className="h-4 w-4 mr-2 text-web-orange" />
             Additional Services
           </h4>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             FGB can also manage the bids process, chase up queries, and provide
             a tender summary report for an additional fee payable by the buyer.
           </p>
