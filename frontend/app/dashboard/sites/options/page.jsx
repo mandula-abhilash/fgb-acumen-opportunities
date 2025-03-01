@@ -149,9 +149,17 @@ export default function SubmissionOptionsPage() {
               Additional Services
             </h4>
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              FGB can also manage the bids process, chase up queries, and
-              provide a tender summary report for an additional fee payable by
-              the buyer.
+              FGB can manage the bids process, follow up on queries, and provide
+              a tender summary report for an additional fee payable by the
+              buyer. For more details, please contact{" "}
+              <a
+                href="mailto:andy@fgandb.co.uk"
+                className="font-medium text-web-orange hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                andy@fgandb.co.uk
+              </a>
             </p>
           </div>
         </div>
