@@ -5,117 +5,139 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-
-import {
-  landPurchaseStatuses,
-  lpaOptions,
-  opportunityTypes,
-  planningStatuses,
-  regions,
-  submitSiteSchema,
-  tenureTypes,
-  vatPositions,
-} from "./form-constants";
-import { BasicInformation } from "./form-sections/basic-information";
-import { CommercialInformation } from "./form-sections/commercial-information";
-import { DeveloperInformation } from "./form-sections/developer-information";
-import { LocationInformation } from "./form-sections/location-information";
-import { PlanningInformation } from "./form-sections/planning-information";
-import { ProjectTimeline } from "./form-sections/project-timeline";
-import { SiteLocation } from "./form-sections/site-location";
-import { TenureInformation } from "./form-sections/tenure-information";
+import { BasicInformation } from "@/components/sites/assisted-form/basic-information";
+import { ContactInformation } from "@/components/sites/assisted-form/contact-information";
+import { HowItWorks } from "@/components/sites/assisted-form/how-it-works";
+import { PaymentInformation } from "@/components/sites/assisted-form/payment-information";
+import { ResponseSection } from "@/components/sites/assisted-form/response-section";
+import { assistedSubmissionSchema } from "@/components/sites/assisted-form/schema";
+import { SiteLocationMap } from "@/components/sites/assisted-form/site-location-map";
 
 export function SubmitAssistedSiteForm() {
-  const { toast } = useToast();
   const router = useRouter();
+  const { toast } = useToast();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
-    resolver: zodResolver(submitSiteSchema),
+    resolver: zodResolver(assistedSubmissionSchema),
     defaultValues: {
-      lpa: [],
-      region: [],
-      tenures: [],
+      siteName: "",
+      siteAddress: "",
+      opportunityType: "",
+      developerName: "",
+      contactEmail: "",
+      contactPhone: "",
+      additionalInfo: "",
+      manageBidsProcess: false,
+      queriesContactName: "",
+      queriesContactEmail: "",
+      queriesContactPhone: "",
       sitePlanImage: "",
-      proposedSpecification: "",
-      s106Agreement: "",
-      googleMapsLink: "",
-      vatPosition: "",
     },
   });
 
-  const onSubmit = async (data) => {
-    try {
-      if (!selectedLocation) {
-        toast({
-          variant: "destructive",
-          title: "Location Required",
-          description: "Please select a site location using the map.",
-        });
-        return;
-      }
-
-      const siteData = {
-        ...data,
-        coordinates: selectedLocation,
-        boundary: polygonPath,
-      };
-
-      console.log("Form data:", siteData);
-      toast({
-        title: "Success",
-        description: "Site submitted successfully",
-      });
-      router.push("/dashboard/opportunities");
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to submit site. Please try again.",
-      });
-    }
-  };
+  const manageBidsProcess = watch("manageBidsProcess");
 
   const handleLocationSelect = (location, address) => {
     setSelectedLocation(location);
     setSelectedAddress(address);
+    if (address && !watch("siteAddress")) {
+      setValue("siteAddress", address);
+    }
   };
 
   const handlePolygonComplete = (path) => {
     setPolygonPath(path);
   };
 
+  const handleSitePlanUpload = (fileUrl) => {
+    setValue("sitePlanImage", fileUrl);
+  };
+
+  // Function to validate phone number input
+  const validatePhoneInput = (e) => {
+    const value = e.target.value;
+    // Only allow numbers, +, -, and spaces
+    if (!/^[0-9+\- ]*$/.test(value)) {
+      e.preventDefault();
+      return false;
+    }
+    return true;
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      setIsSubmitting(true);
+
+      if (!selectedLocation) {
+        toast({
+          variant: "destructive",
+          title: "Location Required",
+          description: "Please select a site location using the map.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // In a real implementation, this would process payment and submit the data
+      console.log("Form data:", {
+        ...data,
+        coordinates: selectedLocation,
+        boundary: polygonPath,
+      });
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      toast({
+        title: "Request Submitted",
+        description:
+          "Your assisted submission request has been received. We'll contact you shortly.",
+      });
+
+      router.push("/dashboard/opportunities");
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description:
+          "There was an error processing your request. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4">
       <div className="flex flex-col space-y-6 mx-auto">
+        <HowItWorks />
+
         {/* Map and Basic Information Section */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[400px]">
           {/* Basic Information - Takes 1 column on desktop */}
           <div className="order-1 lg:order-1 h-[400px] lg:h-full">
             <BasicInformation
               register={register}
-              setValue={setValue}
               errors={errors}
-              opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
-              selectedLocation={selectedLocation}
             />
           </div>
 
           {/* Map - Takes 2 columns on desktop */}
           <div className="order-2 lg:order-2 lg:col-span-2 h-[400px] lg:h-full">
-            <SiteLocation
+            <SiteLocationMap
               onLocationSelect={handleLocationSelect}
               onPolygonComplete={handlePolygonComplete}
               selectedLocation={selectedLocation}
@@ -124,58 +146,27 @@ export function SubmitAssistedSiteForm() {
           </div>
         </div>
 
-        <DeveloperInformation
+        <ResponseSection
           register={register}
           setValue={setValue}
           watch={watch}
           errors={errors}
-          regions={regions}
+          validatePhoneInput={validatePhoneInput}
+          handleSitePlanUpload={handleSitePlanUpload}
         />
 
-        <LocationInformation
-          watch={watch}
-          setValue={setValue}
-          errors={errors}
-          regions={regions}
-          lpaOptions={lpaOptions}
-        />
+        {/* Contact Information and Payment Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <ContactInformation
+            register={register}
+            errors={errors}
+            validatePhoneInput={validatePhoneInput}
+          />
 
-        <PlanningInformation
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          planningStatuses={planningStatuses}
-          landPurchaseStatuses={landPurchaseStatuses}
-        />
-
-        <TenureInformation
-          watch={watch}
-          setValue={setValue}
-          register={register}
-          errors={errors}
-          tenureTypes={tenureTypes}
-        />
-
-        <CommercialInformation
-          register={register}
-          setValue={setValue}
-          errors={errors}
-        />
-
-        <ProjectTimeline
-          register={register}
-          watch={watch}
-          setValue={setValue}
-        />
-
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Site"}
-          </Button>
+          <PaymentInformation
+            manageBidsProcess={manageBidsProcess}
+            isSubmitting={isSubmitting}
+          />
         </div>
       </div>
     </form>
