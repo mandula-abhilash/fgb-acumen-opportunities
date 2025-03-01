@@ -69,7 +69,6 @@ export default function OpportunitiesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("view") || "list";
-  const [showOptionsModal, setShowOptionsModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
