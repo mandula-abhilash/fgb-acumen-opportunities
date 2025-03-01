@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,15 +25,31 @@ export function PaymentInformation({
   const bidManagementFee = manageBidsProcess ? 2750 : 0;
   const totalPrice = basePrice + bidManagementFee;
 
+  // Use state to control height
+  const [contentHeight, setContentHeight] = React.useState(
+    manageBidsProcess ? "auto" : "auto"
+  );
+
+  // Update height when manageBidsProcess changes
+  React.useEffect(() => {
+    // Use setTimeout to ensure DOM has updated
+    setTimeout(() => {
+      setContentHeight("auto");
+    }, 10);
+  }, [manageBidsProcess]);
+
   return (
-    <Card>
-      <CardHeader>
+    <Card className="relative">
+      <CardHeader className="sticky top-0 bg-background z-10">
         <CardTitle>Payment Information</CardTitle>
         <CardDescription>
           Service fee for FGB assisted submission
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent
+        style={{ height: contentHeight }}
+        className="transition-all duration-300"
+      >
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
@@ -44,9 +61,10 @@ export function PaymentInformation({
             <div className="text-lg font-medium">£{basePrice.toFixed(2)}</div>
           </div>
 
-          <div className="flex justify-between items-center pt-2 border-t">
-            <div>
-              <div className="flex items-center space-x-2">
+          {/* Fixed height container for switch row */}
+          <div className="flex justify-between items-center pt-2 border-t h-20">
+            <div className="max-w-[80%]">
+              <div className="flex items-center">
                 <div>
                   <h3 className="font-semibold">
                     FG+B to manage the bids process
@@ -58,24 +76,29 @@ export function PaymentInformation({
                 </div>
               </div>
             </div>
-            <Switch
-              checked={manageBidsProcess}
-              onCheckedChange={(checked) => {
-                setValue("manageBidsProcess", checked);
-              }}
-            />
+            <div className="flex-shrink-0">
+              <Switch
+                checked={manageBidsProcess}
+                onCheckedChange={(checked) => {
+                  setValue("manageBidsProcess", checked);
+                }}
+              />
+            </div>
           </div>
 
-          {manageBidsProcess && (
-            <div className="flex justify-between items-center pt-2 pl-6 text-web-orange">
-              <div>
-                <p className="text-sm font-medium">Bids Management Fee</p>
+          {/* Container with absolute height */}
+          <div className="h-[50px]">
+            {manageBidsProcess && (
+              <div className="flex justify-between items-center pt-2 pl-6">
+                <div>
+                  <p className="text-sm font-semibold">Bids Management Fee</p>
+                </div>
+                <div className="text-lg font-medium">
+                  £{bidManagementFee.toFixed(2)}
+                </div>
               </div>
-              <div className="text-lg font-medium">
-                £{bidManagementFee.toFixed(2)}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="flex justify-between items-center pt-3 border-t-2">
             <div>
