@@ -10,9 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 
-export function PaymentInformation({ manageBidsProcess, isSubmitting }) {
+export function PaymentInformation({
+  manageBidsProcess,
+  isSubmitting,
+  setValue,
+}) {
   // Calculate payment details
   const basePrice = 250;
   const bidManagementFee = manageBidsProcess ? 2750 : 0;
@@ -36,6 +42,29 @@ export function PaymentInformation({ manageBidsProcess, isSubmitting }) {
               </p>
             </div>
             <div className="text-lg font-medium">£{basePrice.toFixed(2)}</div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="manageBidsProcess"
+                checked={manageBidsProcess}
+                onCheckedChange={(checked) => {
+                  setValue("manageBidsProcess", checked);
+                }}
+              />
+              <Label
+                htmlFor="manageBidsProcess"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                FG+B to manage the bids process
+              </Label>
+            </div>
+            <p className="text-xs text-muted-foreground ml-6">
+              This includes chasing, handling queries, and providing a tender
+              summary report. This option will incur an additional fee of £2,750
+              payable by the buyer.
+            </p>
           </div>
 
           {manageBidsProcess && (

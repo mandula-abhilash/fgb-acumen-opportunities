@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,7 +34,6 @@ export function ResponseSection({
 }) {
   const initialEOIDate = watch("initialEOIDate");
   const bidSubmissionDate = watch("bidSubmissionDate");
-  const manageBidsProcess = watch("manageBidsProcess");
 
   return (
     <Card>
@@ -98,29 +96,6 @@ export function ResponseSection({
                   {errors.queriesContactName.message}
                 </p>
               )}
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="manageBidsProcess"
-                  checked={manageBidsProcess}
-                  onCheckedChange={(checked) => {
-                    setValue("manageBidsProcess", checked);
-                  }}
-                />
-                <Label
-                  htmlFor="manageBidsProcess"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  FG+B to manage the bids process
-                </Label>
-              </div>
-              <p className="text-xs text-muted-foreground ml-6">
-                This includes chasing, handling queries, and providing a tender
-                summary report. This option will incur an additional fee of
-                £2,750 payable by the buyer.
-              </p>
             </div>
           </div>
 
