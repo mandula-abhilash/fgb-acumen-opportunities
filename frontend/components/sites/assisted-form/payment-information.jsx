@@ -10,9 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { Switch } from "@/components/ui/switch";
 
 export function PaymentInformation({
   manageBidsProcess,
@@ -44,37 +44,32 @@ export function PaymentInformation({
             <div className="text-lg font-medium">£{basePrice.toFixed(2)}</div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="manageBidsProcess"
-                checked={manageBidsProcess}
-                onCheckedChange={(checked) => {
-                  setValue("manageBidsProcess", checked);
-                }}
-              />
-              <Label
-                htmlFor="manageBidsProcess"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                FG+B to manage the bids process
-              </Label>
+          <div className="flex justify-between items-center pt-2 border-t">
+            <div>
+              <div className="flex items-center space-x-2">
+                <div>
+                  <h3 className="font-semibold">
+                    FG+B to manage the bids process
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Includes chasing, handling queries, and providing a tender
+                    summary report
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground ml-6">
-              This includes chasing, handling queries, and providing a tender
-              summary report. This option will incur an additional fee of £2,750
-              payable by the buyer.
-            </p>
+            <Switch
+              checked={manageBidsProcess}
+              onCheckedChange={(checked) => {
+                setValue("manageBidsProcess", checked);
+              }}
+            />
           </div>
 
           {manageBidsProcess && (
-            <div className="flex justify-between items-center pt-2 border-t">
+            <div className="flex justify-between items-center pt-2 pl-6 text-web-orange">
               <div>
-                <h3 className="font-semibold">Bids Management Fee</h3>
-                <p className="text-sm text-muted-foreground">
-                  Managing bids process, chasing, handling queries, and
-                  providing tender summary
-                </p>
+                <p className="text-sm font-medium">Bids Management Fee</p>
               </div>
               <div className="text-lg font-medium">
                 £{bidManagementFee.toFixed(2)}

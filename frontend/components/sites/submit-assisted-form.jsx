@@ -13,6 +13,7 @@ import { PaymentInformation } from "@/components/sites/assisted-form/payment-inf
 import { ResponseSection } from "@/components/sites/assisted-form/response-section";
 import { assistedSubmissionSchema } from "@/components/sites/assisted-form/schema";
 import { SiteLocationMap } from "@/components/sites/assisted-form/site-location-map";
+import { SitePlanUpload } from "@/components/sites/assisted-form/site-plan-upload";
 
 export function SubmitAssistedSiteForm() {
   const router = useRouter();
@@ -146,13 +147,15 @@ export function SubmitAssistedSiteForm() {
           </div>
         </div>
 
+        {/* Site Plan Upload Section */}
+        <SitePlanUpload handleSitePlanUpload={handleSitePlanUpload} />
+
         <ResponseSection
           register={register}
           setValue={setValue}
           watch={watch}
           errors={errors}
           validatePhoneInput={validatePhoneInput}
-          handleSitePlanUpload={handleSitePlanUpload}
         />
 
         {/* Contact Information and Payment Information */}
@@ -166,6 +169,7 @@ export function SubmitAssistedSiteForm() {
           <PaymentInformation
             manageBidsProcess={manageBidsProcess}
             isSubmitting={isSubmitting}
+            setValue={setValue}
           />
         </div>
       </div>

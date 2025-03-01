@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,7 +21,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { fileTypes } from "@/components/sites/form-constants";
 
 export function ResponseSection({
   register,
@@ -30,7 +28,6 @@ export function ResponseSection({
   watch,
   errors,
   validatePhoneInput,
-  handleSitePlanUpload,
 }) {
   const initialEOIDate = watch("initialEOIDate");
   const bidSubmissionDate = watch("bidSubmissionDate");
@@ -172,19 +169,6 @@ export function ResponseSection({
                   </p>
                 )}
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="sitePlanImage">Site Plan</Label>
-              <FileUpload
-                onUploadComplete={handleSitePlanUpload}
-                acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
-                maxFileSize={10 * 1024 * 1024} // 10MB
-                folder="site-plans"
-                label="Upload Site Plan"
-                description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
-                fileType="mixed"
-              />
             </div>
           </div>
         </div>
