@@ -11,7 +11,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { PageHeader } from "@/components/layout/page-header";
 import { OpportunityCard } from "@/components/opportunities/opportunity-card";
-import { SubmissionOptionsModal } from "@/components/sites/submission-options-modal";
 
 // Dummy data for demonstration
 const opportunities = [
@@ -79,7 +78,7 @@ export default function OpportunitiesPage() {
   }, [loading, user, router]);
 
   const handleSubmitSiteClick = () => {
-    setShowOptionsModal(true);
+    router.push("/dashboard/sites/options");
   };
 
   const renderActionButton = () => {
@@ -135,11 +134,6 @@ export default function OpportunitiesPage() {
           </div>
         )}
       </div>
-
-      <SubmissionOptionsModal
-        open={showOptionsModal}
-        onOpenChange={setShowOptionsModal}
-      />
     </div>
   );
 }
