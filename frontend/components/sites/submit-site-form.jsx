@@ -97,7 +97,10 @@ export function SubmitSiteForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="px-6 py-4 bg-background/95 backdrop-blur-md dark:bg-background/80"
+    >
       <div className="flex flex-col space-y-6 mx-auto">
         {/* Map and Basic Information Section */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
