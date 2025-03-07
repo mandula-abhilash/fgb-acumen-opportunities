@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 
 import visdakSesamModule from "visdak-sesam";
 import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
-import siteRoutes from "./routes/siteRoutes.js";
+import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
 const startServer = async () => {
@@ -69,8 +69,8 @@ const startServer = async () => {
     app.use("/api/transactions", transactionRoutes);
     app.use("/api/checkout", checkoutRoutes);
 
-    // Mount the sites routes
-    app.use("/api/sites", siteRoutes);
+    // Mount the sites routes with updated path
+    app.use("/api/live-opportunities", liveOpportunityRoutes);
 
     // Mount the upload routes
     app.use("/api/upload", uploadRoutes);

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { createSite } from "@/lib/api/sites";
+import { createLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -27,12 +27,65 @@ import { ProjectTimeline } from "./form-sections/project-timeline";
 import { SiteLocation } from "./form-sections/site-location";
 import { TenureInformation } from "./form-sections/tenure-information";
 
+const dummyData = {
+  siteName: "Greenfield Estate",
+  siteAddress: "1234 Oakwood Drive, London, UK",
+  customSiteAddress: "Plot 45, Greenfield Estate, London",
+  opportunityType: "grant-funded",
+  developerName: "Acme Property Group",
+  developerRegion: [
+    { value: "south-east", label: "South East" },
+    { value: "south-east-midlands", label: "South East Midlands" },
+  ],
+  googleMapsLink: "https://www.google.com/maps?q=51.4204639,-0.0884752",
+  lpa: [
+    "manchester",
+    "liverpool",
+    "leeds",
+    "birmingham",
+    "bristol",
+    "newcastle",
+    "sheffield",
+    "nottingham",
+    "cardiff",
+    "glasgow",
+  ],
+  region: ["south-east", "east-midlands"],
+  planningStatus: "detailed-approval",
+  landPurchaseStatus: "heads-of-terms",
+  plots: 250,
+  tenures: ["build-to-rent", "open-market"],
+  startOnSiteDate: new Date("2025-02-28T18:30:00.000Z"),
+  firstHandoverDate: new Date("2025-03-13T18:30:00.000Z"),
+  finalHandoverDate: new Date("2025-03-30T18:30:00.000Z"),
+  developerInfo:
+    "Acme Property Group is a leading UK-based developer specializing in sustainable housing projects.",
+  planningOverview:
+    "The site has been granted outline planning permission for 250 units, including affordable housing.",
+  proposedDevelopment:
+    "A mix of 1-4 bedroom houses and flats, with green spaces and community areas.",
+  detailedTenureAccommodation:
+    "60% market sale, 30% affordable housing, 10% shared ownership.",
+  paymentTerms: "10% deposit on exchange, balance on completion.",
+  vatPosition: "zero",
+  projectProgramme:
+    "Phase 1 completion by Q4 2026, full project completion by Q2 2027.",
+  agentTerms: "Sole agency agreement with 2% commission on sales.",
+  sitePlanImage: "",
+  proposedSpecification: "",
+  s106Agreement: "",
+  coordinates: { lat: 51.4204639, lng: -0.0884752 },
+  boundary: [],
+};
+
 export function SubmitSiteForm() {
   const { toast } = useToast();
   const router = useRouter();
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState("");
-  const [polygonPath, setPolygonPath] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(
+    dummyData.coordinates
+  );
+  const [selectedAddress, setSelectedAddress] = useState(dummyData.siteAddress);
+  const [polygonPath, setPolygonPath] = useState(dummyData.boundary);
 
   const {
     register,
@@ -42,18 +95,7 @@ export function SubmitSiteForm() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(submitSiteSchema),
-    defaultValues: {
-      lpa: [],
-      region: [],
-      tenures: [],
-      sitePlanImage: "",
-      proposedSpecification: "",
-      s106Agreement: "",
-      googleMapsLink: "",
-      vatPosition: "",
-      siteAddress: "",
-      customSiteAddress: "",
-    },
+    defaultValues: dummyData, // 🚀 Default values populated from updated dummy data
   });
 
   const onSubmit = async (data) => {
@@ -75,7 +117,7 @@ export function SubmitSiteForm() {
 
       console.log("Form data:", siteData);
 
-      // await createSite(siteData);
+      await createLiveOpportunitySite(siteData);
 
       toast({
         title: "Success",
