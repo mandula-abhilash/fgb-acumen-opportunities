@@ -73,6 +73,10 @@ export function BasicInformation({
               Site Address (From Map){" "}
               <span className="text-destructive">*</span>
             </Label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Search for the address on the map and adjust the marker pin by
+              dragging to set the exact location
+            </p>
             <Input
               id="siteAddress"
               {...register("siteAddress")}
