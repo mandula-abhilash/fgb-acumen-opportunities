@@ -79,6 +79,7 @@ export const vatPositions = [
 export const submitSiteSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteAddress: z.string().min(1, "Site address is required"),
+  customSiteAddress: z.string().min(1, "Custom site address is required"),
   opportunityType: z.string().min(1, "Opportunity type is required"),
   developerName: z.string().min(1, "Developer name is required"),
   developerRegion: z

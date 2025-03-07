@@ -51,6 +51,8 @@ export function SubmitSiteForm() {
       s106Agreement: "",
       googleMapsLink: "",
       vatPosition: "",
+      siteAddress: "",
+      customSiteAddress: "",
     },
   });
 
@@ -110,7 +112,7 @@ export function SubmitSiteForm() {
         {/* Map and Basic Information Section */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
           {/* Basic Information - Takes 1 column on desktop */}
-          <div className="order-1 lg:order-1 h-[400px] lg:h-full">
+          <div className="order-2 lg:order-1 h-[400px] lg:h-full">
             <BasicInformation
               register={register}
               setValue={setValue}
@@ -122,7 +124,7 @@ export function SubmitSiteForm() {
           </div>
 
           {/* Map - Takes 2 columns on desktop */}
-          <div className="order-2 lg:order-2 lg:col-span-2 h-[400px] lg:h-full">
+          <div className="order-1 lg:order-2 lg:col-span-2 h-[400px] lg:h-full">
             <SiteLocation
               onLocationSelect={handleLocationSelect}
               onPolygonComplete={handlePolygonComplete}

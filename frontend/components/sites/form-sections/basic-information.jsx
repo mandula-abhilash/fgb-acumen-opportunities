@@ -50,6 +50,14 @@ export function BasicInformation({
     }
   }, [selectedLocation, setValue]);
 
+  // Update site address when selected address changes
+  useEffect(() => {
+    if (selectedAddress) {
+      setValue("siteAddress", selectedAddress);
+      setValue("customSiteAddress", selectedAddress);
+    }
+  }, [selectedAddress, setValue]);
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -61,40 +69,43 @@ export function BasicInformation({
       <CardContent className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="siteName">
-              Site Name <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="siteName"
-              {...register("siteName")}
-              className={errors.siteName ? "border-destructive" : ""}
-            />
-            {errors.siteName && (
-              <p className="text-sm text-destructive">
-                {errors.siteName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="siteAddress">
-              Site Address <span className="text-destructive">*</span>
+              Site Address (From Map){" "}
+              <span className="text-destructive">*</span>
             </Label>
             <Input
               id="siteAddress"
               {...register("siteAddress")}
               className={errors.siteAddress ? "border-destructive" : ""}
+              disabled
+              value={selectedAddress || ""}
             />
             {errors.siteAddress && (
               <p className="text-sm text-destructive">
                 {errors.siteAddress.message}
               </p>
             )}
-            {selectedAddress && (
-              <div className="mt-2 p-3 rounded-md border bg-muted/50">
-                <p className="text-sm break-words">{selectedAddress}</p>
-              </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="customSiteAddress">
+              Custom Site Address <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="customSiteAddress"
+              {...register("customSiteAddress")}
+              className={errors.customSiteAddress ? "border-destructive" : ""}
+              placeholder="Modify address if needed"
+            />
+            {errors.customSiteAddress && (
+              <p className="text-sm text-destructive">
+                {errors.customSiteAddress.message}
+              </p>
             )}
+            <p className="text-xs text-muted-foreground">
+              You can modify this address if you need to add additional details
+              or make corrections
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -124,13 +135,20 @@ export function BasicInformation({
                 </a>
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Search for the address on the map to the right and you can adjust
-              the marker pin by dragging to set the location
-            </p>
-            {errors.googleMapsLink && (
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="siteName">
+              Site Name <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="siteName"
+              {...register("siteName")}
+              className={errors.siteName ? "border-destructive" : ""}
+            />
+            {errors.siteName && (
               <p className="text-sm text-destructive">
-                {errors.googleMapsLink.message}
+                {errors.siteName.message}
               </p>
             )}
           </div>
@@ -186,7 +204,6 @@ export function BasicInformation({
               min="1"
               step="1"
               onKeyDown={(e) => {
-                // Allow arrow keys (ArrowUp, ArrowDown) for incrementing/decrementing
                 if (
                   !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Tab/.test(
                     e.key
@@ -196,20 +213,17 @@ export function BasicInformation({
                 }
               }}
               onChange={(e) => {
-                // Ensure only valid numbers are entered
                 const value = e.target.value;
                 if (value === "" || /^[0-9]+$/.test(value)) {
                   setValue("plots", value === "" ? "" : parseInt(value, 10));
                 }
               }}
               onBlur={(e) => {
-                // Ensure value is at least 1
                 const value = parseInt(e.target.value);
                 if (isNaN(value) || value < 1) {
                   e.target.value = "1";
                   setValue("plots", 1);
                 } else {
-                  // Ensure it's an integer
                   e.target.value = Math.floor(value).toString();
                   setValue("plots", Math.floor(value));
                 }
