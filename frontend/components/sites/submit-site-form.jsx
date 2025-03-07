@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import { createSite } from "@/lib/api/sites";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -16,7 +17,6 @@ import {
   regions,
   submitSiteSchema,
   tenureTypes,
-  vatPositions,
 } from "./form-constants";
 import { BasicInformation } from "./form-sections/basic-information";
 import { CommercialInformation } from "./form-sections/commercial-information";
@@ -72,17 +72,22 @@ export function SubmitSiteForm() {
       };
 
       console.log("Form data:", siteData);
+
+      // await createSite(siteData);
+
       toast({
         title: "Success",
         description: "Site submitted successfully",
       });
+
       router.push("/dashboard/opportunities");
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to submit site. Please try again.",
+        description:
+          error.message || "Failed to submit site. Please try again.",
       });
     }
   };
