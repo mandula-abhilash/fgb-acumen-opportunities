@@ -23,6 +23,16 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     handoverDate,
   } = req.body;
 
+  console.log("USER : " + JSON.stringify(req.user, null, 2));
+
+  // Get the authenticated user's ID from the session
+  const userId = req.user.userId;
+
+  if (!userId) {
+    res.status(401);
+    throw new Error("User not authenticated");
+  }
+
   const site = await db.one(
     `INSERT INTO live_opportunities (
       site_name, site_address, custom_site_address, opportunity_type, developer_name, developer_region,
@@ -47,7 +57,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       tenures,
       startOnSiteDate,
       handoverDate,
-      req.user.id,
+      userId,
     ]
   );
 
