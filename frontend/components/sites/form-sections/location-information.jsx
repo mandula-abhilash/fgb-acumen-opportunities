@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { getLPAs } from "@/lib/api/lpas";
 import { getDefaultRegions } from "@/lib/api/regions";
 import {
   Card,
@@ -14,23 +15,28 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Spinner } from "@/components/ui/spinner";
 
-export function LocationInformation({ watch, setValue, errors, lpaOptions }) {
+export function LocationInformation({ watch, setValue, errors }) {
   const [regions, setRegions] = useState([]);
+  const [lpas, setLPAs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRegions = async () => {
+    const fetchData = async () => {
       try {
-        const regionsData = await getDefaultRegions();
+        const [regionsData, lpasData] = await Promise.all([
+          getDefaultRegions(),
+          getLPAs(),
+        ]);
         setRegions(regionsData);
+        setLPAs(lpasData);
       } catch (error) {
-        console.error("Failed to fetch regions:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRegions();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -38,7 +44,7 @@ export function LocationInformation({ watch, setValue, errors, lpaOptions }) {
       <Card>
         <CardHeader>
           <CardTitle>Location Information</CardTitle>
-          <CardDescription>Loading regions...</CardDescription>
+          <CardDescription>Loading...</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-8">
           <Spinner size="lg" className="text-web-orange" />
@@ -76,7 +82,7 @@ export function LocationInformation({ watch, setValue, errors, lpaOptions }) {
             LPA <span className="text-destructive">*</span>
           </Label>
           <MultiSelect
-            options={lpaOptions}
+            options={lpas}
             selected={watch("lpa")}
             onChange={(value) => setValue("lpa", value)}
             placeholder="Select LPA..."

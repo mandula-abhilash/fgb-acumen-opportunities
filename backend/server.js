@@ -11,6 +11,7 @@ import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
 import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import regionsRoutes from "./routes/regionsRoutes.js";
+import lpaRoutes from "./routes/lpaRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -78,6 +79,9 @@ const startServer = async () => {
 
     // Mount the regions routes
     app.use("/api/regions", regionsRoutes);
+
+    // Mount the LPA routes
+    app.use("/api/lpas", lpaRoutes);
 
     // Catch-all for undefined routes
     app.use((req, res) => {
