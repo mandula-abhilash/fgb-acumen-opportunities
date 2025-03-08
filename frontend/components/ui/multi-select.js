@@ -64,6 +64,12 @@ export function MultiSelect({
     }
   };
 
+  // Get label for a value from options
+  const getOptionLabel = (value) => {
+    const option = options.find((opt) => opt.value === value);
+    return option ? option.label : value;
+  };
+
   return (
     <div className="relative">
       <Popover open={open} onOpenChange={setOpen}>
@@ -84,35 +90,32 @@ export function MultiSelect({
                     {placeholder}
                   </span>
                 )}
-                {selected.slice(0, maxCount).map((value) => {
-                  const option = options.find((opt) => opt.value === value);
-                  return (
-                    <Badge variant="secondary" key={value} className="m-1 pr-1">
-                      {option?.label}
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-0.5"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleUnselect(value);
-                          }
-                        }}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
+                {selected.slice(0, maxCount).map((value) => (
+                  <Badge variant="secondary" key={value} className="m-1 pr-1">
+                    {getOptionLabel(value)}
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-0.5"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
                           handleUnselect(value);
-                        }}
-                      >
-                        <X className="h-3 w-3 hover:text-foreground" />
-                      </span>
-                    </Badge>
-                  );
-                })}
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleUnselect(value);
+                      }}
+                    >
+                      <X className="h-3 w-3 hover:text-foreground" />
+                    </span>
+                  </Badge>
+                ))}
                 {selected.length > maxCount && (
                   <Badge variant="secondary" className="m-1">
                     +{selected.length - maxCount} more
@@ -146,30 +149,20 @@ export function MultiSelect({
           avoidCollisions={false}
           collisionPadding={20}
         >
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Search..."
               value={searchQuery}
               onValueChange={setSearchQuery}
             />
             <CommandList className="max-h-[200px] overflow-y-auto">
-              {searchQuery && filteredOptions.length === 0 && (
+              {filteredOptions.length === 0 && (
                 <CommandEmpty>No results found.</CommandEmpty>
               )}
               <CommandGroup>
                 <div
                   role="button"
-                  tabIndex={0}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleAll();
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      toggleAll();
-                    }
-                  }}
+                  onClick={toggleAll}
                   className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 >
                   <div
@@ -188,21 +181,12 @@ export function MultiSelect({
                       : "Select All"}
                   </span>
                 </div>
+
                 {filteredOptions.map((option) => (
                   <div
                     key={option.value}
                     role="button"
-                    tabIndex={0}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleSelect(option.value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSelect(option.value);
-                      }
-                    }}
+                    onClick={() => handleSelect(option.value)}
                     className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                   >
                     <div
@@ -219,15 +203,6 @@ export function MultiSelect({
                   </div>
                 ))}
               </CommandGroup>
-              <div className="p-2 border-t">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-center"
-                  onClick={() => setOpen(false)}
-                >
-                  Close
-                </Button>
-              </div>
             </CommandList>
           </Command>
         </PopoverContent>
