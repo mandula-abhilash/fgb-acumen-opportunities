@@ -8,21 +8,6 @@ export const opportunityTypes = [
   { value: "other", label: "Other" },
 ];
 
-export const regions = [
-  { value: "north-east", label: "North East" },
-  { value: "north-west", label: "North West" },
-  { value: "yorkshire-humber", label: "Yorkshire and the Humber" },
-  { value: "east-midlands", label: "East Midlands" },
-  { value: "west-midlands", label: "West Midlands" },
-  { value: "east-england", label: "East of England" },
-  { value: "london", label: "London" },
-  { value: "south-east", label: "South East" },
-  { value: "south-west", label: "South West" },
-  { value: "wales", label: "Wales" },
-  { value: "scotland", label: "Scotland" },
-  { value: "northern-ireland", label: "Northern Ireland" },
-];
-
 export const lpaOptions = [
   { value: "manchester", label: "Manchester City Council" },
   { value: "liverpool", label: "Liverpool City Council" },

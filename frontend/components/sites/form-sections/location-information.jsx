@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import { getRegions } from "@/lib/api/regions";
 import {
   Card,
   CardContent,
@@ -9,14 +12,41 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { Spinner } from "@/components/ui/spinner";
 
-export function LocationInformation({
-  watch,
-  setValue,
-  errors,
-  regions,
-  lpaOptions,
-}) {
+export function LocationInformation({ watch, setValue, errors, lpaOptions }) {
+  const [regions, setRegions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const regionsData = await getRegions();
+        setRegions(regionsData);
+      } catch (error) {
+        console.error("Failed to fetch regions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegions();
+  }, []);
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Location Information</CardTitle>
+          <CardDescription>Loading regions...</CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center py-8">
+          <Spinner size="lg" className="text-web-orange" />
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>

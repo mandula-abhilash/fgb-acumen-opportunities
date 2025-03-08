@@ -10,6 +10,7 @@ import visdakSesamModule from "visdak-sesam";
 import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
 import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import regionsRoutes from "./routes/regionsRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -74,6 +75,9 @@ const startServer = async () => {
 
     // Mount the upload routes
     app.use("/api/upload", uploadRoutes);
+
+    // Mount the regions routes
+    app.use("/api/regions", regionsRoutes);
 
     // Catch-all for undefined routes
     app.use((req, res) => {

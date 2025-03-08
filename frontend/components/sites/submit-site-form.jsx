@@ -14,7 +14,6 @@ import {
   lpaOptions,
   opportunityTypes,
   planningStatuses,
-  regions,
   submitSiteSchema,
   tenureTypes,
 } from "./form-constants";
@@ -95,7 +94,7 @@ export function SubmitSiteForm() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(submitSiteSchema),
-    defaultValues: dummyData, // 🚀 Default values populated from updated dummy data
+    defaultValues: dummyData,
   });
 
   const onSubmit = async (data) => {
@@ -181,14 +180,12 @@ export function SubmitSiteForm() {
           setValue={setValue}
           watch={watch}
           errors={errors}
-          regions={regions}
         />
 
         <LocationInformation
           watch={watch}
           setValue={setValue}
           errors={errors}
-          regions={regions}
           lpaOptions={lpaOptions}
         />
 
