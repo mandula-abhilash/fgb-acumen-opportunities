@@ -82,6 +82,30 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
     });
   };
 
+  // Group and format options into Default and Custom sections
+  const formatGroupedOptions = (options) => {
+    const defaultRegions = options.filter((option) => option.is_default);
+    const customRegions = options.filter((option) => !option.is_default);
+
+    const groups = [];
+
+    if (defaultRegions.length > 0) {
+      groups.push({
+        label: "Default Regions",
+        options: defaultRegions,
+      });
+    }
+
+    if (customRegions.length > 0) {
+      groups.push({
+        label: "Custom Regions",
+        options: customRegions,
+      });
+    }
+
+    return groups;
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -133,9 +157,10 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
               placeholder="Select or create regions"
               loadOptions={async (inputValue) => {
                 if (inputValue.length < 1) return [];
-                return developerRegions.filter((region) =>
+                const filteredOptions = developerRegions.filter((region) =>
                   region.label.toLowerCase().includes(inputValue.toLowerCase())
                 );
+                return formatGroupedOptions(filteredOptions);
               }}
               onCreateOption={handleCreateOption}
               value={formatSelectedValues()}
