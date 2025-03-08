@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getRegions } from "@/lib/api/regions";
+import { getDefaultRegions } from "@/lib/api/regions";
 import {
   Card,
   CardContent,
@@ -21,7 +21,7 @@ export function LocationInformation({ watch, setValue, errors, lpaOptions }) {
   useEffect(() => {
     const fetchRegions = async () => {
       try {
-        const regionsData = await getRegions();
+        const regionsData = await getDefaultRegions();
         setRegions(regionsData);
       } catch (error) {
         console.error("Failed to fetch regions:", error);

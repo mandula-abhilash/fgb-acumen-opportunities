@@ -15,10 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { CreateRegionDialog } from "@/components/regions/create-region-dialog";
 
 export function DeveloperInformation({ register, setValue, watch, errors }) {
   const [developerRegions, setDeveloperRegions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateRegionOpen, setIsCreateRegionOpen] = useState(false);
+  const [newRegionName, setNewRegionName] = useState("");
   const selectedRegions = watch("developerRegion") || [];
 
   useEffect(() => {
@@ -36,18 +39,19 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
     fetchRegions();
   }, []);
 
-  const handleCreateRegion = (inputValue) => {
-    const newRegion = {
-      value: inputValue.toLowerCase().replace(/\s+/g, "-"),
-      label: inputValue,
-    };
+  const handleCreateOption = (inputValue) => {
+    setNewRegionName(inputValue);
+    setIsCreateRegionOpen(true);
+  };
 
+  const handleRegionCreated = (newRegion) => {
+    setDeveloperRegions((prevRegions) => [...prevRegions, newRegion]);
+
+    // Add the new region to the selected values
     const currentRegions = Array.isArray(selectedRegions)
       ? selectedRegions
       : [];
-    const updatedRegions = [...currentRegions, newRegion];
-
-    setValue("developerRegion", updatedRegions);
+    setValue("developerRegion", [...currentRegions, newRegion.value]);
   };
 
   // Format the value for the multi-select component
@@ -133,7 +137,7 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
                   region.label.toLowerCase().includes(inputValue.toLowerCase())
                 );
               }}
-              onCreateOption={handleCreateRegion}
+              onCreateOption={handleCreateOption}
               value={formatSelectedValues()}
               onChange={(newValue) => setValue("developerRegion", newValue)}
               isClearable
@@ -151,6 +155,13 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
             placeholder="Enter any additional information about the developer..."
           />
         </div>
+
+        <CreateRegionDialog
+          open={isCreateRegionOpen}
+          onOpenChange={setIsCreateRegionOpen}
+          onRegionCreated={handleRegionCreated}
+          initialName={newRegionName}
+        />
       </CardContent>
     </Card>
   );
