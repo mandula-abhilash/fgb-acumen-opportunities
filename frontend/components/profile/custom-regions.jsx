@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Edit2, Plus, Trash2 } from "lucide-react";
+import { Edit2, Loader2, Plus, Trash2 } from "lucide-react";
 
 import {
   createCustomRegion,
@@ -49,6 +49,8 @@ export function CustomRegions() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [regionToDelete, setRegionToDelete] = useState(null);
   const [editingRegion, setEditingRegion] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -96,6 +98,7 @@ export function CustomRegions() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     try {
       if (editingRegion) {
         await updateCustomRegion(editingRegion.value, formData);
@@ -119,6 +122,8 @@ export function CustomRegions() {
         description:
           error.message || "Failed to save region. Please try again.",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -130,6 +135,7 @@ export function CustomRegions() {
   const handleConfirmDelete = async () => {
     if (!regionToDelete) return;
 
+    setIsDeleting(true);
     try {
       await deleteCustomRegion(regionToDelete.value);
       toast({
@@ -144,6 +150,7 @@ export function CustomRegions() {
         description: "Failed to delete region",
       });
     } finally {
+      setIsDeleting(false);
       setIsDeleteDialogOpen(false);
       setRegionToDelete(null);
     }
@@ -164,7 +171,7 @@ export function CustomRegions() {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Custom Regions</CardTitle>
-          <CardDescription>
+          <CardDescription className="mt-2">
             Create and manage your custom regions
           </CardDescription>
         </div>
@@ -201,6 +208,7 @@ export function CustomRegions() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleOpenDialog(region)}
+                    disabled={isSaving}
                   >
                     <Edit2 className="h-4 w-4" />
                     <span className="sr-only">Edit region</span>
@@ -209,6 +217,7 @@ export function CustomRegions() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDeleteClick(region)}
+                    disabled={isDeleting}
                   >
                     <Trash2 className="h-4 w-4" />
                     <span className="sr-only">Delete region</span>
@@ -246,6 +255,7 @@ export function CustomRegions() {
                   }
                   placeholder="Enter region name"
                   required
+                  disabled={isSaving}
                 />
               </div>
 
@@ -259,6 +269,7 @@ export function CustomRegions() {
                   }
                   placeholder="Enter region description"
                   rows={3}
+                  disabled={isSaving}
                 />
               </div>
             </div>
@@ -268,14 +279,23 @@ export function CustomRegions() {
                 type="button"
                 variant="outline"
                 onClick={handleCloseDialog}
+                disabled={isSaving}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="bg-web-orange hover:bg-web-orange/90 text-white"
+                disabled={isSaving}
               >
-                {editingRegion ? "Update Region" : "Create Region"}
+                {isSaving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {editingRegion ? "Updating..." : "Creating..."}
+                  </>
+                ) : (
+                  <>{editingRegion ? "Update Region" : "Create Region"}</>
+                )}
               </Button>
             </DialogFooter>
           </form>
@@ -297,12 +317,20 @@ export function CustomRegions() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive hover:bg-destructive/90"
+              disabled={isDeleting}
             >
-              Delete
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
