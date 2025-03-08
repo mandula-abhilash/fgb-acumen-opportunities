@@ -207,22 +207,20 @@ export function CustomRegions() {
                 </div>
                 <div className="flex gap-2 justify-end sm:justify-start">
                   <Button
-                    variant="ghost"
-                    size="icon"
                     onClick={() => handleOpenDialog(region)}
                     disabled={isSaving}
+                    className="sm:w-auto w-full bg-web-orange/10 hover:bg-web-orange/20 text-web-orange"
                   >
-                    <Edit2 className="h-4 w-4" />
-                    <span className="sr-only">Edit region</span>
+                    <Edit2 className="h-4 w-4 sm:mr-0 mr-2" />
+                    <span className="sm:hidden">Edit</span>
                   </Button>
                   <Button
-                    variant="ghost"
-                    size="icon"
                     onClick={() => handleDeleteClick(region)}
                     disabled={isDeleting}
+                    className="sm:w-auto w-full bg-web-orange/10 hover:bg-web-orange/20 text-web-orange"
                   >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete region</span>
+                    <Trash2 className="h-4 w-4 sm:mr-0 mr-2" />
+                    <span className="sm:hidden">Delete</span>
                   </Button>
                 </div>
               </div>
@@ -233,7 +231,7 @@ export function CustomRegions() {
 
       {/* Edit/Create Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px] mx-4 sm:mx-auto">
           <DialogHeader>
             <DialogTitle>
               {editingRegion ? "Edit Region" : "Add New Region"}
@@ -277,28 +275,31 @@ export function CustomRegions() {
             </div>
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCloseDialog}
-                disabled={isSaving}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="bg-web-orange hover:bg-web-orange/90 text-white"
-                disabled={isSaving}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {editingRegion ? "Updating..." : "Creating..."}
-                  </>
-                ) : (
-                  <>{editingRegion ? "Update Region" : "Create Region"}</>
-                )}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCloseDialog}
+                  disabled={isSaving}
+                  className="w-full sm:w-auto order-2 sm:order-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-web-orange hover:bg-web-orange/90 text-white w-full sm:w-auto order-1 sm:order-2"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {editingRegion ? "Updating..." : "Creating..."}
+                    </>
+                  ) : (
+                    <>{editingRegion ? "Update Region" : "Create Region"}</>
+                  )}
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -309,7 +310,7 @@ export function CustomRegions() {
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="mx-4 sm:mx-auto">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Region</AlertDialogTitle>
             <AlertDialogDescription>
