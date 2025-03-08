@@ -32,8 +32,14 @@ createAuthRefreshInterceptor(api, refreshAuthLogic, {
 
 // Set up a timer to refresh token every 15 minutes
 if (typeof window !== "undefined") {
-  const REFRESH_INTERVAL = 15 * 60 * 1000; // 15 minutes
-  const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+  const REFRESH_INTERVAL = parseInt(
+    process.env.NEXT_PUBLIC_TOKEN_REFRESH_INTERVAL,
+    10
+  ); // 15 minutes in milliseconds
+  const SESSION_DURATION = parseInt(
+    process.env.NEXT_PUBLIC_SESSION_DURATION,
+    10
+  ); // 7 days in milliseconds
 
   let sessionStartTime = Date.now();
 
