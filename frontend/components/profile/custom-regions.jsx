@@ -9,6 +9,16 @@ import {
   getRegions,
   updateCustomRegion,
 } from "@/lib/api/regions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,6 +46,8 @@ export function CustomRegions() {
   const [regions, setRegions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [regionToDelete, setRegionToDelete] = useState(null);
   const [editingRegion, setEditingRegion] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -110,9 +122,16 @@ export function CustomRegions() {
     }
   };
 
-  const handleDelete = async (regionId) => {
+  const handleDeleteClick = (region) => {
+    setRegionToDelete(region);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!regionToDelete) return;
+
     try {
-      await deleteCustomRegion(regionId);
+      await deleteCustomRegion(regionToDelete.value);
       toast({
         title: "Success",
         description: "Region deleted successfully",
@@ -124,6 +143,9 @@ export function CustomRegions() {
         title: "Error",
         description: "Failed to delete region",
       });
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setRegionToDelete(null);
     }
   };
 
@@ -186,7 +208,7 @@ export function CustomRegions() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleDelete(region.value)}
+                    onClick={() => handleDeleteClick(region)}
                   >
                     <Trash2 className="h-4 w-4" />
                     <span className="sr-only">Delete region</span>
@@ -198,6 +220,7 @@ export function CustomRegions() {
         )}
       </CardContent>
 
+      {/* Edit/Create Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -258,6 +281,32 @@ export function CustomRegions() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Region</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-medium">{regionToDelete?.label}</span>? This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }
