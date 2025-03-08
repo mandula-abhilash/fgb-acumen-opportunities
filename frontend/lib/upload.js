@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "@/visdak-auth/src/api/axiosInstance";
 
 /**
  * Get a presigned URL for uploading a file to S3
@@ -8,11 +8,10 @@ import axios from "axios";
  */
 export const getPresignedUrl = async (fileType, folder = "uploads") => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/upload/presigned-url`,
-      { fileType, folder },
-      { withCredentials: true }
-    );
+    const response = await api.post("/api/upload/presigned-url", {
+      fileType,
+      folder,
+    });
     return response.data.data;
   } catch (error) {
     console.error("Error getting presigned URL:", error);
@@ -30,7 +29,7 @@ export const getPresignedUrl = async (fileType, folder = "uploads") => {
  */
 export const uploadFileToS3 = async (file, uploadURL) => {
   try {
-    await axios.put(uploadURL, file, {
+    await api.put(uploadURL, file, {
       headers: {
         "Content-Type": file.type,
       },

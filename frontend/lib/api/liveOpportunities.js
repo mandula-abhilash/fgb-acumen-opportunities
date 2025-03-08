@@ -1,16 +1,8 @@
-import axios from "axios";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import api from "@/visdak-auth/src/api/axiosInstance";
 
 export async function createLiveOpportunitySite(siteData) {
   try {
-    const response = await axios.post(
-      `${API_URL}/api/live-opportunities`,
-      siteData,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await api.post("/api/live-opportunities", siteData);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -21,9 +13,7 @@ export async function createLiveOpportunitySite(siteData) {
 
 export async function getLiveOpportunitySites() {
   try {
-    const response = await axios.get(`${API_URL}/api/live-opportunities`, {
-      withCredentials: true,
-    });
+    const response = await api.get("/api/live-opportunities");
     return response.data;
   } catch (error) {
     throw new Error(
@@ -34,12 +24,7 @@ export async function getLiveOpportunitySites() {
 
 export async function getLiveOpportunitySite(id) {
   try {
-    const response = await axios.get(
-      `${API_URL}/api/live-opportunities/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await api.get(`/api/live-opportunities/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -50,13 +35,7 @@ export async function getLiveOpportunitySite(id) {
 
 export async function updateLiveOpportunitySite(id, siteData) {
   try {
-    const response = await axios.put(
-      `${API_URL}/api/live-opportunities/${id}`,
-      siteData,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await api.put(`/api/live-opportunities/${id}`, siteData);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -67,12 +46,7 @@ export async function updateLiveOpportunitySite(id, siteData) {
 
 export async function deleteLiveOpportunitySite(id) {
   try {
-    const response = await axios.delete(
-      `${API_URL}/api/live-opportunities/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await api.delete(`/api/live-opportunities/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(
