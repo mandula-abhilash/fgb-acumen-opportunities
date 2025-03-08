@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { PageHeader } from "@/components/layout/page-header";
+import { CustomRegions } from "@/components/profile/custom-regions";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -73,6 +74,9 @@ export default function ProfilePage() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Add the CustomRegions component */}
+          <CustomRegions />
         </div>
       </div>
     </div>
