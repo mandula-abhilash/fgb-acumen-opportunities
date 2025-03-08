@@ -168,20 +168,22 @@ export function CustomRegions() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
           <CardTitle>Custom Regions</CardTitle>
-          <CardDescription className="mt-2">
+          <CardDescription className="mt-1.5">
             Create and manage your custom regions
           </CardDescription>
         </div>
-        <Button
-          onClick={() => handleOpenDialog()}
-          className="bg-web-orange hover:bg-web-orange/90 text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Region
-        </Button>
+        <div className="flex justify-center md:justify-end">
+          <Button
+            onClick={() => handleOpenDialog()}
+            className="bg-web-orange hover:bg-web-orange/90 text-white w-full md:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Region
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {regions.length === 0 ? (
@@ -193,7 +195,7 @@ export function CustomRegions() {
             {regions.map((region) => (
               <div
                 key={region.value}
-                className="flex items-center justify-between p-4 rounded-lg border"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border space-y-3 sm:space-y-0"
               >
                 <div>
                   <h3 className="font-medium">{region.label}</h3>
@@ -203,7 +205,7 @@ export function CustomRegions() {
                     </p>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 justify-end sm:justify-start">
                   <Button
                     variant="ghost"
                     size="icon"
