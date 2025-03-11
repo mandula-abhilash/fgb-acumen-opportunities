@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
@@ -19,7 +20,13 @@ const loginSchema = {
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/dashboard");
+    }
+  }, [loading, user, router]);
 
   const {
     register,
@@ -44,8 +51,6 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
-
-      router.push("/dashboard");
     } catch (error) {
       toast({
         variant: "destructive",
@@ -55,6 +60,11 @@ export default function LoginPage() {
       });
     }
   };
+
+  // Show nothing while checking auth status
+  if (loading || (!loading && user)) {
+    return null;
+  }
 
   return (
     <MainLayout>

@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerUser } from "@/visdak-auth/src/api/auth";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,14 @@ const validatePasswords = (data) => {
 export default function RegisterPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/dashboard");
+    }
+  }, [loading, user, router]);
+
   const {
     register,
     handleSubmit,
@@ -91,6 +101,11 @@ export default function RegisterPage() {
       });
     }
   };
+
+  // Show nothing while checking auth status
+  if (loading || (!loading && user)) {
+    return null;
+  }
 
   return (
     <MainLayout>
