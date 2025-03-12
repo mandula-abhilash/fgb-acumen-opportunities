@@ -33,7 +33,7 @@ export function SubmitSiteForm() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
-  const [formId] = useState(() => uuidv4()); // Generate a unique ID for this form submission
+  const [opportunityId] = useState(() => uuidv4()); // Generate a unique ID for this opportunity
 
   const {
     register,
@@ -72,6 +72,7 @@ export function SubmitSiteForm() {
         ...data,
         coordinates: selectedLocation,
         boundary: polygonPath,
+        opportunityId, // Include the opportunity ID in the submission
       };
 
       console.log("Form data:", siteData);
@@ -104,17 +105,17 @@ export function SubmitSiteForm() {
     setPolygonPath(path);
   };
 
-  // File upload handlers with formId
-  const handleSitePlanUpload = (fileUrl, file, result) => {
-    setValue("site-plan", fileUrl);
+  // File upload handlers with opportunityId
+  const handleSitePlanUpload = (fileUrl) => {
+    setValue("sitePlanImage", fileUrl);
   };
 
-  const handleSpecificationUpload = (fileUrl, file, result) => {
-    setValue("proposed-specification", fileUrl);
+  const handleSpecificationUpload = (fileUrl) => {
+    setValue("proposedSpecification", fileUrl);
   };
 
-  const handleS106Upload = (fileUrl, file, result) => {
-    setValue("s106-agreement", fileUrl);
+  const handleS106Upload = (fileUrl) => {
+    setValue("s106Agreement", fileUrl);
   };
 
   return (
@@ -134,7 +135,7 @@ export function SubmitSiteForm() {
               opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
               selectedLocation={selectedLocation}
-              formId={formId}
+              parentId={opportunityId}
               onSitePlanUpload={handleSitePlanUpload}
             />
           </div>
@@ -170,7 +171,7 @@ export function SubmitSiteForm() {
           errors={errors}
           planningStatuses={planningStatuses}
           landPurchaseStatuses={landPurchaseStatuses}
-          formId={formId}
+          parentId={opportunityId}
           onSpecificationUpload={handleSpecificationUpload}
           onS106Upload={handleS106Upload}
         />

@@ -25,13 +25,22 @@ export function PlanningInformation({
   errors,
   planningStatuses,
   landPurchaseStatuses,
+  parentId,
+  onSpecificationUpload,
+  onS106Upload,
 }) {
   const handleProposedSpecUpload = (fileUrl) => {
     setValue("proposedSpecification", fileUrl);
+    if (onSpecificationUpload) {
+      onSpecificationUpload(fileUrl);
+    }
   };
 
   const handleS106Upload = (fileUrl) => {
     setValue("s106Agreement", fileUrl);
+    if (onS106Upload) {
+      onS106Upload(fileUrl);
+    }
   };
 
   const handleUploadError = (error) => {
@@ -132,6 +141,7 @@ export function PlanningInformation({
             maxFileSize={maxFileSizes.document}
             folder="specifications"
             fileCategory="proposed-specification"
+            parentId={parentId}
             label="Upload Proposed Specification"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"
@@ -147,6 +157,7 @@ export function PlanningInformation({
             maxFileSize={maxFileSizes.document}
             folder="s106-agreements"
             fileCategory="s106-agreement"
+            parentId={parentId}
             label="Upload Section 106 Agreement"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"

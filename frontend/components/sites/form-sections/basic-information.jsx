@@ -29,11 +29,16 @@ export function BasicInformation({
   opportunityTypes,
   selectedAddress,
   selectedLocation,
+  parentId,
+  onSitePlanUpload,
 }) {
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
 
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
+    if (onSitePlanUpload) {
+      onSitePlanUpload(fileUrl);
+    }
   };
 
   const handleUploadError = (error) => {
@@ -166,6 +171,7 @@ export function BasicInformation({
               maxFileSize={10 * 1024 * 1024} // 10MB
               folder="site-plans"
               fileCategory="site-plan"
+              parentId={parentId}
               label="Upload Site Plan"
               description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
               fileType="mixed"

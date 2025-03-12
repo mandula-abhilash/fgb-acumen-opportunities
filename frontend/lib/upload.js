@@ -15,22 +15,30 @@ export const getPresignedUrl = async (
   options = {}
 ) => {
   try {
+    const { parentId, fileCategory } = options;
+    if (!parentId) {
+      throw new Error("Parent ID is required for file organization");
+    }
+
+    // Get file extension from MIME type
+    const fileExtension = fileType.split("/")[1] || "";
+
+    // Structure: users/{userId}/{opportunityId}/{filename}.{extension}
+    // Example: users/123/456/site-plan.pdf
+    const key = `users/${options.userId}/${parentId}/${fileCategory}.${fileExtension}`;
+
     const response = await api.post("/api/upload/presigned-url", {
       fileType,
       folder,
-      ...options,
+      parentId,
+      fileCategory,
+      key,
     });
-
-    if (!response.data?.data?.uploadURL) {
-      throw new Error("Invalid response format");
-    }
 
     return response.data.data;
   } catch (error) {
     console.error("Error getting presigned URL:", error);
-    throw new Error(
-      error.response?.data?.message || "Failed to get upload URL"
-    );
+    throw error;
   }
 };
 
@@ -51,7 +59,7 @@ export const uploadFileToS3 = async (file, uploadURL) => {
     });
   } catch (error) {
     console.error("Error uploading file to S3:", error);
-    throw new Error(error.response?.data?.message || "Failed to upload file");
+    throw error;
   }
 };
 
@@ -65,7 +73,7 @@ export const deleteFileFromS3 = async (key) => {
     await api.delete(`/api/upload/delete/${encodeURIComponent(key)}`);
   } catch (error) {
     console.error("Error deleting file from S3:", error);
-    throw new Error(error.response?.data?.message || "Failed to delete file");
+    throw error;
   }
 };
 
