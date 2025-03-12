@@ -50,14 +50,11 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     ? developerRegion.map((region) => region.value || region)
     : [];
 
-  // Handle timezone offset for dates
-  const adjustDate = (dateString) => {
+  // Format dates to ensure they are treated as UTC midnight
+  const formatDate = (dateString) => {
     if (!dateString) return null;
-    const date = new Date(dateString);
-    const offset = date.getTimezoneOffset();
-    return new Date(date.getTime() + offset * 60 * 1000)
-      .toISOString()
-      .split("T")[0];
+    // Create a new Date object from the input string and format it as YYYY-MM-DD
+    return new Date(dateString).toISOString().split("T")[0];
   };
 
   const site = await db.one(
@@ -111,9 +108,9 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       landPurchaseStatus,
       plots,
       tenures,
-      adjustDate(startOnSiteDate),
-      adjustDate(firstHandoverDate),
-      adjustDate(finalHandoverDate),
+      formatDate(startOnSiteDate),
+      formatDate(firstHandoverDate),
+      formatDate(finalHandoverDate),
       developerInfo,
       siteContext,
       planningOverview,
@@ -224,14 +221,11 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     ? developerRegion.map((region) => region.value || region)
     : [];
 
-  // Handle timezone offset for dates
-  const adjustDate = (dateString) => {
+  // Format dates to ensure they are treated as UTC midnight
+  const formatDate = (dateString) => {
     if (!dateString) return null;
-    const date = new Date(dateString);
-    const offset = date.getTimezoneOffset();
-    return new Date(date.getTime() + offset * 60 * 1000)
-      .toISOString()
-      .split("T")[0];
+    // Create a new Date object from the input string and format it as YYYY-MM-DD
+    return new Date(dateString).toISOString().split("T")[0];
   };
 
   const updatedSite = await db.one(
@@ -282,9 +276,9 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       landPurchaseStatus,
       plots,
       tenures,
-      adjustDate(startOnSiteDate),
-      adjustDate(firstHandoverDate),
-      adjustDate(finalHandoverDate),
+      formatDate(startOnSiteDate),
+      formatDate(firstHandoverDate),
+      formatDate(finalHandoverDate),
       developerInfo,
       siteContext,
       planningOverview,
