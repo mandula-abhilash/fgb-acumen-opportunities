@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 
 import { createLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export function SubmitSiteForm() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
+  const [formId] = useState(() => uuidv4()); // Generate a unique ID for this form submission
 
   const {
     register,
@@ -102,6 +104,19 @@ export function SubmitSiteForm() {
     setPolygonPath(path);
   };
 
+  // File upload handlers with formId
+  const handleSitePlanUpload = (fileUrl, file, result) => {
+    setValue("site-plan", fileUrl);
+  };
+
+  const handleSpecificationUpload = (fileUrl, file, result) => {
+    setValue("proposed-specification", fileUrl);
+  };
+
+  const handleS106Upload = (fileUrl, file, result) => {
+    setValue("s106-agreement", fileUrl);
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -119,6 +134,8 @@ export function SubmitSiteForm() {
               opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
               selectedLocation={selectedLocation}
+              formId={formId}
+              onSitePlanUpload={handleSitePlanUpload}
             />
           </div>
 
@@ -153,6 +170,9 @@ export function SubmitSiteForm() {
           errors={errors}
           planningStatuses={planningStatuses}
           landPurchaseStatuses={landPurchaseStatuses}
+          formId={formId}
+          onSpecificationUpload={handleSpecificationUpload}
+          onS106Upload={handleS106Upload}
         />
 
         <TenureInformation

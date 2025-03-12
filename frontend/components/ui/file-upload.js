@@ -27,6 +27,8 @@ export function FileUpload({
   label = "Upload a file",
   description = "Drag and drop or click to upload",
   fileType = "document", // document, image, or mixed
+  parentId = null,
+  fileCategory = null,
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState(null);
@@ -50,7 +52,6 @@ export function FileUpload({
     maxSizeValue = maxFileSizes.document;
     fileTypeDescription = "document";
   } else if (fileType === "mixed") {
-    // For mixed type, use the provided acceptedFileTypes
     fileTypeDescription = "file";
   }
 
@@ -66,10 +67,14 @@ export function FileUpload({
   const validateFile = (file) => {
     if (!file) return "No file selected";
     if (!acceptedTypesArray.includes(file.type)) {
-      return `File type not supported. Accepted formats: ${acceptedTypesArray.map((type) => type.split("/")[1].toUpperCase()).join(", ")}`;
+      return `File type not supported. Accepted formats: ${acceptedTypesArray
+        .map((type) => type.split("/")[1].toUpperCase())
+        .join(", ")}`;
     }
     if (file.size > maxSizeValue) {
-      return `File size exceeds the maximum limit of ${maxSizeValue / (1024 * 1024)}MB.`;
+      return `File size exceeds the maximum limit of ${
+        maxSizeValue / (1024 * 1024)
+      }MB.`;
     }
     return null;
   };
@@ -97,14 +102,19 @@ export function FileUpload({
         });
       }, 100);
 
-      const { fileUrl, key } = await uploadFile(selectedFile, folder);
+      const uploadOptions = {
+        ...(parentId && { parentId }),
+        ...(fileCategory && { fileCategory }),
+      };
+
+      const result = await uploadFile(selectedFile, folder, uploadOptions);
 
       clearInterval(progressInterval);
       setUploadProgress(100);
       setUploadComplete(true);
 
       if (onUploadComplete) {
-        onUploadComplete(fileUrl, selectedFile);
+        onUploadComplete(result.fileUrl, selectedFile, result);
       }
     } catch (error) {
       setError("Failed to upload file. Please try again.");
