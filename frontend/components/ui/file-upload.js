@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 
-import { uploadFile } from "@/lib/upload";
+import { deleteFileFromS3, uploadFile } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -36,6 +36,7 @@ export function FileUpload({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState("");
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadedFileKey, setUploadedFileKey] = useState(null);
   const fileInputRef = useRef(null);
 
   // Determine accepted file types based on fileType
@@ -112,6 +113,7 @@ export function FileUpload({
       clearInterval(progressInterval);
       setUploadProgress(100);
       setUploadComplete(true);
+      setUploadedFileKey(result.key);
 
       if (onUploadComplete) {
         onUploadComplete(result.fileUrl, selectedFile, result);
@@ -147,11 +149,25 @@ export function FileUpload({
     fileInputRef.current?.click();
   };
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = async () => {
+    if (uploadedFileKey) {
+      try {
+        await deleteFileFromS3(uploadedFileKey);
+        if (onUploadComplete) {
+          onUploadComplete(null, null, null); // Clear the file URL from parent component
+        }
+      } catch (error) {
+        console.error("Error deleting file:", error);
+        setError("Failed to delete file. Please try again.");
+        return;
+      }
+    }
+
     setFile(null);
     setUploadProgress(0);
     setUploadComplete(false);
     setError("");
+    setUploadedFileKey(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

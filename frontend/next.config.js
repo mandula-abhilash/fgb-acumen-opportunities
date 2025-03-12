@@ -32,6 +32,7 @@ const nextConfig = {
       "https://m.stripe.network",
       "https://m.stripe.com",
       "https://reports.fgbacumen.com",
+      "https://planning-applications-bucket.s3.eu-west-2.amazonaws.com",
       "https://*.s3.*.amazonaws.com",
       "ws://localhost:*",
       "wss://localhost:*",

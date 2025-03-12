@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import dotenv from "dotenv";
@@ -117,4 +118,27 @@ export const getPublicUrl = (key) => {
     throw new Error("AWS S3 bucket name not configured");
   }
   return `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+};
+
+/**
+ * Delete a file from S3
+ * @param {string} key - S3 object key
+ * @returns {Promise<void>}
+ */
+export const deleteFileFromS3 = async (key) => {
+  try {
+    if (!bucketName) {
+      throw new Error("AWS S3 bucket name not configured");
+    }
+
+    const command = new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: decodeURIComponent(key),
+    });
+
+    await s3Client.send(command);
+  } catch (error) {
+    console.error("Error deleting file from S3:", error);
+    throw error;
+  }
 };

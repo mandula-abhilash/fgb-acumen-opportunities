@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { generateUploadURL } from "../utils/s3.js";
+import { generateUploadURL, deleteFileFromS3 } from "../utils/s3.js";
 
 // @desc    Generate presigned URL for file upload
 // @route   POST /api/upload/presigned-url
@@ -39,5 +39,30 @@ export const getPresignedUrl = asyncHandler(async (req, res) => {
     console.error("Error generating presigned URL:", error);
     res.status(500);
     throw new Error("Failed to generate upload URL: " + error.message);
+  }
+});
+
+// @desc    Delete file from S3
+// @route   DELETE /api/upload/delete/:key
+// @access  Private
+export const deleteFile = asyncHandler(async (req, res) => {
+  const { key } = req.params;
+
+  if (!key) {
+    res.status(400);
+    throw new Error("File key is required");
+  }
+
+  try {
+    await deleteFileFromS3(key);
+
+    res.status(200).json({
+      success: true,
+      message: "File deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    res.status(500);
+    throw new Error("Failed to delete file: " + error.message);
   }
 });

@@ -56,6 +56,20 @@ export const uploadFileToS3 = async (file, uploadURL) => {
 };
 
 /**
+ * Delete a file from S3
+ * @param {string} key - S3 object key
+ * @returns {Promise<void>}
+ */
+export const deleteFileFromS3 = async (key) => {
+  try {
+    await api.delete(`/api/upload/delete/${encodeURIComponent(key)}`);
+  } catch (error) {
+    console.error("Error deleting file from S3:", error);
+    throw new Error(error.response?.data?.message || "Failed to delete file");
+  }
+};
+
+/**
  * Upload a file to S3 (get presigned URL and upload)
  * @param {File} file - File to upload
  * @param {string} folder - Folder path in S3 bucket
