@@ -26,12 +26,16 @@ const bucketName = process.env.AWS_S3_BUCKET_NAME;
  * @param {string} fileType - MIME type of the file
  * @param {string} folder - Folder path in S3 bucket
  * @param {string} userId - User ID for organizing files
+ * @param {Object} options - Additional options
+ * @param {string} options.parentId - Parent UUID for grouping related files
+ * @param {string} options.fileCategory - Category/type of the file (e.g., 'sitePlan', 'specification')
  * @returns {Object} - Object containing upload URL and file key
  */
 export const generateUploadURL = async (
   fileType,
   folder = "uploads",
-  userId
+  userId,
+  options = {}
 ) => {
   try {
     if (!bucketName) {
@@ -42,11 +46,14 @@ export const generateUploadURL = async (
       throw new Error("User ID is required for file organization");
     }
 
+    // Generate or use provided parent ID
+    const parentId = options.parentId || uuidv4();
     const fileId = uuidv4();
     const fileExtension = fileType.split("/")[1] || "";
+    const fileCategory = options.fileCategory || "misc";
 
-    // Structure: users/{userId}/{folder}/{fileId}.{extension}
-    const key = `users/${userId}/${folder}/${fileId}.${fileExtension}`;
+    // Structure: users/{userId}/{parentId}/{fileCategory}/{fileId}.{extension}
+    const key = `users/${userId}/${parentId}/${fileCategory}/${fileId}.${fileExtension}`;
 
     const putObjectParams = {
       Bucket: bucketName,
@@ -63,7 +70,8 @@ export const generateUploadURL = async (
       uploadURL,
       key,
       fileUrl: `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`,
-      fileId, // Return the fileId for reference
+      fileId,
+      parentId,
     };
   } catch (error) {
     console.error("Error generating presigned URL:", error);

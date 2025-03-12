@@ -5,7 +5,7 @@ import { generateUploadURL } from "../utils/s3.js";
 // @route   POST /api/upload/presigned-url
 // @access  Private
 export const getPresignedUrl = asyncHandler(async (req, res) => {
-  const { fileType, folder } = req.body;
+  const { fileType, folder, parentId, fileCategory } = req.body;
   const userId = req.user.userId;
 
   if (!fileType) {
@@ -14,11 +14,16 @@ export const getPresignedUrl = asyncHandler(async (req, res) => {
   }
 
   try {
-    const { uploadURL, key, fileUrl, fileId } = await generateUploadURL(
-      fileType,
-      folder,
-      userId
-    );
+    const {
+      uploadURL,
+      key,
+      fileUrl,
+      fileId,
+      parentId: generatedParentId,
+    } = await generateUploadURL(fileType, folder, userId, {
+      parentId,
+      fileCategory,
+    });
 
     res.status(200).json({
       success: true,
@@ -27,6 +32,7 @@ export const getPresignedUrl = asyncHandler(async (req, res) => {
         key,
         fileUrl,
         fileId,
+        parentId: generatedParentId,
       },
     });
   } catch (error) {
