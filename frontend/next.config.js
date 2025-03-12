@@ -12,7 +12,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "via.placeholder.com",
+        hostname: "placehold.in",
       },
       {
         protocol: "https",
@@ -50,7 +50,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self' wss://*.fgbacumen.com https://api.ipify.org;
-              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://*.os.uk https://via.placeholder.com https://*.s3.*.amazonaws.com https://planning-applications-bucket.s3.eu-west-2.amazonaws.com;
+              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://*.os.uk https://placehold.in https://*.s3.*.amazonaws.com https://planning-applications-bucket.s3.eu-west-2.amazonaws.com;
               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.stripe.com https://m.stripe.network https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
               font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
