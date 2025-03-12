@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "via.placeholder.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.s3.*.amazonaws.com",
+      },
     ],
   },
   async headers() {
@@ -28,6 +32,7 @@ const nextConfig = {
       "https://m.stripe.network",
       "https://m.stripe.com",
       "https://reports.fgbacumen.com",
+      "https://*.s3.*.amazonaws.com",
       "ws://localhost:*",
       "wss://localhost:*",
     ];
@@ -44,7 +49,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self' wss://*.fgbacumen.com https://api.ipify.org;
-              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://*.os.uk https://via.placeholder.com;
+              img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://images.pexels.com https://*.os.uk https://via.placeholder.com https://*.s3.*.amazonaws.com;
               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.stripe.com https://m.stripe.network https://cdnjs.cloudflare.com https://unpkg.com https://maps.googleapis.com;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com;
               font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
