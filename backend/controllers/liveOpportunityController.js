@@ -20,7 +20,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     plots,
     tenures,
     startOnSiteDate,
-    handoverDate,
+    firstHandoverDate,
+    finalHandoverDate,
     developerInfo,
     siteContext,
     planningOverview,
@@ -43,6 +44,11 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     throw new Error("User not authenticated");
   }
 
+  // Extract region values from the developer region array
+  const developerRegionValues = Array.isArray(developerRegion)
+    ? developerRegion.map((region) => region.value || region)
+    : [];
+
   const site = await db.one(
     `INSERT INTO live_opportunities (
       site_name, 
@@ -59,7 +65,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       plots, 
       tenures, 
       start_on_site_date, 
-      handover_date,
+      first_handover_date,
+      final_handover_date,
       developer_info,
       site_context,
       planning_overview,
@@ -75,15 +82,15 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       user_id
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-      $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28
+      $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29
     ) RETURNING *`,
     [
       siteName,
       siteAddress,
       customSiteAddress,
-      opportunityType,
+      opportunityType.value || opportunityType,
       developerName,
-      developerRegion,
+      developerRegionValues,
       googleMapsLink,
       lpa,
       region,
@@ -92,7 +99,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       plots,
       tenures,
       startOnSiteDate,
-      handoverDate,
+      firstHandoverDate,
+      finalHandoverDate,
       developerInfo,
       siteContext,
       planningOverview,
@@ -169,7 +177,8 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     plots,
     tenures,
     startOnSiteDate,
-    handoverDate,
+    firstHandoverDate,
+    finalHandoverDate,
     developerInfo,
     siteContext,
     planningOverview,
@@ -194,6 +203,11 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     throw new Error("Opportunity not found");
   }
 
+  // Extract region values from the developer region array
+  const developerRegionValues = Array.isArray(developerRegion)
+    ? developerRegion.map((region) => region.value || region)
+    : [];
+
   const updatedSite = await db.one(
     `UPDATE live_opportunities SET
       site_name = $1,
@@ -210,29 +224,30 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       plots = $12,
       tenures = $13,
       start_on_site_date = $14,
-      handover_date = $15,
-      developer_info = $16,
-      site_context = $17,
-      planning_overview = $18,
-      proposed_development = $19,
-      detailed_tenure_accommodation = $20,
-      payment_terms = $21,
-      project_programme = $22,
-      agent_terms = $23,
-      site_plan_image = $24,
-      proposed_specification = $25,
-      s106_agreement = $26,
-      vat_position = $27,
+      first_handover_date = $15,
+      final_handover_date = $16,
+      developer_info = $17,
+      site_context = $18,
+      planning_overview = $19,
+      proposed_development = $20,
+      detailed_tenure_accommodation = $21,
+      payment_terms = $22,
+      project_programme = $23,
+      agent_terms = $24,
+      site_plan_image = $25,
+      proposed_specification = $26,
+      s106_agreement = $27,
+      vat_position = $28,
       updated_at = NOW()
-    WHERE id = $28 AND user_id = $29
+    WHERE id = $29 AND user_id = $30
     RETURNING *`,
     [
       siteName,
       siteAddress,
       customSiteAddress,
-      opportunityType,
+      opportunityType.value || opportunityType,
       developerName,
-      developerRegion,
+      developerRegionValues,
       googleMapsLink,
       lpa,
       region,
@@ -241,7 +256,8 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       plots,
       tenures,
       startOnSiteDate,
-      handoverDate,
+      firstHandoverDate,
+      finalHandoverDate,
       developerInfo,
       siteContext,
       planningOverview,
