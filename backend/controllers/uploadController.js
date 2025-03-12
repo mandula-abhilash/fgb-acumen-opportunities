@@ -6,6 +6,7 @@ import { generateUploadURL } from "../utils/s3.js";
 // @access  Private
 export const getPresignedUrl = asyncHandler(async (req, res) => {
   const { fileType, folder } = req.body;
+  const userId = req.user.userId;
 
   if (!fileType) {
     res.status(400);
@@ -13,9 +14,10 @@ export const getPresignedUrl = asyncHandler(async (req, res) => {
   }
 
   try {
-    const { uploadURL, key, fileUrl } = await generateUploadURL(
+    const { uploadURL, key, fileUrl, fileId } = await generateUploadURL(
       fileType,
-      folder
+      folder,
+      userId
     );
 
     res.status(200).json({
@@ -24,11 +26,12 @@ export const getPresignedUrl = asyncHandler(async (req, res) => {
         uploadURL,
         key,
         fileUrl,
+        fileId,
       },
     });
   } catch (error) {
     console.error("Error generating presigned URL:", error);
     res.status(500);
-    throw new Error("Failed to generate upload URL");
+    throw new Error("Failed to generate upload URL: " + error.message);
   }
 });

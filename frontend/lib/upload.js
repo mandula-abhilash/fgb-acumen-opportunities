@@ -58,7 +58,7 @@ export const uploadFileToS3 = async (file, uploadURL) => {
 export const uploadFile = async (file, folder = "uploads") => {
   try {
     // Get presigned URL
-    const { uploadURL, key, fileUrl } = await getPresignedUrl(
+    const { uploadURL, key, fileUrl, fileId } = await getPresignedUrl(
       file.type,
       folder
     );
@@ -66,7 +66,7 @@ export const uploadFile = async (file, folder = "uploads") => {
     // Upload file to S3
     await uploadFileToS3(file, uploadURL);
 
-    return { key, fileUrl };
+    return { key, fileUrl, fileId };
   } catch (error) {
     console.error("Error in uploadFile:", error);
     throw error;
