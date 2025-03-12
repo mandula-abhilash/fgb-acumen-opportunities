@@ -34,6 +34,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     proposedSpecification,
     s106Agreement,
     vatPosition,
+    coordinates,
   } = req.body;
 
   // Get the authenticated user's ID from the session
@@ -48,6 +49,16 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
   const developerRegionValues = Array.isArray(developerRegion)
     ? developerRegion.map((region) => region.value || region)
     : [];
+
+  // Handle timezone offset for dates
+  const adjustDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    const offset = date.getTimezoneOffset();
+    return new Date(date.getTime() + offset * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+  };
 
   const site = await db.one(
     `INSERT INTO live_opportunities (
@@ -79,10 +90,12 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       proposed_specification,
       s106_agreement,
       vat_position,
-      user_id
+      user_id,
+      geom
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-      $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29
+      $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,
+      ST_SetSRID(ST_MakePoint($30, $31), 4326)
     ) RETURNING *`,
     [
       siteName,
@@ -98,9 +111,9 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       landPurchaseStatus,
       plots,
       tenures,
-      startOnSiteDate,
-      firstHandoverDate,
-      finalHandoverDate,
+      adjustDate(startOnSiteDate),
+      adjustDate(firstHandoverDate),
+      adjustDate(finalHandoverDate),
       developerInfo,
       siteContext,
       planningOverview,
@@ -114,6 +127,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       s106Agreement,
       vatPosition,
       userId,
+      coordinates?.lng || null,
+      coordinates?.lat || null,
     ]
   );
 
@@ -128,7 +143,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const sites = await db.any(
-    "SELECT * FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC",
+    "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC",
     [req.user.userId]
   );
 
@@ -143,7 +158,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   const site = await db.oneOrNone(
-    "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
+    "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1 AND user_id = $2",
     [req.params.id, req.user.userId]
   );
 
@@ -191,6 +206,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     proposedSpecification,
     s106Agreement,
     vatPosition,
+    coordinates,
   } = req.body;
 
   const site = await db.oneOrNone(
@@ -207,6 +223,16 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
   const developerRegionValues = Array.isArray(developerRegion)
     ? developerRegion.map((region) => region.value || region)
     : [];
+
+  // Handle timezone offset for dates
+  const adjustDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    const offset = date.getTimezoneOffset();
+    return new Date(date.getTime() + offset * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+  };
 
   const updatedSite = await db.one(
     `UPDATE live_opportunities SET
@@ -238,9 +264,10 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       proposed_specification = $26,
       s106_agreement = $27,
       vat_position = $28,
+      geom = ST_SetSRID(ST_MakePoint($31, $32), 4326),
       updated_at = NOW()
     WHERE id = $29 AND user_id = $30
-    RETURNING *`,
+    RETURNING *, ST_X(geom) as longitude, ST_Y(geom) as latitude`,
     [
       siteName,
       siteAddress,
@@ -255,9 +282,9 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       landPurchaseStatus,
       plots,
       tenures,
-      startOnSiteDate,
-      firstHandoverDate,
-      finalHandoverDate,
+      adjustDate(startOnSiteDate),
+      adjustDate(firstHandoverDate),
+      adjustDate(finalHandoverDate),
       developerInfo,
       siteContext,
       planningOverview,
@@ -272,6 +299,8 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       vatPosition,
       req.params.id,
       req.user.userId,
+      coordinates?.lng || null,
+      coordinates?.lat || null,
     ]
   );
 
