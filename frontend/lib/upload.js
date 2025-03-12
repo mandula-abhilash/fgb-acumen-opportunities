@@ -12,6 +12,11 @@ export const getPresignedUrl = async (fileType, folder = "uploads") => {
       fileType,
       folder,
     });
+
+    if (!response.data?.data?.uploadURL) {
+      throw new Error("Invalid response format");
+    }
+
     return response.data.data;
   } catch (error) {
     console.error("Error getting presigned URL:", error);
@@ -33,10 +38,14 @@ export const uploadFileToS3 = async (file, uploadURL) => {
       headers: {
         "Content-Type": file.type,
       },
+      // Important: Use the raw URL without base URL
+      baseURL: "",
+      // Don't include auth headers for S3
+      withCredentials: false,
     });
   } catch (error) {
     console.error("Error uploading file to S3:", error);
-    throw new Error("Failed to upload file");
+    throw new Error(error.response?.data?.message || "Failed to upload file");
   }
 };
 
