@@ -131,6 +131,7 @@ export function PlanningInformation({
             acceptedFileTypes={fileTypes.document}
             maxFileSize={maxFileSizes.document}
             folder="specifications"
+            fileCategory="proposed-specification"
             label="Upload Proposed Specification"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"
@@ -145,6 +146,7 @@ export function PlanningInformation({
             acceptedFileTypes={fileTypes.document}
             maxFileSize={maxFileSizes.document}
             folder="s106-agreements"
+            fileCategory="s106-agreement"
             label="Upload Section 106 Agreement"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"

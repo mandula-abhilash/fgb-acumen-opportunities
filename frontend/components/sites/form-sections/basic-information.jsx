@@ -165,6 +165,7 @@ export function BasicInformation({
               acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
               maxFileSize={10 * 1024 * 1024} // 10MB
               folder="site-plans"
+              fileCategory="site-plan"
               label="Upload Site Plan"
               description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
               fileType="mixed"
