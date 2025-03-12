@@ -21,9 +21,19 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     tenures,
     startOnSiteDate,
     handoverDate,
+    developerInfo,
+    siteContext,
+    planningOverview,
+    proposedDevelopment,
+    detailedTenureAccommodation,
+    paymentTerms,
+    projectProgramme,
+    agentTerms,
+    sitePlanImage,
+    proposedSpecification,
+    s106Agreement,
+    vatPosition,
   } = req.body;
-
-  console.log("USER : " + JSON.stringify(req.user, null, 2));
 
   // Get the authenticated user's ID from the session
   const userId = req.user.userId;
@@ -35,11 +45,37 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 
   const site = await db.one(
     `INSERT INTO live_opportunities (
-      site_name, site_address, custom_site_address, opportunity_type, developer_name, developer_region,
-      google_maps_link, lpa, region, planning_status, land_purchase_status,
-      plots, tenures, start_on_site_date, handover_date, user_id
+      site_name, 
+      site_address, 
+      custom_site_address,
+      opportunity_type,
+      developer_name, 
+      developer_region,
+      google_maps_link, 
+      lpa, 
+      region, 
+      planning_status, 
+      land_purchase_status,
+      plots, 
+      tenures, 
+      start_on_site_date, 
+      handover_date,
+      developer_info,
+      site_context,
+      planning_overview,
+      proposed_development,
+      detailed_tenure_accommodation,
+      payment_terms,
+      project_programme,
+      agent_terms,
+      site_plan_image,
+      proposed_specification,
+      s106_agreement,
+      vat_position,
+      user_id
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+      $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28
     ) RETURNING *`,
     [
       siteName,
@@ -57,6 +93,18 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       tenures,
       startOnSiteDate,
       handoverDate,
+      developerInfo,
+      siteContext,
+      planningOverview,
+      proposedDevelopment,
+      detailedTenureAccommodation,
+      paymentTerms,
+      projectProgramme,
+      agentTerms,
+      sitePlanImage,
+      proposedSpecification,
+      s106Agreement,
+      vatPosition,
       userId,
     ]
   );
@@ -73,7 +121,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const sites = await db.any(
     "SELECT * FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC",
-    [req.user.id]
+    [req.user.userId]
   );
 
   res.json({
@@ -88,7 +136,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   const site = await db.oneOrNone(
     "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.userId]
   );
 
   if (!site) {
@@ -122,11 +170,23 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     tenures,
     startOnSiteDate,
     handoverDate,
+    developerInfo,
+    siteContext,
+    planningOverview,
+    proposedDevelopment,
+    detailedTenureAccommodation,
+    paymentTerms,
+    projectProgramme,
+    agentTerms,
+    sitePlanImage,
+    proposedSpecification,
+    s106Agreement,
+    vatPosition,
   } = req.body;
 
   const site = await db.oneOrNone(
     "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.userId]
   );
 
   if (!site) {
@@ -151,8 +211,20 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       tenures = $13,
       start_on_site_date = $14,
       handover_date = $15,
+      developer_info = $16,
+      site_context = $17,
+      planning_overview = $18,
+      proposed_development = $19,
+      detailed_tenure_accommodation = $20,
+      payment_terms = $21,
+      project_programme = $22,
+      agent_terms = $23,
+      site_plan_image = $24,
+      proposed_specification = $25,
+      s106_agreement = $26,
+      vat_position = $27,
       updated_at = NOW()
-    WHERE id = $16 AND user_id = $17
+    WHERE id = $28 AND user_id = $29
     RETURNING *`,
     [
       siteName,
@@ -170,8 +242,20 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       tenures,
       startOnSiteDate,
       handoverDate,
+      developerInfo,
+      siteContext,
+      planningOverview,
+      proposedDevelopment,
+      detailedTenureAccommodation,
+      paymentTerms,
+      projectProgramme,
+      agentTerms,
+      sitePlanImage,
+      proposedSpecification,
+      s106Agreement,
+      vatPosition,
       req.params.id,
-      req.user.id,
+      req.user.userId,
     ]
   );
 
@@ -187,7 +271,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
 export const deleteLiveOpportunitySite = asyncHandler(async (req, res) => {
   const site = await db.oneOrNone(
     "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.userId]
   );
 
   if (!site) {
@@ -197,7 +281,7 @@ export const deleteLiveOpportunitySite = asyncHandler(async (req, res) => {
 
   await db.none(
     "DELETE FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.userId]
   );
 
   res.json({
