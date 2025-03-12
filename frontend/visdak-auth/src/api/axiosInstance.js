@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { removeAuthCookies } from "../utils/auth";
+
 // Create axios instance
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
@@ -11,14 +13,14 @@ const axiosInstance = axios.create({
 });
 
 // Debug logging configuration
-const DEBUG = process.env.NODE_ENV === "development";
+const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 const log = {
   info: (...args) => DEBUG && console.log("🔵", ...args),
   warn: (...args) => DEBUG && console.warn("🟡", ...args),
   error: (...args) => DEBUG && console.error("🔴", ...args),
-  refresh: (...args) => console.log("🔄", ...args),
-  logout: (...args) => console.log("🚪", ...args),
-  token: (...args) => console.log("🎟️", ...args),
+  refresh: (...args) => DEBUG && console.log("🔄", ...args),
+  logout: (...args) => DEBUG && console.log("🚪", ...args),
+  token: (...args) => DEBUG && console.log("🎟️", ...args),
 };
 
 let isRefreshing = false;
@@ -62,27 +64,6 @@ const getTokenFromCookies = (name) => {
   return null;
 };
 
-// Function to remove all auth cookies
-const removeAuthCookies = () => {
-  if (typeof document === "undefined") return;
-
-  const cookies = ["accessToken", "refreshToken"];
-  const domains = [
-    window.location.hostname,
-    `.${window.location.hostname}`,
-    window.location.hostname.split(".").slice(1).join("."),
-    `.${window.location.hostname.split(".").slice(1).join(".")}`,
-  ];
-
-  cookies.forEach((cookie) => {
-    domains.forEach((domain) => {
-      document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${domain}`;
-    });
-    // Also try without domain
-    document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
-  });
-};
-
 // Function to check if we should attempt refresh
 const shouldRefreshToken = () => {
   const accessToken = getTokenFromCookies("accessToken");
@@ -115,7 +96,7 @@ const processQueue = (error, token = null) => {
 };
 
 const redirectToLogin = () => {
-  if (typeof window === "undefined") return;
+  if (typeof document === "undefined") return;
 
   // Remove auth cookies before redirecting
   removeAuthCookies();

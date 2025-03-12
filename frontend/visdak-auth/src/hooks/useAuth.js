@@ -3,6 +3,7 @@
 import { create } from "zustand";
 
 import * as authApi from "../api/auth";
+import { removeAuthCookies } from "../utils/auth";
 
 const useAuthStore = create((set) => ({
   user: null,
@@ -18,6 +19,7 @@ export function useAuth() {
 
   const clearAuthData = () => {
     setUser(null);
+    removeAuthCookies();
   };
 
   const login = async (credentials) => {
