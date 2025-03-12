@@ -5,76 +5,53 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Plus } from "lucide-react";
 
+import { getLiveOpportunitySites } from "@/lib/api/liveOpportunities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/components/ui/use-toast";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { PageHeader } from "@/components/layout/page-header";
 import { OpportunityCard } from "@/components/opportunities/opportunity-card";
 
-// Dummy data for demonstration
-const opportunities = [
-  {
-    id: 1,
-    title: "Dartmouth Road Development",
-    type: "Section 106 sale",
-    location: "Dartmouth Road, Cannock, Staffs, WS11 1HF",
-    coordinates: { lat: 53.4808, lng: -2.2426 },
-    plots: 40,
-    planningStatus: "Full Permission",
-    purchaseStatus: "Land Purchase Completed",
-    price: "£4.2M",
-    lpa: "Cannock Chase",
-    region: "West Midlands",
-    developer: "Persimmon Homes",
-    tenures: ["Social Rent", "Affordable Rent", "Shared Ownership"],
-    image: "https://via.placeholder.com/400x300",
-  },
-  {
-    id: 2,
-    title: "Lloyd Street Development",
-    type: "Section 106 sale",
-    location: "Lloyd Street, Manchester City Center",
-    coordinates: { lat: 53.4084, lng: -2.9916 },
-    plots: 85,
-    planningStatus: "Full Permission",
-    purchaseStatus: "Heads of Terms Agreed",
-    price: "£3.8M",
-    lpa: "Manchester City Council",
-    region: "North West",
-    developer: "Taylor Wimpey",
-    tenures: ["Social Rent", "Affordable Rent"],
-    image: "https://via.placeholder.com/400x300",
-  },
-  {
-    id: 3,
-    title: "Church Street Project",
-    type: "Grant Funded",
-    location: "Church Street, Liverpool",
-    coordinates: { lat: 53.4084, lng: -2.9916 },
-    plots: 60,
-    planningStatus: "Outline Approval",
-    purchaseStatus: "Land Offer Stage",
-    price: "£2.9M",
-    lpa: "Liverpool City Council",
-    region: "North West",
-    developer: "Bellway Homes",
-    tenures: ["Social Rent", "Shared Ownership"],
-    image: "https://via.placeholder.com/400x300",
-  },
-];
-
 export default function OpportunitiesPage() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const viewMode = searchParams.get("view") || "list";
 
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push("/login");
     }
-  }, [loading, user, router]);
+  }, [authLoading, user, router]);
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        setLoading(true);
+        const response = await getLiveOpportunitySites();
+        setOpportunities(response.data);
+      } catch (error) {
+        console.error("Error fetching opportunities:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch opportunities. Please try again.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchOpportunities();
+    }
+  }, [user, toast]);
 
   const handleSubmitSiteClick = () => {
     router.push("/dashboard/sites/options");
@@ -95,16 +72,12 @@ export default function OpportunitiesPage() {
     return null;
   };
 
-  if (loading) {
+  if (authLoading || !user) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <Spinner size="lg" className="text-web-orange" />
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (
@@ -121,12 +94,36 @@ export default function OpportunitiesPage() {
           viewMode === "list" ? "px-6" : ""
         )}
       >
-        {viewMode === "list" ? (
-          <div className="grid gap-4 py-4">
-            {opportunities.map((opportunity) => (
-              <OpportunityCard key={opportunity.id} opportunity={opportunity} />
-            ))}
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Spinner size="lg" className="text-web-orange" />
           </div>
+        ) : viewMode === "list" ? (
+          opportunities.length > 0 ? (
+            <div className="grid gap-4 py-4">
+              {opportunities.map((opportunity) => (
+                <OpportunityCard
+                  key={opportunity.id}
+                  opportunity={opportunity}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-lg text-muted-foreground mb-4">
+                No opportunities found
+              </p>
+              {(user?.role === "seller" || user?.role === "admin") && (
+                <Button
+                  onClick={handleSubmitSiteClick}
+                  className="bg-web-orange hover:bg-web-orange/90 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Submit Your First Site
+                </Button>
+              )}
+            </div>
+          )
         ) : (
           <div className="h-full">
             <ExploreMap opportunities={opportunities} />
