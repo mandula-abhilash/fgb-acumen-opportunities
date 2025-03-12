@@ -141,18 +141,36 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
 
-  // If user is admin, fetch all opportunities, otherwise only fetch user's opportunities
-  const query = isAdmin
-    ? "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities ORDER BY created_at DESC"
-    : "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC";
+  // Join with LPA and regions tables to get the actual names
+  const query = `
+    SELECT 
+      o.*,
+      ST_X(o.geom) as longitude,
+      ST_Y(o.geom) as latitude,
+      ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
+      ARRAY_AGG(DISTINCT r.name) as region_names
+    FROM live_opportunities o
+    LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
+    LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
+    ${isAdmin ? "" : "WHERE o.user_id = $1"}
+    GROUP BY o.id
+    ORDER BY o.created_at DESC
+  `;
 
   const params = isAdmin ? [] : [req.user.userId];
 
   const sites = await db.any(query, params);
 
+  // Transform the response to include both IDs and names
+  const transformedSites = sites.map((site) => ({
+    ...site,
+    lpa_names: site.lpa_names.filter(Boolean), // Remove null values
+    region_names: site.region_names.filter(Boolean), // Remove null values
+  }));
+
   res.json({
     success: true,
-    data: sites,
+    data: transformedSites,
   });
 });
 
@@ -162,10 +180,19 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
 
-  // If user is admin, allow access to any opportunity, otherwise only user's opportunities
-  const query = isAdmin
-    ? "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1"
-    : "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1 AND user_id = $2";
+  const query = `
+    SELECT 
+      o.*,
+      ST_X(o.geom) as longitude,
+      ST_Y(o.geom) as latitude,
+      ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
+      ARRAY_AGG(DISTINCT r.name) as region_names
+    FROM live_opportunities o
+    LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
+    LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
+    WHERE o.id = $1 ${isAdmin ? "" : "AND o.user_id = $2"}
+    GROUP BY o.id
+  `;
 
   const params = isAdmin ? [req.params.id] : [req.params.id, req.user.userId];
 
@@ -173,12 +200,19 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
 
   if (!site) {
     res.status(404);
-    throw new Error("Opportunity not found");
+    throw new Error("Opportunity not found or unauthorized");
   }
+
+  // Transform the response to include both IDs and names
+  const transformedSite = {
+    ...site,
+    lpa_names: site.lpa_names.filter(Boolean), // Remove null values
+    region_names: site.region_names.filter(Boolean), // Remove null values
+  };
 
   res.json({
     success: true,
-    data: site,
+    data: transformedSite,
   });
 });
 
