@@ -6,8 +6,20 @@ import { Building2, Heart, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  landPurchaseStatuses,
+  opportunityTypes,
+  planningStatuses,
+  tenureTypes,
+} from "@/components/sites/form-constants";
 
 export function OpportunityCard({ opportunity }) {
+  // Helper function to get label from value
+  const getLabel = (value, options) => {
+    const option = options.find((opt) => opt.value === value);
+    return option ? option.label : value;
+  };
+
   return (
     <Card className="p-4 shadow-md">
       <div className="flex gap-6">
@@ -41,18 +53,6 @@ export function OpportunityCard({ opportunity }) {
             </div>
 
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Tenures</div>
-              <div className="flex flex-wrap gap-2">
-                {Array.isArray(opportunity.tenures) &&
-                  opportunity.tenures.map((tenure) => (
-                    <Badge key={tenure} variant="secondary">
-                      {tenure}
-                    </Badge>
-                  ))}
-              </div>
-            </div>
-
-            <div>
               <div className="text-sm text-muted-foreground mb-1">Region</div>
               <p className="font-medium">
                 {opportunity.region_names?.join(", ") || "Not specified"}
@@ -64,6 +64,18 @@ export function OpportunityCard({ opportunity }) {
               <p className="font-medium">
                 {opportunity.lpa_names?.join(", ") || "Not specified"}
               </p>
+            </div>
+
+            <div>
+              <div className="text-sm text-muted-foreground mb-1">Tenures</div>
+              <div className="flex flex-wrap gap-2">
+                {Array.isArray(opportunity.tenures) &&
+                  opportunity.tenures.map((tenure) => (
+                    <Badge key={tenure} variant="secondary">
+                      {getLabel(tenure, tenureTypes)}
+                    </Badge>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
@@ -84,7 +96,9 @@ export function OpportunityCard({ opportunity }) {
                 <Building2 className="h-4 w-4" />
                 <span className="text-sm">Opportunity Type</span>
               </div>
-              <p className="font-medium">{opportunity.opportunity_type}</p>
+              <p className="font-medium">
+                {getLabel(opportunity.opportunity_type, opportunityTypes)}
+              </p>
             </div>
 
             <div>
@@ -95,7 +109,7 @@ export function OpportunityCard({ opportunity }) {
                 variant="outline"
                 className="border-web-orange text-web-orange"
               >
-                {opportunity.planning_status}
+                {getLabel(opportunity.planning_status, planningStatuses)}
               </Badge>
             </div>
 
@@ -103,8 +117,11 @@ export function OpportunityCard({ opportunity }) {
               <div className="text-sm text-muted-foreground mb-1">
                 Purchase Stage
               </div>
-              <Badge variant="outline">
-                {opportunity.land_purchase_status}
+              <Badge variant="secondary">
+                {getLabel(
+                  opportunity.land_purchase_status,
+                  landPurchaseStatuses
+                )}
               </Badge>
             </div>
           </div>
