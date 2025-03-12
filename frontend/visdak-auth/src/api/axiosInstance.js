@@ -62,6 +62,27 @@ const getTokenFromCookies = (name) => {
   return null;
 };
 
+// Function to remove all auth cookies
+const removeAuthCookies = () => {
+  if (typeof document === "undefined") return;
+
+  const cookies = ["accessToken", "refreshToken"];
+  const domains = [
+    window.location.hostname,
+    `.${window.location.hostname}`,
+    window.location.hostname.split(".").slice(1).join("."),
+    `.${window.location.hostname.split(".").slice(1).join(".")}`,
+  ];
+
+  cookies.forEach((cookie) => {
+    domains.forEach((domain) => {
+      document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${domain}`;
+    });
+    // Also try without domain
+    document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+  });
+};
+
 // Function to check if we should attempt refresh
 const shouldRefreshToken = () => {
   const accessToken = getTokenFromCookies("accessToken");
@@ -95,8 +116,13 @@ const processQueue = (error, token = null) => {
 
 const redirectToLogin = () => {
   if (typeof window === "undefined") return;
+
+  // Remove auth cookies before redirecting
+  removeAuthCookies();
+
   const currentPath = window.location.pathname;
   if (currentPath === "/login") return;
+
   log.logout("Session expired, redirecting to login");
   window.location.href = "/login";
 };
@@ -149,6 +175,11 @@ axiosInstance.interceptors.response.use(
         const expiresInSeconds = Math.round((expiry - Date.now()) / 1000);
         log.token(`Access token expires in: ${expiresInSeconds}s`);
       }
+    }
+
+    // Handle logout response
+    if (response.config.url.includes("/api/auth/logout")) {
+      removeAuthCookies();
     }
 
     return response;
