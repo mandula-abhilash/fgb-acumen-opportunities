@@ -139,10 +139,16 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @route   GET /api/live-opportunities
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
-  const sites = await db.any(
-    "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC",
-    [req.user.userId]
-  );
+  const isAdmin = req.user.role === "admin";
+
+  // If user is admin, fetch all opportunities, otherwise only fetch user's opportunities
+  const query = isAdmin
+    ? "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities ORDER BY created_at DESC"
+    : "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE user_id = $1 ORDER BY created_at DESC";
+
+  const params = isAdmin ? [] : [req.user.userId];
+
+  const sites = await db.any(query, params);
 
   res.json({
     success: true,
@@ -154,10 +160,16 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 // @route   GET /api/live-opportunities/:id
 // @access  Private
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
-  const site = await db.oneOrNone(
-    "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.userId]
-  );
+  const isAdmin = req.user.role === "admin";
+
+  // If user is admin, allow access to any opportunity, otherwise only user's opportunities
+  const query = isAdmin
+    ? "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1"
+    : "SELECT *, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM live_opportunities WHERE id = $1 AND user_id = $2";
+
+  const params = isAdmin ? [req.params.id] : [req.params.id, req.user.userId];
+
+  const site = await db.oneOrNone(query, params);
 
   if (!site) {
     res.status(404);
@@ -206,14 +218,20 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     coordinates,
   } = req.body;
 
-  const site = await db.oneOrNone(
-    "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.userId]
-  );
+  const isAdmin = req.user.role === "admin";
+
+  // Check if the opportunity exists and if the user has permission to update it
+  const query = isAdmin
+    ? "SELECT * FROM live_opportunities WHERE id = $1"
+    : "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2";
+
+  const params = isAdmin ? [req.params.id] : [req.params.id, req.user.userId];
+
+  const site = await db.oneOrNone(query, params);
 
   if (!site) {
     res.status(404);
-    throw new Error("Opportunity not found");
+    throw new Error("Opportunity not found or unauthorized");
   }
 
   // Extract region values from the developer region array
@@ -308,20 +326,28 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @route   DELETE /api/live-opportunities/:id
 // @access  Private
 export const deleteLiveOpportunitySite = asyncHandler(async (req, res) => {
-  const site = await db.oneOrNone(
-    "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.userId]
-  );
+  const isAdmin = req.user.role === "admin";
+
+  // Check if the opportunity exists and if the user has permission to delete it
+  const query = isAdmin
+    ? "SELECT * FROM live_opportunities WHERE id = $1"
+    : "SELECT * FROM live_opportunities WHERE id = $1 AND user_id = $2";
+
+  const params = isAdmin ? [req.params.id] : [req.params.id, req.user.userId];
+
+  const site = await db.oneOrNone(query, params);
 
   if (!site) {
     res.status(404);
-    throw new Error("Opportunity not found");
+    throw new Error("Opportunity not found or unauthorized");
   }
 
-  await db.none(
-    "DELETE FROM live_opportunities WHERE id = $1 AND user_id = $2",
-    [req.params.id, req.user.userId]
-  );
+  // Delete the opportunity
+  const deleteQuery = isAdmin
+    ? "DELETE FROM live_opportunities WHERE id = $1"
+    : "DELETE FROM live_opportunities WHERE id = $1 AND user_id = $2";
+
+  await db.none(deleteQuery, params);
 
   res.json({
     success: true,
