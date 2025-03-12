@@ -9,11 +9,11 @@ import { Card } from "@/components/ui/card";
 
 export function OpportunityCard({ opportunity }) {
   return (
-    <Card className="shadow-md">
+    <Card className="p-4 shadow-md">
       <div className="flex gap-6">
-        {/* Image Column */}
-        <div className="w-1/3">
-          <div className="aspect-[4/3] relative rounded-lg overflow-hidden bg-muted">
+        {/* Image Column - Fixed width */}
+        <div className="w-[350px] flex-shrink-0">
+          <div className="h-[350px] relative rounded-lg overflow-hidden bg-muted">
             <img
               src={opportunity.site_plan_image || "https://placehold.in/400"}
               alt={opportunity.site_name}
@@ -34,41 +34,6 @@ export function OpportunityCard({ opportunity }) {
 
           <div className="space-y-3">
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Region</div>
-              <p className="font-medium">
-                {opportunity.region_names?.join(", ") || "Not specified"}
-              </p>
-            </div>
-
-            <div>
-              <div className="text-sm text-muted-foreground mb-1">LPA</div>
-              <p className="font-medium">
-                {opportunity.lpa_names?.join(", ") || "Not specified"}
-              </p>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                <Building2 className="h-4 w-4" />
-                <span className="text-sm">Number of Plots</span>
-              </div>
-              <p className="font-medium">{opportunity.plots} units</p>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                <Building2 className="h-4 w-4" />
-                <span className="text-sm">Opportunity Type</span>
-              </div>
-              <p className="font-medium">{opportunity.opportunity_type}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Additional Details Column */}
-        <div className="w-1/3 flex flex-col">
-          <div className="space-y-3 flex-1">
-            <div>
               <div className="text-sm text-muted-foreground mb-1">
                 Developer
               </div>
@@ -85,6 +50,41 @@ export function OpportunityCard({ opportunity }) {
                     </Badge>
                   ))}
               </div>
+            </div>
+
+            <div>
+              <div className="text-sm text-muted-foreground mb-1">Region</div>
+              <p className="font-medium">
+                {opportunity.region_names?.join(", ") || "Not specified"}
+              </p>
+            </div>
+
+            <div>
+              <div className="text-sm text-muted-foreground mb-1">LPA</div>
+              <p className="font-medium">
+                {opportunity.lpa_names?.join(", ") || "Not specified"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Details Column */}
+        <div className="w-1/3 flex flex-col">
+          <div className="space-y-3 flex-1">
+            <div>
+              <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                <Building2 className="h-4 w-4" />
+                <span className="text-sm">Number of Plots</span>
+              </div>
+              <p className="font-medium">{opportunity.plots} units</p>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                <Building2 className="h-4 w-4" />
+                <span className="text-sm">Opportunity Type</span>
+              </div>
+              <p className="font-medium">{opportunity.opportunity_type}</p>
             </div>
 
             <div>
