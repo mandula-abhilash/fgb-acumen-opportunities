@@ -9,6 +9,12 @@ import { getLiveOpportunitySites } from "@/lib/api/liveOpportunities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { PageHeader } from "@/components/layout/page-header";
@@ -60,13 +66,24 @@ export default function OpportunitiesPage() {
   const renderActionButton = () => {
     if (user?.role === "seller" || user?.role === "admin") {
       return (
-        <Button
-          className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-          onClick={handleSubmitSiteClick}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Submit New Site
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
+                onClick={handleSubmitSiteClick}
+              >
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline-block sm:ml-2">
+                  Submit New Site
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Submit a new site</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     }
     return null;
