@@ -55,26 +55,34 @@ export function OpportunityCard({ opportunity }) {
         {/* Content Column */}
         <div className="flex-1 flex flex-col">
           {/* Header Section - Clickable */}
-          <Link
-            href={`/opportunities/${opportunity.id}`}
-            className="pb-4 group cursor-pointer transition-colors"
-          >
-            <div
-              className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors"
-              title="View Details"
-            >
-              <h3 className="text-2xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
-                {opportunity.site_name}
-              </h3>
-              <div className="flex items-center text-muted-foreground">
-                <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                <span className="text-lg">{opportunity.site_address}</span>
-              </div>
-            </div>
-          </Link>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={`/opportunities/${opportunity.id}`}
+                  className="pb-4 group cursor-pointer transition-colors"
+                >
+                  <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">
+                    <h3 className="text-xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
+                      {opportunity.site_name}
+                    </h3>
+                    <div className="flex items-center text-muted-foreground">
+                      <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span className="text-md">
+                        {opportunity.site_address}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Click to view full opportunity details</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           {/* Details Section */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-1">
             {/* Left Column */}
             <div className="space-y-4">
               <div>
