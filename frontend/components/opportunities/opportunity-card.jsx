@@ -9,6 +9,7 @@ import {
   Home,
   Landmark,
   MapPin,
+  MessageSquareMore,
   ScrollText,
   Store,
   Users,
@@ -17,6 +18,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   landPurchaseStatuses,
   opportunityTypes,
@@ -164,13 +171,31 @@ export function OpportunityCard({ opportunity }) {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto">
-            <Button variant="outline" className="flex-1">
-              <Heart className="h-4 w-4 mr-2" />
-              Shortlist
-            </Button>
-            <Button variant="secondary" className="flex-1">
-              Confirm Interest
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" className="flex-1">
+                    <Heart className="h-4 w-4 mr-2" />
+                    Shortlist
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add this site to your shortlisted opportunities</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="secondary" className="flex-1">
+                    <MessageSquareMore className="h-4 w-4 mr-2" />
+                    Confirm Interest
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>We will inform the seller that you are interested</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
