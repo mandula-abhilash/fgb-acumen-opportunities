@@ -17,7 +17,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateRegionDialog } from "@/components/regions/create-region-dialog";
 
-export function DeveloperInformation({ register, setValue, watch, errors }) {
+export function DeveloperInformation({
+  register,
+  setValue,
+  watch,
+  errors,
+  disabled,
+}) {
   const [developerRegions, setDeveloperRegions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateRegionOpen, setIsCreateRegionOpen] = useState(false);
@@ -138,6 +144,7 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
               id="developerName"
               {...register("developerName")}
               className={errors.developerName ? "border-destructive" : ""}
+              disabled={disabled}
             />
             {errors.developerName && (
               <p className="text-sm text-destructive">
@@ -168,6 +175,7 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
               isClearable
               isMulti={true}
               isLoading={isLoading}
+              isDisabled={disabled}
             />
           </div>
         </div>
@@ -178,6 +186,7 @@ export function DeveloperInformation({ register, setValue, watch, errors }) {
             id="developerInfo"
             {...register("developerInfo")}
             placeholder="Enter any additional information about the developer..."
+            disabled={disabled}
           />
         </div>
 

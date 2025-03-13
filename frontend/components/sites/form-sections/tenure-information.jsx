@@ -17,6 +17,7 @@ export function TenureInformation({
   register,
   errors,
   tenureTypes,
+  disabled,
 }) {
   const handleTenureChange = (selectedValues) => {
     // Convert values to labels
@@ -45,6 +46,7 @@ export function TenureInformation({
             selected={watch("tenures")}
             onChange={handleTenureChange}
             placeholder="Select tenure types..."
+            disabled={disabled}
           />
           {errors.tenures && (
             <p className="text-sm text-destructive">{errors.tenures.message}</p>
@@ -59,6 +61,7 @@ export function TenureInformation({
             id="detailedTenureAccommodation"
             {...register("detailedTenureAccommodation")}
             placeholder="Provide detailed information about tenure mix and accommodation..."
+            disabled={disabled}
           />
         </div>
       </CardContent>

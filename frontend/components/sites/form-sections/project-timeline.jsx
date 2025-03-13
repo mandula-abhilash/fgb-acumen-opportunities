@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-export function ProjectTimeline({ register, watch, setValue }) {
+export function ProjectTimeline({ register, watch, setValue, disabled }) {
   return (
     <Card>
       <CardHeader>
@@ -42,6 +42,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                     "w-full justify-start text-left font-normal",
                     !watch("startOnSiteDate") && "text-muted-foreground"
                   )}
+                  disabled={disabled}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {watch("startOnSiteDate") ? (
@@ -57,6 +58,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                   selected={watch("startOnSiteDate")}
                   onSelect={(date) => setValue("startOnSiteDate", date)}
                   initialFocus
+                  disabled={disabled}
                 />
               </PopoverContent>
             </Popover>
@@ -72,6 +74,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                     "w-full justify-start text-left font-normal",
                     !watch("firstHandoverDate") && "text-muted-foreground"
                   )}
+                  disabled={disabled}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {watch("firstHandoverDate") ? (
@@ -87,6 +90,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                   selected={watch("firstHandoverDate")}
                   onSelect={(date) => setValue("firstHandoverDate", date)}
                   initialFocus
+                  disabled={disabled}
                 />
               </PopoverContent>
             </Popover>
@@ -102,6 +106,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                     "w-full justify-start text-left font-normal",
                     !watch("finalHandoverDate") && "text-muted-foreground"
                   )}
+                  disabled={disabled}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {watch("finalHandoverDate") ? (
@@ -117,6 +122,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
                   selected={watch("finalHandoverDate")}
                   onSelect={(date) => setValue("finalHandoverDate", date)}
                   initialFocus
+                  disabled={disabled}
                 />
               </PopoverContent>
             </Popover>
@@ -129,6 +135,7 @@ export function ProjectTimeline({ register, watch, setValue }) {
             id="projectProgramme"
             {...register("projectProgramme")}
             placeholder="Describe the project programme and key milestones..."
+            disabled={disabled}
           />
         </div>
       </CardContent>
