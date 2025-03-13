@@ -55,31 +55,34 @@ export function OpportunityCard({ opportunity }) {
         {/* Content Column */}
         <div className="flex-1 flex flex-col">
           {/* Header Section - Clickable */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href={`/opportunities/${opportunity.id}`}
-                  className="pb-4 group cursor-pointer transition-colors"
-                >
-                  <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
-                      {opportunity.site_name}
-                    </h3>
-                    <div className="flex items-center text-muted-foreground">
-                      <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span className="text-md">
-                        {opportunity.site_address}
-                      </span>
+
+          <Link
+            href={`/opportunities/${opportunity.id}`}
+            className="pb-4 group cursor-pointer transition-colors"
+          >
+            <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
+                        {opportunity.site_name}
+                      </h3>
+                      <div className="flex items-center text-muted-foreground">
+                        <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="text-md">
+                          {opportunity.site_address}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Click to view full opportunity details</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Click to view full opportunity details</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </Link>
 
           {/* Details Section */}
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-1">
