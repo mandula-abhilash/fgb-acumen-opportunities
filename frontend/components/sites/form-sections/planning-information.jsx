@@ -22,13 +22,18 @@ import { fileTypes, maxFileSizes } from "@/components/sites/form-constants";
 export function PlanningInformation({
   register,
   setValue,
+  watch,
   errors,
   planningStatuses,
   landPurchaseStatuses,
   parentId,
   onSpecificationUpload,
   onS106Upload,
+  disabled,
 }) {
+  const currentPlanningStatus = watch("planningStatus");
+  const currentLandPurchaseStatus = watch("landPurchaseStatus");
+
   const handleProposedSpecUpload = (fileUrl) => {
     setValue("proposedSpecification", fileUrl);
     if (onSpecificationUpload) {
@@ -48,17 +53,11 @@ export function PlanningInformation({
   };
 
   const handlePlanningStatusChange = (value) => {
-    const selectedStatus = planningStatuses.find(
-      (status) => status.value === value
-    );
-    setValue("planningStatus", selectedStatus.label);
+    setValue("planningStatus", value);
   };
 
   const handleLandPurchaseStatusChange = (value) => {
-    const selectedStatus = landPurchaseStatuses.find(
-      (status) => status.value === value
-    );
-    setValue("landPurchaseStatus", selectedStatus.label);
+    setValue("landPurchaseStatus", value);
   };
 
   return (
@@ -75,7 +74,11 @@ export function PlanningInformation({
             <Label htmlFor="planningStatus">
               Planning Status <span className="text-destructive">*</span>
             </Label>
-            <Select onValueChange={handlePlanningStatusChange}>
+            <Select
+              value={currentPlanningStatus}
+              onValueChange={handlePlanningStatusChange}
+              disabled={disabled}
+            >
               <SelectTrigger
                 className={errors.planningStatus ? "border-destructive" : ""}
               >
@@ -100,7 +103,11 @@ export function PlanningInformation({
             <Label htmlFor="landPurchaseStatus">
               Land Purchase Status <span className="text-destructive">*</span>
             </Label>
-            <Select onValueChange={handleLandPurchaseStatusChange}>
+            <Select
+              value={currentLandPurchaseStatus}
+              onValueChange={handleLandPurchaseStatusChange}
+              disabled={disabled}
+            >
               <SelectTrigger
                 className={
                   errors.landPurchaseStatus ? "border-destructive" : ""
@@ -130,6 +137,7 @@ export function PlanningInformation({
             id="planningOverview"
             {...register("planningOverview")}
             placeholder="Provide an overview of the planning situation..."
+            disabled={disabled}
           />
         </div>
 
@@ -139,6 +147,7 @@ export function PlanningInformation({
             id="proposedDevelopment"
             {...register("proposedDevelopment")}
             placeholder="Describe the proposed development..."
+            disabled={disabled}
           />
         </div>
 
@@ -155,6 +164,7 @@ export function PlanningInformation({
             label="Upload Proposed Specification"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"
+            disabled={disabled}
           />
         </div>
 
@@ -171,6 +181,7 @@ export function PlanningInformation({
             label="Upload Section 106 Agreement"
             description="Upload a PDF or Word document (max 10MB)"
             fileType="document"
+            disabled={disabled}
           />
         </div>
       </CardContent>
