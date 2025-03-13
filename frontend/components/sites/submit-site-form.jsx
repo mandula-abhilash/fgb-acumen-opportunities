@@ -12,7 +12,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 import {
   landPurchaseStatuses,
-  lpaOptions,
   opportunityTypes,
   planningStatuses,
   submitSiteSchema,
@@ -33,7 +32,7 @@ export function SubmitSiteForm() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
-  const [opportunityId] = useState(() => uuidv4()); // Generate a unique ID for this opportunity
+  const [opportunityId] = useState(() => uuidv4());
 
   const {
     register,
@@ -162,7 +161,6 @@ export function SubmitSiteForm() {
           watch={watch}
           setValue={setValue}
           errors={errors}
-          lpaOptions={lpaOptions}
         />
 
         <PlanningInformation

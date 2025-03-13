@@ -47,6 +47,20 @@ export function PlanningInformation({
     console.error("Upload error:", error);
   };
 
+  const handlePlanningStatusChange = (value) => {
+    const selectedStatus = planningStatuses.find(
+      (status) => status.value === value
+    );
+    setValue("planningStatus", selectedStatus.label);
+  };
+
+  const handleLandPurchaseStatusChange = (value) => {
+    const selectedStatus = landPurchaseStatuses.find(
+      (status) => status.value === value
+    );
+    setValue("landPurchaseStatus", selectedStatus.label);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -61,9 +75,7 @@ export function PlanningInformation({
             <Label htmlFor="planningStatus">
               Planning Status <span className="text-destructive">*</span>
             </Label>
-            <Select
-              onValueChange={(value) => setValue("planningStatus", value)}
-            >
+            <Select onValueChange={handlePlanningStatusChange}>
               <SelectTrigger
                 className={errors.planningStatus ? "border-destructive" : ""}
               >
@@ -88,9 +100,7 @@ export function PlanningInformation({
             <Label htmlFor="landPurchaseStatus">
               Land Purchase Status <span className="text-destructive">*</span>
             </Label>
-            <Select
-              onValueChange={(value) => setValue("landPurchaseStatus", value)}
-            >
+            <Select onValueChange={handleLandPurchaseStatusChange}>
               <SelectTrigger
                 className={
                   errors.landPurchaseStatus ? "border-destructive" : ""

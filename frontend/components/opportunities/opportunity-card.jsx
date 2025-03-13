@@ -24,20 +24,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  landPurchaseStatuses,
-  opportunityTypes,
-  planningStatuses,
-  tenureTypes,
-} from "@/components/sites/form-constants";
 
 export function OpportunityCard({ opportunity }) {
-  // Helper function to get label from value
-  const getLabel = (value, options) => {
-    const option = options.find((opt) => opt.value === value);
-    return option ? option.label : value;
-  };
-
   return (
     <Card className="p-4 shadow-md">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -120,9 +108,7 @@ export function OpportunityCard({ opportunity }) {
                   <FileText className="h-4 w-4" />
                   <span className="text-sm">Opportunity Type</span>
                 </div>
-                <p className="font-medium">
-                  {getLabel(opportunity.opportunity_type, opportunityTypes)}
-                </p>
+                <p className="font-medium">{opportunity.opportunity_type}</p>
               </div>
             </div>
 
@@ -145,7 +131,7 @@ export function OpportunityCard({ opportunity }) {
                   variant="outline"
                   className="border-web-orange text-web-orange"
                 >
-                  {getLabel(opportunity.planning_status, planningStatuses)}
+                  {opportunity.planning_status}
                 </Badge>
               </div>
 
@@ -155,10 +141,7 @@ export function OpportunityCard({ opportunity }) {
                   <span className="text-sm">Purchase Stage</span>
                 </div>
                 <Badge variant="secondary">
-                  {getLabel(
-                    opportunity.land_purchase_status,
-                    landPurchaseStatuses
-                  )}
+                  {opportunity.land_purchase_status}
                 </Badge>
               </div>
 
@@ -171,7 +154,7 @@ export function OpportunityCard({ opportunity }) {
                   {Array.isArray(opportunity.tenures) &&
                     opportunity.tenures.map((tenure) => (
                       <Badge key={tenure} variant="secondary">
-                        {getLabel(tenure, tenureTypes)}
+                        {tenure}
                       </Badge>
                     ))}
                 </div>

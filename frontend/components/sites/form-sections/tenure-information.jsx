@@ -18,6 +18,15 @@ export function TenureInformation({
   errors,
   tenureTypes,
 }) {
+  const handleTenureChange = (selectedValues) => {
+    // Convert values to labels
+    const selectedLabels = selectedValues.map((value) => {
+      const tenure = tenureTypes.find((t) => t.value === value);
+      return tenure ? tenure.label : value;
+    });
+    setValue("tenures", selectedLabels);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -34,7 +43,7 @@ export function TenureInformation({
           <MultiSelect
             options={tenureTypes}
             selected={watch("tenures")}
-            onChange={(value) => setValue("tenures", value)}
+            onChange={handleTenureChange}
             placeholder="Select tenure types..."
           />
           {errors.tenures && (

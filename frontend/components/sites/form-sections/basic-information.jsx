@@ -63,6 +63,11 @@ export function BasicInformation({
     }
   }, [selectedAddress, setValue]);
 
+  const handleOpportunityTypeChange = (value) => {
+    const selectedType = opportunityTypes.find((type) => type.value === value);
+    setValue("opportunityType", selectedType.label);
+  };
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -182,9 +187,7 @@ export function BasicInformation({
             <Label htmlFor="opportunityType">
               Opportunity Type <span className="text-destructive">*</span>
             </Label>
-            <Select
-              onValueChange={(value) => setValue("opportunityType", value)}
-            >
+            <Select onValueChange={handleOpportunityTypeChange}>
               <SelectTrigger
                 className={errors.opportunityType ? "border-destructive" : ""}
               >

@@ -8,19 +8,6 @@ export const opportunityTypes = [
   { value: "other", label: "Other" },
 ];
 
-export const lpaOptions = [
-  { value: "manchester", label: "Manchester City Council" },
-  { value: "liverpool", label: "Liverpool City Council" },
-  { value: "leeds", label: "Leeds City Council" },
-  { value: "birmingham", label: "Birmingham City Council" },
-  { value: "bristol", label: "Bristol City Council" },
-  { value: "newcastle", label: "Newcastle City Council" },
-  { value: "sheffield", label: "Sheffield City Council" },
-  { value: "nottingham", label: "Nottingham City Council" },
-  { value: "cardiff", label: "Cardiff Council" },
-  { value: "glasgow", label: "Glasgow City Council" },
-];
-
 export const tenureTypes = [
   { value: "social-rent", label: "Social Rent" },
   { value: "affordable-rent", label: "Affordable Rent" },

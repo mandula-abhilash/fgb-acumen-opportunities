@@ -19,6 +19,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { vatPositions } from "@/components/sites/form-constants";
 
 export function CommercialInformation({ register, setValue, errors }) {
+  const handleVatPositionChange = (value) => {
+    const selectedPosition = vatPositions.find((pos) => pos.value === value);
+    setValue("vatPosition", selectedPosition.label);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -37,7 +42,7 @@ export function CommercialInformation({ register, setValue, errors }) {
 
         <div className="space-y-2">
           <Label htmlFor="vatPosition">VAT Position</Label>
-          <Select onValueChange={(value) => setValue("vatPosition", value)}>
+          <Select onValueChange={handleVatPositionChange}>
             <SelectTrigger
               className={errors?.vatPosition ? "border-destructive" : ""}
             >
