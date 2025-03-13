@@ -52,7 +52,7 @@ export function OpportunityCard({ opportunity }) {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
+                      <h3 className="text-xl font-semibold mb-2 text-havelock-blue transition-colors">
                         {opportunity.site_name}
                       </h3>
                       <div className="flex items-center text-muted-foreground">
@@ -80,7 +80,9 @@ export function OpportunityCard({ opportunity }) {
                   <Building2 className="h-4 w-4" />
                   <span className="text-sm">Developer</span>
                 </div>
-                <p className="font-medium">{opportunity.developer_name}</p>
+                <p className="font-medium text-sm">
+                  {opportunity.developer_name}
+                </p>
               </div>
 
               <div>
@@ -88,7 +90,7 @@ export function OpportunityCard({ opportunity }) {
                   <Globe2 className="h-4 w-4" />
                   <span className="text-sm">Region</span>
                 </div>
-                <p className="font-medium">
+                <p className="font-medium text-sm">
                   {opportunity.region_names?.join(", ") || "Not specified"}
                 </p>
               </div>
@@ -98,7 +100,7 @@ export function OpportunityCard({ opportunity }) {
                   <Landmark className="h-4 w-4" />
                   <span className="text-sm">LPA</span>
                 </div>
-                <p className="font-medium">
+                <p className="font-medium text-sm">
                   {opportunity.lpa_names?.join(", ") || "Not specified"}
                 </p>
               </div>
@@ -108,7 +110,9 @@ export function OpportunityCard({ opportunity }) {
                   <FileText className="h-4 w-4" />
                   <span className="text-sm">Opportunity Type</span>
                 </div>
-                <p className="font-medium">{opportunity.opportunity_type}</p>
+                <p className="font-medium text-sm">
+                  {opportunity.opportunity_type}
+                </p>
               </div>
             </div>
 
@@ -129,7 +133,7 @@ export function OpportunityCard({ opportunity }) {
                 </div>
                 <Badge
                   variant="outline"
-                  className="border-web-orange text-web-orange"
+                  className="border-web-orange text-web-orange mt-1"
                 >
                   {opportunity.planning_status}
                 </Badge>
@@ -140,7 +144,7 @@ export function OpportunityCard({ opportunity }) {
                   <Store className="h-4 w-4" />
                   <span className="text-sm">Purchase Stage</span>
                 </div>
-                <Badge variant="secondary">
+                <Badge variant="outline mt-1">
                   {opportunity.land_purchase_status}
                 </Badge>
               </div>
@@ -150,10 +154,10 @@ export function OpportunityCard({ opportunity }) {
                   <Home className="h-4 w-4" />
                   <span className="text-sm">Tenures</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mt-1">
                   {Array.isArray(opportunity.tenures) &&
                     opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="secondary">
+                      <Badge key={tenure} variant="outline">
                         {tenure}
                       </Badge>
                     ))}
