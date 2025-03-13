@@ -55,9 +55,8 @@ export function OpportunityCard({ opportunity }) {
         {/* Content Column */}
         <div className="flex-1 flex flex-col">
           {/* Header Section - Clickable */}
-
           <Link
-            href={`/opportunities/${opportunity.id}`}
+            href={`/dashboard/opportunities/${opportunity.id}`}
             className="pb-4 group cursor-pointer transition-colors"
           >
             <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">

@@ -135,20 +135,31 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get all opportunities
+// @desc    Get all opportunities (with minimal data for list view)
 // @route   GET /api/live-opportunities
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
 
-  // Join with LPA and regions tables to get the actual names
+  // Only fetch fields needed for the list view
   const query = `
     SELECT 
-      o.*,
+      o.id,
+      o.site_name,
+      o.site_address,
+      o.opportunity_type,
+      o.developer_name,
+      o.plots,
+      o.planning_status,
+      o.land_purchase_status,
+      o.tenures,
+      o.site_plan_image,
       ST_X(o.geom) as longitude,
       ST_Y(o.geom) as latitude,
       ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
-      ARRAY_AGG(DISTINCT r.name) as region_names
+      ARRAY_AGG(DISTINCT r.name) as region_names,
+      o.created_at,
+      o.updated_at
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
@@ -166,6 +177,10 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     ...site,
     lpa_names: site.lpa_names.filter(Boolean), // Remove null values
     region_names: site.region_names.filter(Boolean), // Remove null values
+    coordinates: {
+      lat: parseFloat(site.latitude),
+      lng: parseFloat(site.longitude),
+    },
   }));
 
   res.json({
@@ -174,7 +189,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get single opportunity
+// @desc    Get single opportunity (with full details)
 // @route   GET /api/live-opportunities/:id
 // @access  Private
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
@@ -203,11 +218,15 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
     throw new Error("Opportunity not found or unauthorized");
   }
 
-  // Transform the response to include both IDs and names
+  // Transform the response
   const transformedSite = {
     ...site,
-    lpa_names: site.lpa_names.filter(Boolean), // Remove null values
-    region_names: site.region_names.filter(Boolean), // Remove null values
+    lpa_names: site.lpa_names.filter(Boolean),
+    region_names: site.region_names.filter(Boolean),
+    coordinates: {
+      lat: parseFloat(site.latitude),
+      lng: parseFloat(site.longitude),
+    },
   };
 
   res.json({
