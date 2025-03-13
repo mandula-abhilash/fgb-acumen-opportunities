@@ -18,10 +18,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { vatPositions } from "@/components/sites/form-constants";
 
-export function CommercialInformation({ register, setValue, errors }) {
+export function CommercialInformation({
+  register,
+  setValue,
+  watch,
+  errors,
+  disabled,
+}) {
+  const currentVatPosition = watch("vatPosition");
+
   const handleVatPositionChange = (value) => {
-    const selectedPosition = vatPositions.find((pos) => pos.value === value);
-    setValue("vatPosition", selectedPosition.label);
+    setValue("vatPosition", value);
   };
 
   return (
@@ -37,12 +44,17 @@ export function CommercialInformation({ register, setValue, errors }) {
             id="paymentTerms"
             {...register("paymentTerms")}
             placeholder="Describe the payment terms..."
+            disabled={disabled}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="vatPosition">VAT Position</Label>
-          <Select onValueChange={handleVatPositionChange}>
+          <Select
+            value={currentVatPosition}
+            onValueChange={handleVatPositionChange}
+            disabled={disabled}
+          >
             <SelectTrigger
               className={errors?.vatPosition ? "border-destructive" : ""}
             >
@@ -64,6 +76,7 @@ export function CommercialInformation({ register, setValue, errors }) {
             id="agentTerms"
             {...register("agentTerms")}
             placeholder="Specify any agent terms if applicable..."
+            disabled={disabled}
           />
         </div>
       </CardContent>

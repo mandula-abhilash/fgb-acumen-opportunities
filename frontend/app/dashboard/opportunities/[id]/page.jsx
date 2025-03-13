@@ -322,6 +322,7 @@ export default function OpportunityDetailsPage() {
           <PlanningInformation
             register={register}
             setValue={setValue}
+            watch={watch}
             errors={errors}
             planningStatuses={planningStatuses}
             landPurchaseStatuses={landPurchaseStatuses}
@@ -343,6 +344,7 @@ export default function OpportunityDetailsPage() {
           <CommercialInformation
             register={register}
             setValue={setValue}
+            watch={watch}
             errors={errors}
             disabled={!canEdit}
           />
