@@ -27,6 +27,7 @@ export function MultiSelect({
   placeholder = "Select options",
   className,
   maxCount = 3,
+  disabled = false,
 }) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -40,10 +41,12 @@ export function MultiSelect({
   );
 
   const handleUnselect = (item) => {
+    if (disabled) return;
     onChange(selected.filter((i) => i !== item));
   };
 
   const handleSelect = (currentValue) => {
+    if (disabled) return;
     if (selected.includes(currentValue)) {
       onChange(selected.filter((item) => item !== currentValue));
     } else {
@@ -52,11 +55,13 @@ export function MultiSelect({
   };
 
   const handleClear = (e) => {
+    if (disabled) return;
     e.stopPropagation();
     onChange([]);
   };
 
   const toggleAll = () => {
+    if (disabled) return;
     if (selected.length === options.length) {
       onChange([]);
     } else {
@@ -72,7 +77,10 @@ export function MultiSelect({
 
   return (
     <div className="relative">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover
+        open={open && !disabled}
+        onOpenChange={disabled ? undefined : setOpen}
+      >
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -80,8 +88,10 @@ export function MultiSelect({
             aria-expanded={open}
             className={cn(
               "w-full p-1 justify-between h-auto min-h-10",
+              disabled && "opacity-50 cursor-not-allowed",
               className
             )}
+            disabled={disabled}
           >
             <div className="flex justify-between items-center w-full">
               <div className="flex flex-wrap items-center gap-1">
@@ -93,27 +103,29 @@ export function MultiSelect({
                 {selected.slice(0, maxCount).map((value) => (
                   <Badge variant="secondary" key={value} className="m-1 pr-1">
                     {getOptionLabel(value)}
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-0.5"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                    {!disabled && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-0.5"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleUnselect(value);
+                          }
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           handleUnselect(value);
-                        }
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleUnselect(value);
-                      }}
-                    >
-                      <X className="h-3 w-3 hover:text-foreground" />
-                    </span>
+                        }}
+                      >
+                        <X className="h-3 w-3 hover:text-foreground" />
+                      </span>
+                    )}
                   </Badge>
                 ))}
                 {selected.length > maxCount && (
@@ -123,7 +135,7 @@ export function MultiSelect({
                 )}
               </div>
               <div className="flex items-center gap-2">
-                {selected.length > 0 && (
+                {selected.length > 0 && !disabled && (
                   <>
                     <span
                       role="button"

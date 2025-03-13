@@ -42,6 +42,7 @@ export default function OpportunityDetailsPage() {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
   const [opportunityId] = useState(() => params.id || uuidv4());
+  const [siteCreatorId, setSiteCreatorId] = useState(null);
 
   const {
     register,
@@ -77,6 +78,9 @@ export default function OpportunityDetailsPage() {
         setLoading(true);
         const response = await getLiveOpportunitySite(params.id);
         const opportunity = response.data;
+
+        // Store the creator's ID
+        setSiteCreatorId(opportunity.user_id);
 
         // Map opportunity type from constants
         const opportunityTypeOption = opportunityTypes.find(
@@ -259,11 +263,11 @@ export default function OpportunityDetailsPage() {
     return null;
   }
 
-  const canEdit = user.role === "admin" || user.id === watch("user_id");
+  const canEdit = user.role === "admin" || user.id === siteCreatorId;
 
   return (
     <div className="flex flex-col">
-      <PageHeader title={canEdit ? "Edit Site" : "View Site Details"}>
+      <PageHeader title={canEdit ? "Edit Site" : "Site Details"}>
         <Button
           variant="outline"
           onClick={() => router.push("/dashboard/opportunities")}

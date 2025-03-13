@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Spinner } from "@/components/ui/spinner";
 
-export function LocationInformation({ watch, setValue, errors }) {
+export function LocationInformation({ watch, setValue, errors, disabled }) {
   const [regions, setRegions] = useState([]);
   const [lpas, setLPAs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +23,7 @@ export function LocationInformation({ watch, setValue, errors }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [regionsData, lpasData] = await Promise.all([
           getDefaultRegions(),
           getLPAs(),
@@ -71,6 +72,7 @@ export function LocationInformation({ watch, setValue, errors }) {
             selected={watch("region")}
             onChange={(value) => setValue("region", value)}
             placeholder="Select regions..."
+            disabled={disabled}
           />
           {errors.region && (
             <p className="text-sm text-destructive">{errors.region.message}</p>
@@ -86,6 +88,7 @@ export function LocationInformation({ watch, setValue, errors }) {
             selected={watch("lpa")}
             onChange={(value) => setValue("lpa", value)}
             placeholder="Select LPA..."
+            disabled={disabled}
           />
           {errors.lpa && (
             <p className="text-sm text-destructive">{errors.lpa.message}</p>
