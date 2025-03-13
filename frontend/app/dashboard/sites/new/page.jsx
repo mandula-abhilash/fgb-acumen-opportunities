@@ -7,6 +7,12 @@ import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PageHeader } from "@/components/layout/page-header";
 import { SubmitSiteForm } from "@/components/sites/submit-site-form";
@@ -38,15 +44,22 @@ export default function SubmitNewSitePage() {
   return (
     <div className="flex flex-col">
       <PageHeader title="Submit New Site">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => router.push("/dashboard/opportunities")}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/dashboard/opportunities")}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline-block sm:ml-2">Back</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Return to opportunities</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto">
