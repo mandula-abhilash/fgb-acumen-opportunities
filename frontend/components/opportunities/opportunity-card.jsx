@@ -52,8 +52,11 @@ export function OpportunityCard({ opportunity }) {
             href={`/opportunities/${opportunity.id}`}
             className="pb-4 group cursor-pointer transition-colors"
           >
-            <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">
-              <h3 className="text-2xl font-semibold mb-2 group-hover:text-web-orange transition-colors">
+            <div
+              className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors"
+              title="View Details"
+            >
+              <h3 className="text-2xl font-semibold mb-2 group-hover:text-havelock-blue transition-colors">
                 {opportunity.site_name}
               </h3>
               <div className="flex items-center text-muted-foreground">
