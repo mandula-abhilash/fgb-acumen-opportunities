@@ -79,7 +79,7 @@ export default function OpportunitiesPage() {
                 </span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom">
               <p>Submit a new site</p>
             </TooltipContent>
           </Tooltip>

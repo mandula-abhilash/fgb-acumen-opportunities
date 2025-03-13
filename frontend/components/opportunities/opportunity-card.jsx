@@ -75,7 +75,7 @@ export function OpportunityCard({ opportunity }) {
                   </div>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent side="bottom">
                 <p>Click to view full opportunity details</p>
               </TooltipContent>
             </Tooltip>
@@ -187,7 +187,7 @@ export function OpportunityCard({ opportunity }) {
                     Shortlist
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="bottom">
                   <p>Add this site to your shortlisted opportunities</p>
                 </TooltipContent>
               </Tooltip>
@@ -199,7 +199,7 @@ export function OpportunityCard({ opportunity }) {
                     Confirm Interest
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="bottom">
                   <p>We will inform the seller that you are interested</p>
                 </TooltipContent>
               </Tooltip>

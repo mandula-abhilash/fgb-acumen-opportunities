@@ -65,7 +65,7 @@ export default function SubmissionOptionsPage() {
                 </span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom">
               <p>Return to opportunities list</p>
             </TooltipContent>
           </Tooltip>

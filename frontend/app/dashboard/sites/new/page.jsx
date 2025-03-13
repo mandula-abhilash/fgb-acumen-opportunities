@@ -55,7 +55,7 @@ export default function SubmitNewSitePage() {
                 <span className="hidden sm:inline-block sm:ml-2">Back</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom">
               <p>Return to opportunities</p>
             </TooltipContent>
           </Tooltip>
