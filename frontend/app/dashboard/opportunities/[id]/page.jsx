@@ -83,87 +83,85 @@ export default function OpportunityDetailsPage() {
           (type) => type.label === opportunity.opportunityType
         );
 
-        console.log(opportunityTypeOption);
-
         // Map planning status from constants
         const planningStatusOption = planningStatuses.find(
-          (status) => status.label === opportunity.planning_status
+          (status) => status.label === opportunity.planningStatus
         );
 
         // Map land purchase status from constants
         const landPurchaseStatusOption = landPurchaseStatuses.find(
-          (status) => status.label === opportunity.land_purchase_status
+          (status) => status.label === opportunity.landPurchaseStatus
         );
 
         // Map VAT position from constants
         const vatPositionOption = vatPositions.find(
-          (pos) => pos.label === opportunity.vat_position
+          (pos) => pos.label === opportunity.vatPosition
         );
 
         // Set form values with mapped options
-        setValue("siteName", opportunity.site_name);
-        setValue("siteAddress", opportunity.site_address);
-        setValue("customSiteAddress", opportunity.custom_site_address);
+        setValue("siteName", opportunity.siteName);
+        setValue("siteAddress", opportunity.siteAddress);
+        setValue("customSiteAddress", opportunity.customSiteAddress);
         setValue(
           "opportunityType",
-          opportunityTypeOption?.label || opportunity.opportunity_type
+          opportunityTypeOption?.value || opportunity.opportunityType
         );
-        setValue("developerName", opportunity.developer_name);
-        setValue("developerRegion", opportunity.developer_region);
-        setValue("googleMapsLink", opportunity.google_maps_link);
-        setValue("lpa", opportunity.lpa_codes || opportunity.lpa);
-        setValue("region", opportunity.region_ids || opportunity.region);
+        setValue("developerName", opportunity.developerName);
+        setValue("developerRegion", opportunity.developerRegion);
+        setValue("googleMapsLink", opportunity.googleMapsLink);
+        setValue("lpa", opportunity.lpa);
+        setValue("region", opportunity.region);
         setValue(
           "planningStatus",
-          planningStatusOption?.value || opportunity.planning_status
+          planningStatusOption?.value || opportunity.planningStatus
         );
         setValue(
           "landPurchaseStatus",
-          landPurchaseStatusOption?.value || opportunity.land_purchase_status
+          landPurchaseStatusOption?.value || opportunity.landPurchaseStatus
         );
         setValue("plots", opportunity.plots);
         setValue("tenures", opportunity.tenures);
         setValue(
           "startOnSiteDate",
-          opportunity.start_on_site_date
-            ? new Date(opportunity.start_on_site_date)
+          opportunity.startOnSiteDate
+            ? new Date(opportunity.startOnSiteDate)
             : null
         );
         setValue(
           "firstHandoverDate",
-          opportunity.first_handover_date
-            ? new Date(opportunity.first_handover_date)
+          opportunity.firstHandoverDate
+            ? new Date(opportunity.firstHandoverDate)
             : null
         );
         setValue(
           "finalHandoverDate",
-          opportunity.final_handover_date
-            ? new Date(opportunity.final_handover_date)
+          opportunity.finalHandoverDate
+            ? new Date(opportunity.finalHandoverDate)
             : null
         );
-        setValue("developerInfo", opportunity.developer_info);
-        setValue("siteContext", opportunity.site_context);
-        setValue("planningOverview", opportunity.planning_overview);
-        setValue("proposedDevelopment", opportunity.proposed_development);
+        setValue("developerInfo", opportunity.developerInfo);
+        setValue("siteContext", opportunity.siteContext);
+        setValue("planningOverview", opportunity.planningOverview);
+        setValue("proposedDevelopment", opportunity.proposedDevelopment);
         setValue(
           "detailedTenureAccommodation",
-          opportunity.detailed_tenure_accommodation
+          opportunity.detailedTenureAccommodation
         );
-        setValue("paymentTerms", opportunity.payment_terms);
-        setValue("projectProgramme", opportunity.project_programme);
-        setValue("agentTerms", opportunity.agent_terms);
-        setValue("sitePlanImage", opportunity.site_plan_image);
-        setValue("proposedSpecification", opportunity.proposed_specification);
-        setValue("s106Agreement", opportunity.s106_agreement);
+        setValue("paymentTerms", opportunity.paymentTerms);
+        setValue("projectProgramme", opportunity.projectProgramme);
+        setValue("agentTerms", opportunity.agentTerms);
+        setValue("sitePlanImage", opportunity.sitePlanImage);
+        setValue("proposedSpecification", opportunity.proposedSpecification);
+        setValue("s106Agreement", opportunity.s106Agreement);
         setValue(
           "vatPosition",
-          vatPositionOption?.value || opportunity.vat_position
+          vatPositionOption?.value || opportunity.vatPosition
         );
 
         // Set location data
         if (opportunity.coordinates) {
           setSelectedLocation(opportunity.coordinates);
-          setSelectedAddress(opportunity.site_address);
+          setSelectedAddress(opportunity.siteAddress);
         }
 
         // Set polygon path if exists
@@ -283,6 +281,7 @@ export default function OpportunityDetailsPage() {
               <BasicInformation
                 register={register}
                 setValue={setValue}
+                watch={watch}
                 errors={errors}
                 opportunityTypes={opportunityTypes}
                 selectedAddress={selectedAddress}

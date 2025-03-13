@@ -25,14 +25,17 @@ import { fileTypes } from "@/components/sites/form-constants";
 export function BasicInformation({
   register,
   setValue,
+  watch,
   errors,
   opportunityTypes,
   selectedAddress,
   selectedLocation,
   parentId,
   onSitePlanUpload,
+  disabled,
 }) {
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  const currentOpportunityType = watch("opportunityType");
 
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
@@ -64,8 +67,7 @@ export function BasicInformation({
   }, [selectedAddress, setValue]);
 
   const handleOpportunityTypeChange = (value) => {
-    const selectedType = opportunityTypes.find((type) => type.value === value);
-    setValue("opportunityType", selectedType.label);
+    setValue("opportunityType", value);
   };
 
   return (
@@ -110,6 +112,7 @@ export function BasicInformation({
               {...register("customSiteAddress")}
               className={errors.customSiteAddress ? "border-destructive" : ""}
               placeholder="Modify address if needed"
+              disabled={disabled}
             />
             {errors.customSiteAddress && (
               <p className="text-sm text-destructive">
@@ -159,6 +162,7 @@ export function BasicInformation({
               id="siteName"
               {...register("siteName")}
               className={errors.siteName ? "border-destructive" : ""}
+              disabled={disabled}
             />
             {errors.siteName && (
               <p className="text-sm text-destructive">
@@ -180,6 +184,7 @@ export function BasicInformation({
               label="Upload Site Plan"
               description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
               fileType="mixed"
+              disabled={disabled}
             />
           </div>
 
@@ -187,7 +192,11 @@ export function BasicInformation({
             <Label htmlFor="opportunityType">
               Opportunity Type <span className="text-destructive">*</span>
             </Label>
-            <Select onValueChange={handleOpportunityTypeChange}>
+            <Select
+              value={currentOpportunityType}
+              onValueChange={handleOpportunityTypeChange}
+              disabled={disabled}
+            >
               <SelectTrigger
                 className={errors.opportunityType ? "border-destructive" : ""}
               >
@@ -248,6 +257,7 @@ export function BasicInformation({
                   value >= 1 || "Number of plots must be at least 1",
               })}
               className={errors.plots ? "border-destructive" : ""}
+              disabled={disabled}
             />
             {errors.plots && (
               <p className="text-sm text-destructive">{errors.plots.message}</p>
