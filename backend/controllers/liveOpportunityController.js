@@ -201,7 +201,10 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
       ST_X(o.geom) as longitude,
       ST_Y(o.geom) as latitude,
       ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
-      ARRAY_AGG(DISTINCT r.name) as region_names
+      ARRAY_AGG(DISTINCT r.name) as region_names,
+      ARRAY_AGG(DISTINCT l.lpa22cd) as lpa_codes,
+      ARRAY_AGG(DISTINCT r.id) as region_ids,
+      ARRAY_AGG(DISTINCT r.description) as region_descriptions
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
@@ -221,12 +224,61 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   // Transform the response
   const transformedSite = {
     ...site,
+    // Basic Information
+    siteName: site.site_name,
+    siteAddress: site.site_address,
+    customSiteAddress: site.custom_site_address,
+    opportunityType: site.opportunity_type,
+    plots: parseInt(site.plots),
+    sitePlanImage: site.site_plan_image,
+
+    // Developer Information
+    developerName: site.developer_name,
+    developerRegion: site.developer_region,
+    developerInfo: site.developer_info,
+
+    // Location Information
+    lpa: site.lpa,
     lpa_names: site.lpa_names.filter(Boolean),
+    lpa_codes: site.lpa_codes.filter(Boolean),
+    region: site.region,
     region_names: site.region_names.filter(Boolean),
+    region_ids: site.region_ids.filter(Boolean),
+    region_descriptions: site.region_descriptions.filter(Boolean),
+    googleMapsLink: site.google_maps_link,
     coordinates: {
       lat: parseFloat(site.latitude),
       lng: parseFloat(site.longitude),
     },
+
+    // Planning Information
+    planningStatus: site.planning_status,
+    landPurchaseStatus: site.land_purchase_status,
+    planningOverview: site.planning_overview,
+    proposedDevelopment: site.proposed_development,
+    proposedSpecification: site.proposed_specification,
+    s106Agreement: site.s106_agreement,
+
+    // Tenure Information
+    tenures: site.tenures,
+    detailedTenureAccommodation: site.detailed_tenure_accommodation,
+
+    // Commercial Information
+    paymentTerms: site.payment_terms,
+    vatPosition: site.vat_position,
+    agentTerms: site.agent_terms,
+
+    // Timeline Information
+    startOnSiteDate: site.start_on_site_date,
+    firstHandoverDate: site.first_handover_date,
+    finalHandoverDate: site.final_handover_date,
+    projectProgramme: site.project_programme,
+
+    // Additional Information
+    siteContext: site.site_context,
+    created_at: site.created_at,
+    updated_at: site.updated_at,
+    user_id: site.user_id,
   };
 
   res.json({
