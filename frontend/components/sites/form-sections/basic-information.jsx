@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 
+import { deleteFileFromS3 } from "@/lib/upload";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 import { fileTypes } from "@/components/sites/form-constants";
 
 export function BasicInformation({
@@ -34,8 +36,10 @@ export function BasicInformation({
   onSitePlanUpload,
   disabled,
 }) {
+  const { toast } = useToast();
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const currentOpportunityType = watch("opportunityType");
+  const sitePlanImage = watch("sitePlanImage");
 
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
@@ -46,6 +50,61 @@ export function BasicInformation({
 
   const handleUploadError = (error) => {
     console.error("Upload error:", error);
+    toast({
+      variant: "destructive",
+      title: "Upload Failed",
+      description: "Failed to upload file. Please try again.",
+    });
+  };
+
+  const handleDeleteFile = async (fileUrl) => {
+    try {
+      // Extract the key from the S3 URL
+      const urlParts = fileUrl.split("/");
+      const key = urlParts.slice(3).join("/"); // Remove protocol and bucket name
+
+      await deleteFileFromS3(key);
+      setValue("sitePlanImage", "");
+
+      toast({
+        title: "Success",
+        description: "Site plan deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete site plan. Please try again.",
+      });
+    }
+  };
+
+  const renderSitePlanLink = (url) => {
+    if (!url) return null;
+    return (
+      <div className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+        >
+          <ExternalLink className="h-4 w-4" />
+          View Site Plan
+        </a>
+        {!disabled && (
+          <button
+            type="button"
+            onClick={() => handleDeleteFile(url)}
+            className="text-destructive hover:text-destructive/80 p-1 rounded-sm"
+            title="Delete site plan"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+    );
   };
 
   // Update Google Maps link when location changes
@@ -173,19 +232,23 @@ export function BasicInformation({
 
           <div className="space-y-2">
             <Label htmlFor="sitePlanImage">Site Plan</Label>
-            <FileUpload
-              onUploadComplete={handleSitePlanUpload}
-              onUploadError={handleUploadError}
-              acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
-              maxFileSize={10 * 1024 * 1024} // 10MB
-              folder="site-plans"
-              fileCategory="site-plan"
-              parentId={parentId}
-              label="Upload Site Plan"
-              description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
-              fileType="mixed"
-              disabled={disabled}
-            />
+            {sitePlanImage ? (
+              renderSitePlanLink(sitePlanImage)
+            ) : (
+              <FileUpload
+                onUploadComplete={handleSitePlanUpload}
+                onUploadError={handleUploadError}
+                acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
+                maxFileSize={10 * 1024 * 1024} // 10MB
+                folder="site-plans"
+                fileCategory="site-plan"
+                parentId={parentId}
+                label="Upload Site Plan"
+                description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
+                fileType="mixed"
+                disabled={disabled}
+              />
+            )}
           </div>
 
           <div className="space-y-2">
