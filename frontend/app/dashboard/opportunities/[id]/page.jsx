@@ -150,9 +150,12 @@ export default function OpportunityDetailsPage() {
         setValue("paymentTerms", opportunity.paymentTerms);
         setValue("projectProgramme", opportunity.projectProgramme);
         setValue("agentTerms", opportunity.agentTerms);
-        setValue("sitePlanImage", opportunity.sitePlanImage);
-        setValue("proposedSpecification", opportunity.proposedSpecification);
-        setValue("s106Agreement", opportunity.s106Agreement);
+        setValue("sitePlanImage", opportunity.sitePlanImage || "");
+        setValue(
+          "proposedSpecification",
+          opportunity.proposedSpecification || ""
+        );
+        setValue("s106Agreement", opportunity.s106Agreement || "");
         setValue(
           "vatPosition",
           vatPositionOption?.value || opportunity.vatPosition
