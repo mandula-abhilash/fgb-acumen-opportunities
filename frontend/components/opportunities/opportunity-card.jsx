@@ -28,7 +28,7 @@ import {
 export function OpportunityCard({ opportunity }) {
   return (
     <Card className="p-4 shadow-md">
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* Image Column */}
         <div className="w-full lg:w-[350px] flex-shrink-0">
           <div className="h-[250px] lg:h-[350px] relative rounded-lg overflow-hidden bg-muted">
@@ -47,17 +47,17 @@ export function OpportunityCard({ opportunity }) {
             href={`/dashboard/opportunities/${opportunity.id}`}
             className="pb-4 group cursor-pointer transition-colors"
           >
-            <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 rounded-lg transition-colors">
+            <div className="bg-muted/50 group-hover:bg-muted/100 px-4 py-2 pb-4 rounded-lg transition-colors">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2 text-havelock-blue transition-colors">
+                      <h3 className="text-lg font-semibold mb-2 text-havelock-blue transition-colors">
                         {opportunity.site_name}
                       </h3>
                       <div className="flex items-center text-muted-foreground">
                         <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                        <span className="text-md">
+                        <span className="text-sm">
                           {opportunity.site_address}
                         </span>
                       </div>
@@ -72,95 +72,97 @@ export function OpportunityCard({ opportunity }) {
           </Link>
 
           {/* Details Section */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-1">
-            {/* Left Column */}
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Building2 className="h-4 w-4" />
-                  <span className="text-sm">Developer</span>
+          <div className="flex-1 bg-muted/50 rounded-lg px-4 py-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Building2 className="h-4 w-4" />
+                    <span className="text-sm">Developer</span>
+                  </div>
+                  <p className="font-medium text-sm">
+                    {opportunity.developer_name}
+                  </p>
                 </div>
-                <p className="font-medium text-sm">
-                  {opportunity.developer_name}
-                </p>
+
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Globe2 className="h-4 w-4" />
+                    <span className="text-sm">Region</span>
+                  </div>
+                  <p className="font-medium text-sm">
+                    {opportunity.region_names?.join(", ") || "Not specified"}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Landmark className="h-4 w-4" />
+                    <span className="text-sm">LPA</span>
+                  </div>
+                  <p className="font-medium text-sm">
+                    {opportunity.lpa_names?.join(", ") || "Not specified"}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <FileText className="h-4 w-4" />
+                    <span className="text-sm">Opportunity Type</span>
+                  </div>
+                  <p className="font-medium text-sm">
+                    {opportunity.opportunity_type}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Globe2 className="h-4 w-4" />
-                  <span className="text-sm">Region</span>
+              {/* Right Column */}
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Users className="h-4 w-4" />
+                    <span className="text-sm">Number of Plots</span>
+                  </div>
+                  <p className="font-medium">{opportunity.plots} units</p>
                 </div>
-                <p className="font-medium text-sm">
-                  {opportunity.region_names?.join(", ") || "Not specified"}
-                </p>
-              </div>
 
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Landmark className="h-4 w-4" />
-                  <span className="text-sm">LPA</span>
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <ScrollText className="h-4 w-4" />
+                    <span className="text-sm">Planning Status</span>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className="border-web-orange text-web-orange mt-1"
+                  >
+                    {opportunity.planning_status}
+                  </Badge>
                 </div>
-                <p className="font-medium text-sm">
-                  {opportunity.lpa_names?.join(", ") || "Not specified"}
-                </p>
-              </div>
 
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <FileText className="h-4 w-4" />
-                  <span className="text-sm">Opportunity Type</span>
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Store className="h-4 w-4" />
+                    <span className="text-sm">Purchase Stage</span>
+                  </div>
+                  <Badge variant="outline mt-1">
+                    {opportunity.land_purchase_status}
+                  </Badge>
                 </div>
-                <p className="font-medium text-sm">
-                  {opportunity.opportunity_type}
-                </p>
-              </div>
-            </div>
 
-            {/* Right Column */}
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Users className="h-4 w-4" />
-                  <span className="text-sm">Number of Plots</span>
-                </div>
-                <p className="font-medium">{opportunity.plots} units</p>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <ScrollText className="h-4 w-4" />
-                  <span className="text-sm">Planning Status</span>
-                </div>
-                <Badge
-                  variant="outline"
-                  className="border-web-orange text-web-orange mt-1"
-                >
-                  {opportunity.planning_status}
-                </Badge>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Store className="h-4 w-4" />
-                  <span className="text-sm">Purchase Stage</span>
-                </div>
-                <Badge variant="outline mt-1">
-                  {opportunity.land_purchase_status}
-                </Badge>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                  <Home className="h-4 w-4" />
-                  <span className="text-sm">Tenures</span>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {Array.isArray(opportunity.tenures) &&
-                    opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="outline">
-                        {tenure}
-                      </Badge>
-                    ))}
+                <div>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                    <Home className="h-4 w-4" />
+                    <span className="text-sm">Tenures</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {Array.isArray(opportunity.tenures) &&
+                      opportunity.tenures.map((tenure) => (
+                        <Badge key={tenure} variant="outline">
+                          {tenure}
+                        </Badge>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
