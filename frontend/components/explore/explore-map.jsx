@@ -117,6 +117,7 @@ export function ExploreMap({ opportunities }) {
   const [zoomLevel, setZoomLevel] = useState(7);
   const [selectedOpportunityDetails, setSelectedOpportunityDetails] =
     useState(null);
+  const [selectedCoordinates, setSelectedCoordinates] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initialBoundsFitted, setInitialBoundsFitted] = useState(false);
@@ -190,18 +191,55 @@ export function ExploreMap({ opportunities }) {
     }
   };
 
+  const centerMapOnMarker = (map, coordinates, isSidebarOpening) => {
+    const sidebarWidth = 450; // Width of sidebar in pixels
+    const mapWidth = map.getDiv().offsetWidth;
+
+    // Calculate offset based on sidebar state change
+    let offset = 0;
+
+    if (isSidebarOpening && !isSidebarOpen) {
+      // Sidebar will open, move center left by half of sidebar width
+      offset = sidebarWidth / 2;
+    } else if (!isSidebarOpening && isSidebarOpen) {
+      // Sidebar will close, move center right by half of sidebar width
+      offset = -sidebarWidth / 2;
+    }
+
+    if (offset !== 0) {
+      // Get current bounds to calculate lng per pixel
+      const bounds = map.getBounds();
+      if (bounds) {
+        const ne = bounds.getNorthEast();
+        const sw = bounds.getSouthWest();
+        const lngSpan = ne.lng() - sw.lng();
+        const lngPerPixel = lngSpan / mapWidth;
+
+        // Calculate new center with offset
+        const newCenter = new google.maps.LatLng(
+          coordinates.lat,
+          coordinates.lng - offset * lngPerPixel
+        );
+
+        map.panTo(newCenter);
+      } else {
+        // Fallback if bounds not available
+        map.panTo(new google.maps.LatLng(coordinates.lat, coordinates.lng));
+      }
+    } else {
+      // No offset needed, just center on the marker
+      map.panTo(new google.maps.LatLng(coordinates.lat, coordinates.lng));
+    }
+  };
+
   const handleMarkerClick = async (opportunity) => {
     setIsLoading(true);
+    setSelectedCoordinates(opportunity.coordinates);
 
     try {
-      // Center the map on the clicked marker
+      // Center the map on the clicked marker with sidebar offset
       if (map && opportunity.coordinates) {
-        map.panTo(
-          new google.maps.LatLng(
-            opportunity.coordinates.lat,
-            opportunity.coordinates.lng
-          )
-        );
+        centerMapOnMarker(map, opportunity.coordinates, true);
       }
 
       const response = await getLiveOpportunitySite(opportunity.id);
@@ -217,6 +255,11 @@ export function ExploreMap({ opportunities }) {
   const handleSidebarClose = () => {
     setIsSidebarOpen(false);
     setSelectedOpportunityDetails(null);
+
+    // Re-center the map considering the sidebar is now closed
+    if (map && selectedCoordinates) {
+      centerMapOnMarker(map, selectedCoordinates, false);
+    }
   };
 
   if (!isLoaded) {
