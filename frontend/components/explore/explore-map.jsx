@@ -5,8 +5,10 @@ import { useGoogleMaps } from "@/contexts/google-maps-context";
 import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { Building2, MapPin } from "lucide-react";
 
+import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { OpportunitySidebar } from "@/components/explore/opportunity-sidebar";
 import { MapLoading } from "@/components/site-map/loading";
 import { MapControls } from "@/components/site-map/map-controls";
 
@@ -38,6 +40,10 @@ export function ExploreMap({ opportunities }) {
   const [mapType, setMapType] = useState("hybrid");
   const [zoomLevel, setZoomLevel] = useState(7);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [selectedOpportunityDetails, setSelectedOpportunityDetails] =
+    useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleMapLoad = (map) => {
     setMap(map);
@@ -61,12 +67,37 @@ export function ExploreMap({ opportunities }) {
     }
   };
 
+  const handleMarkerClick = async (opportunity) => {
+    setSelectedOpportunity(opportunity);
+    setIsLoading(true);
+
+    try {
+      const response = await getLiveOpportunitySite(opportunity.id);
+      setSelectedOpportunityDetails(response.data);
+      setIsSidebarOpen(true);
+    } catch (error) {
+      console.error("Error fetching opportunity details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInfoWindowClose = () => {
+    setSelectedOpportunity(null);
+  };
+
+  const handleSidebarClose = () => {
+    setIsSidebarOpen(false);
+    setSelectedOpportunityDetails(null);
+    setSelectedOpportunity(null);
+  };
+
   if (!isLoaded) {
     return <MapLoading />;
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full relative">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={zoomLevel}
@@ -78,37 +109,35 @@ export function ExploreMap({ opportunities }) {
           <Marker
             key={opportunity.id}
             position={opportunity.coordinates}
-            onClick={() => setSelectedOpportunity(opportunity)}
+            onClick={() => handleMarkerClick(opportunity)}
           />
         ))}
 
-        {selectedOpportunity && (
+        {selectedOpportunity && !isSidebarOpen && (
           <InfoWindow
             position={selectedOpportunity.coordinates}
-            onCloseClick={() => setSelectedOpportunity(null)}
+            onCloseClick={handleInfoWindowClose}
           >
             <div className="p-2 max-w-sm">
               <h3 className="font-semibold mb-2">
-                {selectedOpportunity.title}
+                {selectedOpportunity.site_name}
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-1" />
-                  <span>{selectedOpportunity.location}</span>
+                  <span>{selectedOpportunity.site_address}</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <Building2 className="h-4 w-4 mr-1" />
                   <span>{selectedOpportunity.plots} plots</span>
                 </div>
                 <div className="flex justify-between items-center mt-3">
-                  <span className="font-bold text-web-orange">
-                    {selectedOpportunity.price}
-                  </span>
                   <Button
                     size="sm"
                     className="bg-web-orange hover:bg-web-orange/90 text-white"
-                    onClick={() => {
-                      // Handle view details
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkerClick(selectedOpportunity);
                     }}
                   >
                     View Details
@@ -126,6 +155,13 @@ export function ExploreMap({ opportunities }) {
           onZoomChange={handleZoomChange}
         />
       </GoogleMap>
+
+      <OpportunitySidebar
+        opportunity={selectedOpportunityDetails}
+        isOpen={isSidebarOpen}
+        onClose={handleSidebarClose}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
