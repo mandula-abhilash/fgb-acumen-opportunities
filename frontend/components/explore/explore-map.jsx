@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { useGoogleMaps } from "@/contexts/google-maps-context";
-import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
-import { Building2, MapPin } from "lucide-react";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { OpportunitySidebar } from "@/components/explore/opportunity-sidebar";
 import { MapLoading } from "@/components/site-map/loading";
 import { MapControls } from "@/components/site-map/map-controls";
@@ -39,7 +36,6 @@ export function ExploreMap({ opportunities }) {
   const [map, setMap] = useState(null);
   const [mapType, setMapType] = useState("hybrid");
   const [zoomLevel, setZoomLevel] = useState(7);
-  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [selectedOpportunityDetails, setSelectedOpportunityDetails] =
     useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -68,7 +64,6 @@ export function ExploreMap({ opportunities }) {
   };
 
   const handleMarkerClick = async (opportunity) => {
-    setSelectedOpportunity(opportunity);
     setIsLoading(true);
 
     try {
@@ -82,14 +77,9 @@ export function ExploreMap({ opportunities }) {
     }
   };
 
-  const handleInfoWindowClose = () => {
-    setSelectedOpportunity(null);
-  };
-
   const handleSidebarClose = () => {
     setIsSidebarOpen(false);
     setSelectedOpportunityDetails(null);
-    setSelectedOpportunity(null);
   };
 
   if (!isLoaded) {
@@ -112,41 +102,6 @@ export function ExploreMap({ opportunities }) {
             onClick={() => handleMarkerClick(opportunity)}
           />
         ))}
-
-        {selectedOpportunity && !isSidebarOpen && (
-          <InfoWindow
-            position={selectedOpportunity.coordinates}
-            onCloseClick={handleInfoWindowClose}
-          >
-            <div className="p-2 max-w-sm">
-              <h3 className="font-semibold mb-2">
-                {selectedOpportunity.site_name}
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center text-muted-foreground">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  <span>{selectedOpportunity.site_address}</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <Building2 className="h-4 w-4 mr-1" />
-                  <span>{selectedOpportunity.plots} plots</span>
-                </div>
-                <div className="flex justify-between items-center mt-3">
-                  <Button
-                    size="sm"
-                    className="bg-web-orange hover:bg-web-orange/90 text-white"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMarkerClick(selectedOpportunity);
-                    }}
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </InfoWindow>
-        )}
 
         <MapControls
           mapType={mapType}
