@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGoogleMaps } from "@/contexts/google-maps-context";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap } from "@react-google-maps/api";
 
 import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { OpportunitySidebar } from "@/components/explore/opportunity-sidebar";
@@ -28,8 +28,87 @@ const defaultMapOptions = {
   scrollwheel: true,
   gestureHandling: "greedy",
   minZoom: 6,
-  mapTypeId: "hybrid",
+  mapTypeId: "satellite",
 };
+
+function CustomMarker({ position, plots, onClick }) {
+  const [marker, setMarker] = useState(null);
+
+  const createCustomMarker = () => {
+    const div = document.createElement("div");
+    div.className = "relative";
+
+    const markerContent = `
+      <div class="relative cursor-pointer">
+        <div class="absolute -top-8 -left-4 transform-gpu">
+          <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#F09C00" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22a1 1 0 0 1-1-1v-4a1 1 0 0 1 .445-.832l3-2a1 1 0 0 1 1.11 0l3 2A1 1 0 0 1 22 17v4a1 1 0 0 1-1 1z"/>
+              <path d="M18 10a8 8 0 0 0-16 0c0 4.993 5.539 10.193 7.399 11.799a1 1 0 0 0 .601.2"/>
+              <path d="M18 22v-3"/>
+              <circle cx="10" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="absolute top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-black/75 text-white text-[10px] px-1.5 py-0.5 rounded">
+            ${plots} homes
+          </div>
+        </div>
+      </div>
+    `;
+
+    div.innerHTML = markerContent;
+
+    // Create the actual marker
+    const marker = new google.maps.Marker({
+      position,
+      map: window.map,
+      icon: {
+        url:
+          "data:image/svg+xml;charset=UTF-8," +
+          encodeURIComponent('<svg width="1" height="1"></svg>'),
+        anchor: new google.maps.Point(0, 0),
+      },
+    });
+
+    // Create an overlay
+    const overlay = new google.maps.OverlayView();
+    overlay.setMap(window.map);
+
+    overlay.onAdd = function () {
+      overlay.getPanes().overlayMouseTarget.appendChild(div);
+    };
+
+    overlay.draw = function () {
+      const projection = overlay.getProjection();
+      const point = projection.fromLatLngToDivPixel(marker.getPosition());
+
+      if (point) {
+        div.style.left = point.x + "px";
+        div.style.top = point.y + "px";
+      }
+    };
+
+    // Add click handler
+    div.addEventListener("click", onClick);
+
+    return marker;
+  };
+
+  useEffect(() => {
+    if (window.google && window.map) {
+      const newMarker = createCustomMarker();
+      setMarker(newMarker);
+
+      return () => {
+        if (marker) {
+          marker.setMap(null);
+        }
+      };
+    }
+  }, [window.google, window.map, position]);
+
+  return null;
+}
 
 export function ExploreMap({ opportunities }) {
   const { isLoaded } = useGoogleMaps();
@@ -43,6 +122,7 @@ export function ExploreMap({ opportunities }) {
 
   const handleMapLoad = (map) => {
     setMap(map);
+    window.map = map;
   };
 
   const handleMapTypeChange = (type) => {
@@ -96,9 +176,10 @@ export function ExploreMap({ opportunities }) {
         options={defaultMapOptions}
       >
         {opportunities?.map((opportunity) => (
-          <Marker
+          <CustomMarker
             key={opportunity.id}
             position={opportunity.coordinates}
+            plots={opportunity.plots}
             onClick={() => handleMarkerClick(opportunity)}
           />
         ))}
