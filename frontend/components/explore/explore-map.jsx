@@ -119,14 +119,16 @@ export function ExploreMap({ opportunities }) {
     useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialBoundsFitted, setInitialBoundsFitted] = useState(false);
 
   const handleMapLoad = (map) => {
     setMap(map);
     window.map = map;
 
-    // Fit bounds when map loads if there are opportunities
+    // Fit bounds only on initial load if there are opportunities
     if (opportunities?.length > 0) {
       fitBoundsToMarkers(map, opportunities);
+      setInitialBoundsFitted(true);
     }
   };
 
@@ -162,12 +164,13 @@ export function ExploreMap({ opportunities }) {
     setZoomLevel(map.getZoom());
   };
 
-  // Effect to refit bounds when opportunities change
+  // Effect to refit bounds on initial load
   useEffect(() => {
-    if (map && opportunities?.length > 0) {
+    if (map && opportunities?.length > 0 && !initialBoundsFitted) {
       fitBoundsToMarkers(map, opportunities);
+      setInitialBoundsFitted(true);
     }
-  }, [opportunities, map, isSidebarOpen]);
+  }, [opportunities, map, initialBoundsFitted]);
 
   const handleMapTypeChange = (type) => {
     setMapType(type);
@@ -191,6 +194,16 @@ export function ExploreMap({ opportunities }) {
     setIsLoading(true);
 
     try {
+      // Center the map on the clicked marker
+      if (map && opportunity.coordinates) {
+        map.panTo(
+          new google.maps.LatLng(
+            opportunity.coordinates.lat,
+            opportunity.coordinates.lng
+          )
+        );
+      }
+
       const response = await getLiveOpportunitySite(opportunity.id);
       setSelectedOpportunityDetails(response.data);
       setIsSidebarOpen(true);
