@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { format } from "date-fns";
 import {
   Building2,
   Calendar,
@@ -24,6 +25,11 @@ import { Separator } from "@/components/ui/separator";
 
 export function OpportunityDetails({ opportunity }) {
   if (!opportunity) return null;
+
+  const formatDate = (date) => {
+    if (!date) return null;
+    return format(new Date(date), "dd MMM yyyy");
+  };
 
   return (
     <div className="flex flex-col h-full border-l shadow-lg">
@@ -107,7 +113,7 @@ export function OpportunityDetails({ opportunity }) {
                         <Badge
                           key={region}
                           variant="secondary"
-                          className="text-sm"
+                          className="text-xs"
                         >
                           {region}
                         </Badge>
@@ -132,7 +138,7 @@ export function OpportunityDetails({ opportunity }) {
                 <span className="text-sm text-muted-foreground">Regions</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.region_names?.map((region) => (
-                    <Badge key={region} variant="secondary" className="text-sm">
+                    <Badge key={region} variant="secondary" className="text-xs">
                       {region}
                     </Badge>
                   ))}
@@ -145,7 +151,7 @@ export function OpportunityDetails({ opportunity }) {
                 </span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.lpa_names?.map((lpa) => (
-                    <Badge key={lpa} variant="secondary" className="text-sm">
+                    <Badge key={lpa} variant="secondary" className="text-xs">
                       {lpa}
                     </Badge>
                   ))}
@@ -171,7 +177,7 @@ export function OpportunityDetails({ opportunity }) {
                 <div className="mt-1">
                   <Badge
                     variant="outline"
-                    className="text-sm border-havelock-blue text-havelock-blue"
+                    className="text-xs border-havelock-blue text-havelock-blue"
                   >
                     {opportunity.planning_status}
                   </Badge>
@@ -183,7 +189,7 @@ export function OpportunityDetails({ opportunity }) {
                   Land Purchase Status
                 </span>
                 <div className="mt-1">
-                  <Badge variant="outline" className="text-sm">
+                  <Badge variant="outline" className="text-xs">
                     {opportunity.land_purchase_status}
                   </Badge>
                 </div>
@@ -303,9 +309,7 @@ export function OpportunityDetails({ opportunity }) {
                     Start on Site
                   </span>
                   <span className="text-sm font-medium">
-                    {new Date(
-                      opportunity.start_on_site_date
-                    ).toLocaleDateString()}
+                    {formatDate(opportunity.start_on_site_date)}
                   </span>
                 </div>
               )}
@@ -316,9 +320,7 @@ export function OpportunityDetails({ opportunity }) {
                     First Handover
                   </span>
                   <span className="text-sm font-medium">
-                    {new Date(
-                      opportunity.first_handover_date
-                    ).toLocaleDateString()}
+                    {formatDate(opportunity.first_handover_date)}
                   </span>
                 </div>
               )}
@@ -329,9 +331,7 @@ export function OpportunityDetails({ opportunity }) {
                     Final Handover
                   </span>
                   <span className="text-sm font-medium">
-                    {new Date(
-                      opportunity.final_handover_date
-                    ).toLocaleDateString()}
+                    {formatDate(opportunity.final_handover_date)}
                   </span>
                 </div>
               )}
