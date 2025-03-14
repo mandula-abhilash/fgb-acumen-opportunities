@@ -38,8 +38,8 @@ export function BasicInformation({
 }) {
   const { toast } = useToast();
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
-  const currentOpportunityType = watch("opportunityType");
-  const sitePlanImage = watch("sitePlanImage");
+  const opportunityType = watch?.("opportunityType") || "";
+  const sitePlanImage = watch?.("sitePlanImage") || "";
 
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
@@ -256,7 +256,7 @@ export function BasicInformation({
               Opportunity Type <span className="text-destructive">*</span>
             </Label>
             <Select
-              value={currentOpportunityType}
+              value={opportunityType}
               onValueChange={handleOpportunityTypeChange}
               disabled={disabled}
             >

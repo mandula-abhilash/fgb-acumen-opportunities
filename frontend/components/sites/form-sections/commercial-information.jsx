@@ -25,7 +25,7 @@ export function CommercialInformation({
   errors,
   disabled,
 }) {
-  const currentVatPosition = watch("vatPosition");
+  const currentVatPosition = watch?.("vatPosition") | "";
 
   const handleVatPositionChange = (value) => {
     setValue("vatPosition", value);

@@ -36,10 +36,10 @@ export function PlanningInformation({
   disabled,
 }) {
   const { toast } = useToast();
-  const currentPlanningStatus = watch("planningStatus");
-  const currentLandPurchaseStatus = watch("landPurchaseStatus");
-  const proposedSpecification = watch("proposedSpecification");
-  const s106Agreement = watch("s106Agreement");
+  const planningStatus = watch?.("planningStatus") || "";
+  const landPurchaseStatus = watch?.("landPurchaseStatus") || "";
+  const proposedSpecification = watch?.("proposedSpecification") || "";
+  const s106Agreement = watch?.("s106Agreement") || "";
 
   const handleProposedSpecUpload = (fileUrl) => {
     setValue("proposedSpecification", fileUrl);
@@ -137,7 +137,7 @@ export function PlanningInformation({
               Planning Status <span className="text-destructive">*</span>
             </Label>
             <Select
-              value={currentPlanningStatus}
+              value={planningStatus}
               onValueChange={handlePlanningStatusChange}
               disabled={disabled}
             >
@@ -166,7 +166,7 @@ export function PlanningInformation({
               Land Purchase Status <span className="text-destructive">*</span>
             </Label>
             <Select
-              value={currentLandPurchaseStatus}
+              value={landPurchaseStatus}
               onValueChange={handleLandPurchaseStatusChange}
               disabled={disabled}
             >
