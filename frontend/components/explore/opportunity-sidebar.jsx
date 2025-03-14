@@ -16,8 +16,8 @@ export function OpportunitySidebar({
   return (
     <div
       className={cn(
-        "absolute top-0 right-0 h-full w-full lg:w-[450px] bg-background/95 backdrop-blur-sm transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "translate-x-full"
+        "absolute top-0 left-0 h-full w-full lg:w-[450px] bg-background/95 backdrop-blur-sm transform transition-transform duration-300 ease-in-out",
+        isOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
       <div className="relative h-full">
