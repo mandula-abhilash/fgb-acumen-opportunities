@@ -123,7 +123,51 @@ export function ExploreMap({ opportunities }) {
   const handleMapLoad = (map) => {
     setMap(map);
     window.map = map;
+
+    // Fit bounds when map loads if there are opportunities
+    if (opportunities?.length > 0) {
+      fitBoundsToMarkers(map, opportunities);
+    }
   };
+
+  // Function to fit map bounds to all markers
+  const fitBoundsToMarkers = (map, markers) => {
+    if (!map || !markers?.length) return;
+
+    const bounds = new google.maps.LatLngBounds();
+
+    // Extend bounds with each marker position
+    markers.forEach((marker) => {
+      if (marker.coordinates?.lat && marker.coordinates?.lng) {
+        bounds.extend(
+          new google.maps.LatLng(marker.coordinates.lat, marker.coordinates.lng)
+        );
+      }
+    });
+
+    // Fit the map to the bounds
+    map.fitBounds(bounds);
+
+    // Add some padding
+    const padding = {
+      top: 50,
+      right: isSidebarOpen ? 500 : 50, // Account for sidebar if open
+      bottom: 50,
+      left: 50,
+    };
+
+    map.panToBounds(bounds, padding);
+
+    // Update zoom level state
+    setZoomLevel(map.getZoom());
+  };
+
+  // Effect to refit bounds when opportunities change
+  useEffect(() => {
+    if (map && opportunities?.length > 0) {
+      fitBoundsToMarkers(map, opportunities);
+    }
+  }, [opportunities, map, isSidebarOpen]);
 
   const handleMapTypeChange = (type) => {
     setMapType(type);
