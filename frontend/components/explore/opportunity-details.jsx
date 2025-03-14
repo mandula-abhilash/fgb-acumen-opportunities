@@ -232,7 +232,7 @@ export function OpportunityDetails({ opportunity }) {
                 <div className="flex flex-wrap gap-1 mt-1">
                   {Array.isArray(opportunity.tenures) &&
                     opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="outline" className="text-sm">
+                      <Badge key={tenure} variant="outline" className="text-xs">
                         {tenure}
                       </Badge>
                     ))}
