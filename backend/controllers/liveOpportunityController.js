@@ -196,6 +196,16 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
 
   const query = `
+    WITH developer_region_names AS (
+      SELECT 
+        ARRAY_AGG(r.name) as names
+      FROM custom_regions r
+      WHERE r.id = ANY(
+        SELECT UNNEST(developer_region::uuid[])
+        FROM live_opportunities
+        WHERE id = $1
+      )
+    )
     SELECT 
       o.*,
       ST_X(o.geom) as longitude,
@@ -204,7 +214,8 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
       ARRAY_AGG(DISTINCT r.name) as region_names,
       ARRAY_AGG(DISTINCT l.lpa22cd) as lpa_codes,
       ARRAY_AGG(DISTINCT r.id) as region_ids,
-      ARRAY_AGG(DISTINCT r.description) as region_descriptions
+      ARRAY_AGG(DISTINCT r.description) as region_descriptions,
+      (SELECT names FROM developer_region_names) as developer_region_names
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])

@@ -29,12 +29,12 @@ export function OpportunityDetails({ opportunity }) {
     <div className="flex flex-col h-full border-l shadow-lg">
       {/* Header Section - Fixed */}
       <div className="flex flex-col space-y-1 p-3 bg-muted/30 border-b">
-        <h2 className="text-lg font-bold text-web-orange">
+        <h2 className="text-lg font-bold text-havelock-blue">
           {opportunity.site_name}
         </h2>
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-          <span className="text-xs">{opportunity.site_address}</span>
+          <span className="text-sm">{opportunity.site_address}</span>
         </div>
       </div>
 
@@ -56,16 +56,16 @@ export function OpportunityDetails({ opportunity }) {
         {/* Details Section */}
         <div className="p-3 space-y-4">
           {/* Key Details */}
-          <Card className="overflow-hidden border border-web-orange/20">
+          <Card className="overflow-hidden border border-havelock-blue/20">
             <div className="grid grid-cols-2 divide-x">
-              <div className="p-2 space-y-0.5 bg-web-orange/5">
-                <span className="text-xs text-muted-foreground">Plots</span>
-                <p className="text-lg font-bold text-web-orange">
+              <div className="p-2 space-y-0.5 bg-havelock-blue/5">
+                <span className="text-sm text-muted-foreground">Plots</span>
+                <p className="text-lg font-bold text-havelock-blue">
                   {opportunity.plots}
                 </p>
               </div>
-              <div className="p-2 space-y-0.5 bg-web-orange/5">
-                <span className="text-xs text-muted-foreground">Type</span>
+              <div className="p-2 space-y-0.5 bg-havelock-blue/5">
+                <span className="text-sm text-muted-foreground">Type</span>
                 <p className="text-sm font-medium">
                   {opportunity.opportunity_type}
                 </p>
@@ -75,20 +75,20 @@ export function OpportunityDetails({ opportunity }) {
 
           {/* Developer Info */}
           <div className="space-y-2 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <Building2 className="h-4 w-4" />
-              <span className="text-xs font-semibold">
+              <span className="text-sm font-semibold">
                 Developer Information
               </span>
             </div>
             <div className="space-y-2">
               <div>
-                <span className="text-xs text-muted-foreground">Name</span>
+                <span className="text-sm text-muted-foreground">Name</span>
                 <p className="text-sm">{opportunity.developer_name}</p>
               </div>
               {opportunity.developer_info && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Additional Info
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -96,42 +96,43 @@ export function OpportunityDetails({ opportunity }) {
                   </p>
                 </div>
               )}
-              {opportunity.developer_region && (
-                <div>
-                  <span className="text-xs text-muted-foreground">
-                    Developer Regions
-                  </span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {opportunity.developer_region.map((region) => (
-                      <Badge
-                        key={region}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {region}
-                      </Badge>
-                    ))}
+              {opportunity.developer_region_names &&
+                opportunity.developer_region_names.length > 0 && (
+                  <div>
+                    <span className="text-sm text-muted-foreground">
+                      Developer Regions
+                    </span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {opportunity.developer_region_names.map((region) => (
+                        <Badge
+                          key={region}
+                          variant="secondary"
+                          className="text-sm"
+                        >
+                          {region}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
 
           {/* Location Info */}
           <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <Globe2 className="h-4 w-4" />
-              <span className="text-xs font-semibold">
+              <span className="text-sm font-semibold">
                 Location Information
               </span>
             </div>
 
             <div className="space-y-2">
               <div>
-                <span className="text-xs text-muted-foreground">Regions</span>
+                <span className="text-sm text-muted-foreground">Regions</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.region_names?.map((region) => (
-                    <Badge key={region} variant="secondary" className="text-xs">
+                    <Badge key={region} variant="secondary" className="text-sm">
                       {region}
                     </Badge>
                   ))}
@@ -139,12 +140,12 @@ export function OpportunityDetails({ opportunity }) {
               </div>
 
               <div>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   Local Planning Authorities
                 </span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.lpa_names?.map((lpa) => (
-                    <Badge key={lpa} variant="secondary" className="text-xs">
+                    <Badge key={lpa} variant="secondary" className="text-sm">
                       {lpa}
                     </Badge>
                   ))}
@@ -155,22 +156,22 @@ export function OpportunityDetails({ opportunity }) {
 
           {/* Planning Info */}
           <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <ScrollText className="h-4 w-4" />
-              <span className="text-xs font-semibold">
+              <span className="text-sm font-semibold">
                 Planning Information
               </span>
             </div>
 
             <div className="space-y-2">
               <div>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   Planning Status
                 </span>
                 <div className="mt-1">
                   <Badge
                     variant="outline"
-                    className="text-xs border-web-orange text-web-orange"
+                    className="text-sm border-havelock-blue text-havelock-blue"
                   >
                     {opportunity.planning_status}
                   </Badge>
@@ -178,11 +179,11 @@ export function OpportunityDetails({ opportunity }) {
               </div>
 
               <div>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   Land Purchase Status
                 </span>
                 <div className="mt-1">
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-sm">
                     {opportunity.land_purchase_status}
                   </Badge>
                 </div>
@@ -190,7 +191,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.planning_overview && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Planning Overview
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -201,7 +202,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.proposed_development && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Proposed Development
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -214,18 +215,18 @@ export function OpportunityDetails({ opportunity }) {
 
           {/* Tenure Info */}
           <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <Home className="h-4 w-4" />
-              <span className="text-xs font-semibold">Tenure Information</span>
+              <span className="text-sm font-semibold">Tenure Information</span>
             </div>
 
             <div className="space-y-2">
               <div>
-                <span className="text-xs text-muted-foreground">Tenures</span>
+                <span className="text-sm text-muted-foreground">Tenures</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {Array.isArray(opportunity.tenures) &&
                     opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="outline" className="text-xs">
+                      <Badge key={tenure} variant="outline" className="text-sm">
                         {tenure}
                       </Badge>
                     ))}
@@ -234,7 +235,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.detailed_tenure_accommodation && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Detailed Accommodation
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -247,9 +248,9 @@ export function OpportunityDetails({ opportunity }) {
 
           {/* Commercial Info */}
           <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <Store className="h-4 w-4" />
-              <span className="text-xs font-semibold">
+              <span className="text-sm font-semibold">
                 Commercial Information
               </span>
             </div>
@@ -257,7 +258,7 @@ export function OpportunityDetails({ opportunity }) {
             <div className="space-y-2">
               {opportunity.payment_terms && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Payment Terms
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -268,7 +269,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.vat_position && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     VAT Position
                   </span>
                   <p className="text-sm">{opportunity.vat_position}</p>
@@ -277,7 +278,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.agent_terms && (
                 <div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Agent Terms
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -290,18 +291,18 @@ export function OpportunityDetails({ opportunity }) {
 
           {/* Timeline */}
           <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-web-orange">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
               <Calendar className="h-4 w-4" />
-              <span className="text-xs font-semibold">Project Timeline</span>
+              <span className="text-sm font-semibold">Project Timeline</span>
             </div>
 
             <div className="space-y-2">
               {opportunity.start_on_site_date && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Start on Site
                   </span>
-                  <span className="text-xs font-medium">
+                  <span className="text-sm font-medium">
                     {new Date(
                       opportunity.start_on_site_date
                     ).toLocaleDateString()}
@@ -311,10 +312,10 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.first_handover_date && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     First Handover
                   </span>
-                  <span className="text-xs font-medium">
+                  <span className="text-sm font-medium">
                     {new Date(
                       opportunity.first_handover_date
                     ).toLocaleDateString()}
@@ -324,10 +325,10 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.final_handover_date && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Final Handover
                   </span>
-                  <span className="text-xs font-medium">
+                  <span className="text-sm font-medium">
                     {new Date(
                       opportunity.final_handover_date
                     ).toLocaleDateString()}
@@ -337,7 +338,7 @@ export function OpportunityDetails({ opportunity }) {
 
               {opportunity.project_programme && (
                 <div className="pt-2 border-t">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     Project Programme
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
@@ -355,12 +356,12 @@ export function OpportunityDetails({ opportunity }) {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            className="flex-1 border hover:bg-web-orange/5 h-8 text-xs"
+            className="flex-1 border hover:bg-web-orange/5 h-8 text-sm"
           >
             <Heart className="h-3 w-3 mr-1.5" />
             Shortlist
           </Button>
-          <Button className="flex-1 bg-web-orange hover:bg-web-orange/90 text-white h-8 text-xs">
+          <Button className="flex-1 bg-web-orange hover:bg-web-orange/90 text-white h-8 text-sm">
             <MessageSquareMore className="h-3 w-3 mr-1.5" />
             Confirm Interest
           </Button>
