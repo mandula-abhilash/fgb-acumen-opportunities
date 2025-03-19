@@ -55,6 +55,14 @@ export default function OpportunitiesPage() {
             filters.landPurchaseStatus.length > 0
               ? filters.landPurchaseStatus
               : undefined,
+          startDate:
+            filters.startDate && Object.keys(filters.startDate).length > 0
+              ? filters.startDate
+              : undefined,
+          handoverDate:
+            filters.handoverDate && Object.keys(filters.handoverDate).length > 0
+              ? filters.handoverDate
+              : undefined,
         });
         setOpportunities(response.data);
       } catch (error) {

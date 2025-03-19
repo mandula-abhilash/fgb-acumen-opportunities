@@ -148,6 +148,14 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     plotsValue,
     planningStatus,
     landPurchaseStatus,
+    startDateMode,
+    startDateStart,
+    startDateEnd,
+    startDateSingle,
+    handoverDateMode,
+    handoverDateStart,
+    handoverDateEnd,
+    handoverDateSingle,
   } = req.query;
 
   // Parse regions from query string
@@ -180,6 +188,12 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   // Build conditions array and params array
   const conditions = [];
   const params = [];
+
+  // Helper function to format date string to YYYY-MM-DD
+  const formatDateParam = (dateString) => {
+    if (!dateString) return null;
+    return new Date(dateString).toISOString().split("T")[0];
+  };
 
   // Add user filter for non-admin users
   if (!isAdmin) {
@@ -235,6 +249,84 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
       `o.land_purchase_status = ANY($${params.length + 1}::text[])`
     );
     params.push(statuses);
+  }
+
+  // Add start date filter
+  if (startDateMode) {
+    switch (startDateMode) {
+      case "between":
+        if (startDateStart && startDateEnd) {
+          conditions.push(
+            `o.start_on_site_date >= $${
+              params.length + 1
+            }::date AND o.start_on_site_date <= $${params.length + 2}::date`
+          );
+          params.push(
+            formatDateParam(startDateStart),
+            formatDateParam(startDateEnd)
+          );
+        }
+        break;
+      case "before":
+        if (startDateSingle) {
+          conditions.push(
+            `o.start_on_site_date <= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(startDateSingle));
+        }
+        break;
+      case "after":
+        if (startDateSingle) {
+          conditions.push(
+            `o.start_on_site_date >= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(startDateSingle));
+        }
+        break;
+    }
+  }
+
+  // Add handover date filter (checks both first and final handover dates)
+  if (handoverDateMode) {
+    switch (handoverDateMode) {
+      case "between":
+        if (handoverDateStart && handoverDateEnd) {
+          conditions.push(
+            `(o.first_handover_date >= $${
+              params.length + 1
+            }::date AND o.first_handover_date <= $${
+              params.length + 2
+            }::date) OR (o.final_handover_date >= $${
+              params.length + 1
+            }::date AND o.final_handover_date <= $${params.length + 2}::date)`
+          );
+          params.push(
+            formatDateParam(handoverDateStart),
+            formatDateParam(handoverDateEnd)
+          );
+        }
+        break;
+      case "before":
+        if (handoverDateSingle) {
+          conditions.push(
+            `o.first_handover_date <= $${
+              params.length + 1
+            }::date OR o.final_handover_date <= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(handoverDateSingle));
+        }
+        break;
+      case "after":
+        if (handoverDateSingle) {
+          conditions.push(
+            `o.first_handover_date >= $${
+              params.length + 1
+            }::date OR o.final_handover_date >= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(handoverDateSingle));
+        }
+        break;
+    }
   }
 
   // Add WHERE clause if there are conditions

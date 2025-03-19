@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, List, Map } from "lucide-react";
+import { Calendar, List, Map, Timer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { DateFilter } from "@/components/filters/date-filter";
 import { PlotsFilter } from "@/components/filters/plots-filter";
 
-import { DateFilter } from "./date-filter";
 import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
 import { RegionFilter } from "./region-filter";
@@ -92,17 +92,23 @@ export function BuyerSidebar({
             onChange={(value) => onFilterChange("landPurchaseStatus", value)}
           />
 
-          <DateFilter
-            label="Start on Site Date"
-            value={filters.startDate}
-            onChange={(value) => onFilterChange("startDate", value)}
-          />
+          <div className="px-2">
+            <DateFilter
+              icon={Calendar}
+              label="Start on Site Date"
+              value={filters.startDate}
+              onChange={(value) => onFilterChange("startDate", value)}
+            />
+          </div>
 
-          <DateFilter
-            label="Handover Dates"
-            value={filters.handoverDate}
-            onChange={(value) => onFilterChange("handoverDate", value)}
-          />
+          <div className="px-2">
+            <DateFilter
+              icon={Timer}
+              label="Handover Dates"
+              value={filters.handoverDate}
+              onChange={(value) => onFilterChange("handoverDate", value)}
+            />
+          </div>
         </div>
       </div>
 

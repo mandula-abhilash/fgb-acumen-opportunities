@@ -41,6 +41,27 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("landPurchaseStatus", filters.landPurchaseStatus.join(","));
     }
 
+    // Add date filters
+    if (filters.startDate?.mode) {
+      params.set("startDateMode", filters.startDate.mode);
+      if (filters.startDate.mode === "between") {
+        params.set("startDateStart", filters.startDate.startDate);
+        params.set("startDateEnd", filters.startDate.endDate);
+      } else {
+        params.set("startDateSingle", filters.startDate.single);
+      }
+    }
+
+    if (filters.handoverDate?.mode) {
+      params.set("handoverDateMode", filters.handoverDate.mode);
+      if (filters.handoverDate.mode === "between") {
+        params.set("handoverDateStart", filters.handoverDate.startDate);
+        params.set("handoverDateEnd", filters.handoverDate.endDate);
+      } else {
+        params.set("handoverDateSingle", filters.handoverDate.single);
+      }
+    }
+
     const url = `/api/live-opportunities${params.toString() ? `?${params.toString()}` : ""}`;
     const response = await api.get(url);
     return response.data;
