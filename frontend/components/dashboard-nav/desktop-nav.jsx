@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
@@ -29,6 +29,20 @@ export function DesktopNav({ activeTab }) {
       ...prev,
       [filterKey]: value,
     }));
+
+    // Update URL with filter parameters
+    const params = new URLSearchParams(searchParams);
+
+    if (filterKey === "regions" && Array.isArray(value)) {
+      if (value.length > 0) {
+        params.set("regions", value.join(","));
+      } else {
+        params.delete("regions");
+      }
+    }
+
+    // Update the URL with the new parameters
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleViewModeChange = () => {
@@ -41,18 +55,6 @@ export function DesktopNav({ activeTab }) {
   const handleSubmitNewSite = () => {
     router.push("/dashboard/sites/options");
   };
-
-  // Apply filters effect
-  useEffect(() => {
-    // Here you would implement the logic to apply filters to your data
-    console.log("Filters updated:", filters);
-  }, [filters]);
-
-  // Apply shortlisted filter effect
-  useEffect(() => {
-    // Here you would implement the logic to filter shortlisted items
-    console.log("Shortlisted filter:", showShortlisted);
-  }, [showShortlisted]);
 
   if (user?.role === "buyer") {
     return (

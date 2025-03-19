@@ -40,7 +40,15 @@ export default function OpportunitiesPage() {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
-        const response = await getLiveOpportunitySites();
+
+        // Get filters from URL parameters
+        const regions = searchParams.get("regions")?.split(",") || [];
+
+        // Fetch opportunities with filters
+        const response = await getLiveOpportunitySites({
+          regions: regions.length > 0 ? regions : undefined,
+        });
+
         setOpportunities(response.data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
@@ -57,7 +65,7 @@ export default function OpportunitiesPage() {
     if (user) {
       fetchOpportunities();
     }
-  }, [user, toast]);
+  }, [user, searchParams, toast]);
 
   const handleSubmitSiteClick = () => {
     router.push("/dashboard/sites/options");

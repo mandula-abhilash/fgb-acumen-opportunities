@@ -140,9 +140,13 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
+  const { regions } = req.query;
 
-  // Only fetch fields needed for the list view
-  const query = `
+  // Parse regions from query string
+  const selectedRegions = regions ? regions.split(",") : [];
+
+  // Build the base query
+  let query = `
     SELECT 
       o.id,
       o.site_name,
@@ -163,30 +167,57 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
-    ${isAdmin ? "" : "WHERE o.user_id = $1"}
-    GROUP BY o.id
-    ORDER BY o.created_at DESC
   `;
 
-  const params = isAdmin ? [] : [req.user.userId];
+  // Add user filter for non-admin users
+  if (!isAdmin) {
+    query += ` WHERE o.user_id = $1`;
+  }
 
-  const sites = await db.any(query, params);
+  // Add region filter if regions are selected
+  if (selectedRegions.length > 0) {
+    query += `${!isAdmin ? " AND" : " WHERE"} o.region && $${
+      isAdmin ? 1 : 2
+    }::text[]`;
+  }
 
-  // Transform the response to include both IDs and names
-  const transformedSites = sites.map((site) => ({
-    ...site,
-    lpa_names: site.lpa_names.filter(Boolean), // Remove null values
-    region_names: site.region_names.filter(Boolean), // Remove null values
-    coordinates: {
-      lat: parseFloat(site.latitude),
-      lng: parseFloat(site.longitude),
-    },
-  }));
+  // Add group by clause
+  query += ` GROUP BY o.id ORDER BY o.created_at DESC`;
 
-  res.json({
-    success: true,
-    data: transformedSites,
-  });
+  try {
+    // Prepare query parameters
+    const params = [];
+    if (!isAdmin) {
+      params.push(req.user.userId);
+    }
+    if (selectedRegions.length > 0) {
+      params.push(selectedRegions);
+    }
+
+    const sites = await db.any(query, params);
+
+    // Transform the response to include both IDs and names
+    const transformedSites = sites.map((site) => ({
+      ...site,
+      lpa_names: site.lpa_names.filter(Boolean), // Remove null values
+      region_names: site.region_names.filter(Boolean), // Remove null values
+      coordinates: {
+        lat: parseFloat(site.latitude),
+        lng: parseFloat(site.longitude),
+      },
+    }));
+
+    res.json({
+      success: true,
+      data: transformedSites,
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to fetch opportunities",
+    });
+  }
 });
 
 // @desc    Get single opportunity (with full details)

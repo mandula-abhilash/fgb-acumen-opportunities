@@ -11,9 +11,17 @@ export async function createLiveOpportunitySite(siteData) {
   }
 }
 
-export async function getLiveOpportunitySites() {
+export async function getLiveOpportunitySites(filters = {}) {
   try {
-    const response = await api.get("/api/live-opportunities");
+    // Build query parameters
+    const params = new URLSearchParams();
+
+    if (filters.regions?.length > 0) {
+      params.set("regions", filters.regions.join(","));
+    }
+
+    const url = `/api/live-opportunities${params.toString() ? `?${params.toString()}` : ""}`;
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     throw new Error(
