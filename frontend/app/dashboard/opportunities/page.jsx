@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useFilters } from "@/contexts/filters-context";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Plus } from "lucide-react";
 
@@ -22,11 +23,10 @@ import { OpportunityCard } from "@/components/opportunities/opportunity-card";
 
 export default function OpportunitiesPage() {
   const { user, loading: authLoading } = useAuth();
+  const { filters } = useFilters();
   const router = useRouter();
   const { toast } = useToast();
-  const searchParams = useSearchParams();
-  const viewMode = searchParams.get("view") || "list";
-
+  const [viewMode, setViewMode] = useState("list");
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,19 +36,14 @@ export default function OpportunitiesPage() {
     }
   }, [authLoading, user, router]);
 
+  // Fetch opportunities whenever filters change
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
-
-        // Get filters from URL parameters
-        const regions = searchParams.get("regions")?.split(",") || [];
-
-        // Fetch opportunities with filters
         const response = await getLiveOpportunitySites({
-          regions: regions.length > 0 ? regions : undefined,
+          regions: filters.regions.length > 0 ? filters.regions : undefined,
         });
-
         setOpportunities(response.data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
@@ -65,7 +60,11 @@ export default function OpportunitiesPage() {
     if (user) {
       fetchOpportunities();
     }
-  }, [user, searchParams, toast]);
+  }, [user, filters, toast]);
+
+  const handleViewModeChange = () => {
+    setViewMode((prev) => (prev === "list" ? "map" : "list"));
+  };
 
   const handleSubmitSiteClick = () => {
     router.push("/dashboard/sites/options");

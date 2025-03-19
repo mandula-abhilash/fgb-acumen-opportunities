@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { FiltersProvider } from "@/contexts/filters-context";
 import { GoogleMapsProvider } from "@/contexts/google-maps-context";
 
 import { DashboardNav } from "@/components/dashboard-nav";
@@ -8,6 +9,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
+
   const getActiveTab = () => {
     if (pathname.includes("/opportunities")) return "live-opportunities";
     if (pathname.includes("/requests")) return "my-requests";
@@ -20,14 +22,16 @@ export default function DashboardLayout({ children }) {
 
   return (
     <MainLayout>
-      <GoogleMapsProvider>
-        <div className="h-[calc(100vh-3.5rem)] flex">
-          <div className="hidden lg:block h-full border-r">
-            <DashboardNav activeTab={getActiveTab()} />
+      <FiltersProvider>
+        <GoogleMapsProvider>
+          <div className="h-[calc(100vh-3.5rem)] flex">
+            <div className="hidden lg:block h-full border-r">
+              <DashboardNav activeTab={getActiveTab()} />
+            </div>
+            <main className="flex-1 overflow-y-auto">{children}</main>
           </div>
-          <main className="flex-1 overflow-y-auto">{children}</main>
-        </div>
-      </GoogleMapsProvider>
+        </GoogleMapsProvider>
+      </FiltersProvider>
     </MainLayout>
   );
 }

@@ -1,41 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { BuyerSidebar } from "@/components/filters/sidebar/buyer-sidebar";
 import { SellerSidebar } from "@/components/filters/sidebar/seller-sidebar";
 
-export function DesktopNav({ activeTab }) {
+export function DesktopNav({ activeTab, role, filters, onFilterChange }) {
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const viewMode = searchParams.get("view") || "list";
-
-  const [filters, setFilters] = useState({
-    regions: [],
-    plots: {},
-    planningStatus: [],
-    landPurchaseStatus: [],
-    startDate: {},
-    handoverDate: {},
-  });
+  const [viewMode, setViewMode] = useState("list");
   const [showShortlisted, setShowShortlisted] = useState(false);
 
-  const handleFilterChange = (filterKey, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [filterKey]: value,
-    }));
-  };
-
   const handleViewModeChange = () => {
-    const params = new URLSearchParams(searchParams);
-    const newMode = viewMode === "list" ? "map" : "list";
-    params.set("view", newMode);
-    router.push(`${pathname}?${params.toString()}`);
+    setViewMode((prev) => (prev === "list" ? "map" : "list"));
   };
 
   const handleSubmitNewSite = () => {
@@ -48,7 +28,7 @@ export function DesktopNav({ activeTab }) {
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         filters={filters}
-        onFilterChange={handleFilterChange}
+        onFilterChange={onFilterChange}
         showShortlisted={showShortlisted}
         onShortlistedChange={setShowShortlisted}
       />
@@ -59,7 +39,7 @@ export function DesktopNav({ activeTab }) {
     return (
       <SellerSidebar
         filters={filters}
-        onFilterChange={handleFilterChange}
+        onFilterChange={onFilterChange}
         onSubmitNewSite={handleSubmitNewSite}
       />
     );
@@ -72,7 +52,7 @@ export function DesktopNav({ activeTab }) {
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         filters={filters}
-        onFilterChange={handleFilterChange}
+        onFilterChange={onFilterChange}
         showShortlisted={showShortlisted}
         onShortlistedChange={setShowShortlisted}
       />
