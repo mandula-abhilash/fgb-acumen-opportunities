@@ -60,7 +60,7 @@ export function BuyerSidebar({
       </div>
 
       {/* Scrollable Filters Section */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pb-8">
         <div className="p-4 space-y-4">
           <h3 className="text-sm font-semibold px-2 uppercase tracking-wider text-havelock-blue">
             Filters
@@ -100,9 +100,18 @@ export function BuyerSidebar({
           <div className="px-2">
             <DateFilter
               icon={Timer}
-              label="Handover Dates"
-              value={filters.handoverDate}
-              onChange={(value) => onFilterChange("handoverDate", value)}
+              label="First Handover Date"
+              value={filters.firstHandoverDate}
+              onChange={(value) => onFilterChange("firstHandoverDate", value)}
+            />
+          </div>
+
+          <div className="px-2">
+            <DateFilter
+              icon={Timer}
+              label="Final Handover Date"
+              value={filters.finalHandoverDate}
+              onChange={(value) => onFilterChange("finalHandoverDate", value)}
             />
           </div>
         </div>

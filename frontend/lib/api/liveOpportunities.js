@@ -41,7 +41,7 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("landPurchaseStatus", filters.landPurchaseStatus.join(","));
     }
 
-    // Add date filters
+    // Add start date filter
     if (filters.startDate?.mode) {
       params.set("startDateMode", filters.startDate.mode);
       if (filters.startDate.mode === "between") {
@@ -52,13 +52,31 @@ export async function getLiveOpportunitySites(filters = {}) {
       }
     }
 
-    if (filters.handoverDate?.mode) {
-      params.set("handoverDateMode", filters.handoverDate.mode);
-      if (filters.handoverDate.mode === "between") {
-        params.set("handoverDateStart", filters.handoverDate.startDate);
-        params.set("handoverDateEnd", filters.handoverDate.endDate);
+    // Add first handover date filter
+    if (filters.firstHandoverDate?.mode) {
+      params.set("firstHandoverDateMode", filters.firstHandoverDate.mode);
+      if (filters.firstHandoverDate.mode === "between") {
+        params.set(
+          "firstHandoverDateStart",
+          filters.firstHandoverDate.startDate
+        );
+        params.set("firstHandoverDateEnd", filters.firstHandoverDate.endDate);
       } else {
-        params.set("handoverDateSingle", filters.handoverDate.single);
+        params.set("firstHandoverDateSingle", filters.firstHandoverDate.single);
+      }
+    }
+
+    // Add final handover date filter
+    if (filters.finalHandoverDate?.mode) {
+      params.set("finalHandoverDateMode", filters.finalHandoverDate.mode);
+      if (filters.finalHandoverDate.mode === "between") {
+        params.set(
+          "finalHandoverDateStart",
+          filters.finalHandoverDate.startDate
+        );
+        params.set("finalHandoverDateEnd", filters.finalHandoverDate.endDate);
+      } else {
+        params.set("finalHandoverDateSingle", filters.finalHandoverDate.single);
       }
     }
 

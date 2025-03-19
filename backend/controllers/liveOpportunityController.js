@@ -152,10 +152,14 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     startDateStart,
     startDateEnd,
     startDateSingle,
-    handoverDateMode,
-    handoverDateStart,
-    handoverDateEnd,
-    handoverDateSingle,
+    firstHandoverDateMode,
+    firstHandoverDateStart,
+    firstHandoverDateEnd,
+    firstHandoverDateSingle,
+    finalHandoverDateMode,
+    finalHandoverDateStart,
+    finalHandoverDateEnd,
+    finalHandoverDateSingle,
   } = req.query;
 
   // Parse regions from query string
@@ -286,44 +290,71 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     }
   }
 
-  // Add handover date filter (checks both first and final handover dates)
-  if (handoverDateMode) {
-    switch (handoverDateMode) {
+  // Add first handover date filter
+  if (firstHandoverDateMode) {
+    switch (firstHandoverDateMode) {
       case "between":
-        if (handoverDateStart && handoverDateEnd) {
+        if (firstHandoverDateStart && firstHandoverDateEnd) {
           conditions.push(
-            `(o.first_handover_date >= $${
+            `o.first_handover_date >= $${
               params.length + 1
-            }::date AND o.first_handover_date <= $${
-              params.length + 2
-            }::date) OR (o.final_handover_date >= $${
-              params.length + 1
-            }::date AND o.final_handover_date <= $${params.length + 2}::date)`
+            }::date AND o.first_handover_date <= $${params.length + 2}::date`
           );
           params.push(
-            formatDateParam(handoverDateStart),
-            formatDateParam(handoverDateEnd)
+            formatDateParam(firstHandoverDateStart),
+            formatDateParam(firstHandoverDateEnd)
           );
         }
         break;
       case "before":
-        if (handoverDateSingle) {
+        if (firstHandoverDateSingle) {
           conditions.push(
-            `o.first_handover_date <= $${
-              params.length + 1
-            }::date OR o.final_handover_date <= $${params.length + 1}::date`
+            `o.first_handover_date <= $${params.length + 1}::date`
           );
-          params.push(formatDateParam(handoverDateSingle));
+          params.push(formatDateParam(firstHandoverDateSingle));
         }
         break;
       case "after":
-        if (handoverDateSingle) {
+        if (firstHandoverDateSingle) {
           conditions.push(
-            `o.first_handover_date >= $${
-              params.length + 1
-            }::date OR o.final_handover_date >= $${params.length + 1}::date`
+            `o.first_handover_date >= $${params.length + 1}::date`
           );
-          params.push(formatDateParam(handoverDateSingle));
+          params.push(formatDateParam(firstHandoverDateSingle));
+        }
+        break;
+    }
+  }
+
+  // Add final handover date filter
+  if (finalHandoverDateMode) {
+    switch (finalHandoverDateMode) {
+      case "between":
+        if (finalHandoverDateStart && finalHandoverDateEnd) {
+          conditions.push(
+            `o.final_handover_date >= $${
+              params.length + 1
+            }::date AND o.final_handover_date <= $${params.length + 2}::date`
+          );
+          params.push(
+            formatDateParam(finalHandoverDateStart),
+            formatDateParam(finalHandoverDateEnd)
+          );
+        }
+        break;
+      case "before":
+        if (finalHandoverDateSingle) {
+          conditions.push(
+            `o.final_handover_date <= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(finalHandoverDateSingle));
+        }
+        break;
+      case "after":
+        if (finalHandoverDateSingle) {
+          conditions.push(
+            `o.final_handover_date >= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(finalHandoverDateSingle));
         }
         break;
     }

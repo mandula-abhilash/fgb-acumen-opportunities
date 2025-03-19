@@ -11,7 +11,8 @@ export function FiltersProvider({ children }) {
     planningStatus: [],
     landPurchaseStatus: [],
     startDate: {},
-    handoverDate: {},
+    firstHandoverDate: {},
+    finalHandoverDate: {},
   });
 
   const [viewMode, setViewMode] = useState("list");
