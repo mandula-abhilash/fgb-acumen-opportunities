@@ -31,6 +31,16 @@ export async function getLiveOpportunitySites(filters = {}) {
       }
     }
 
+    // Add planning status filter
+    if (filters.planningStatus?.length > 0) {
+      params.set("planningStatus", filters.planningStatus.join(","));
+    }
+
+    // Add land purchase status filter
+    if (filters.landPurchaseStatus?.length > 0) {
+      params.set("landPurchaseStatus", filters.landPurchaseStatus.join(","));
+    }
+
     const url = `/api/live-opportunities${params.toString() ? `?${params.toString()}` : ""}`;
     const response = await api.get(url);
     return response.data;

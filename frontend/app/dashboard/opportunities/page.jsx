@@ -47,6 +47,14 @@ export default function OpportunitiesPage() {
             filters.plots && Object.keys(filters.plots).length > 0
               ? filters.plots
               : undefined,
+          planningStatus:
+            filters.planningStatus.length > 0
+              ? filters.planningStatus
+              : undefined,
+          landPurchaseStatus:
+            filters.landPurchaseStatus.length > 0
+              ? filters.landPurchaseStatus
+              : undefined,
         });
         setOpportunities(response.data);
       } catch (error) {

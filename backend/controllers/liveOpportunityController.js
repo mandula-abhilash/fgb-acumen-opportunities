@@ -140,7 +140,15 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
-  const { regions, plotsMode, plotsMin, plotsMax, plotsValue } = req.query;
+  const {
+    regions,
+    plotsMode,
+    plotsMin,
+    plotsMax,
+    plotsValue,
+    planningStatus,
+    landPurchaseStatus,
+  } = req.query;
 
   // Parse regions from query string
   const selectedRegions = regions ? regions.split(",") : [];
@@ -169,10 +177,11 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
   `;
 
-  // Add user filter for non-admin users
+  // Build conditions array and params array
   const conditions = [];
   const params = [];
 
+  // Add user filter for non-admin users
   if (!isAdmin) {
     conditions.push(`o.user_id = $${params.length + 1}`);
     params.push(req.user.userId);
@@ -210,6 +219,22 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
         }
         break;
     }
+  }
+
+  // Add planning status filter
+  if (planningStatus) {
+    const statuses = planningStatus.split(",");
+    conditions.push(`o.planning_status = ANY($${params.length + 1}::text[])`);
+    params.push(statuses);
+  }
+
+  // Add land purchase status filter
+  if (landPurchaseStatus) {
+    const statuses = landPurchaseStatus.split(",");
+    conditions.push(
+      `o.land_purchase_status = ANY($${params.length + 1}::text[])`
+    );
+    params.push(statuses);
   }
 
   // Add WHERE clause if there are conditions

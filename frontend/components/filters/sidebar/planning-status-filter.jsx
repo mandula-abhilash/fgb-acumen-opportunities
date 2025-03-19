@@ -6,16 +6,16 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 
 const planningStatuses = [
-  { value: "allocated", label: "Allocated" },
-  { value: "draft-allocation", label: "Draft Allocation" },
-  { value: "outline-submission", label: "Outline Submission" },
-  { value: "outline-approval", label: "Outline Approval" },
-  { value: "full-submission", label: "Full Submission" },
-  { value: "full-approval", label: "Full Approval" },
-  { value: "detailed-submission", label: "Detailed Submission" },
-  { value: "detailed-approval", label: "Detailed Approval" },
-  { value: "appeal-lodged", label: "Appeal Lodged" },
-  { value: "appeal-allowed", label: "Appeal Allowed" },
+  { value: "Allocated", label: "Allocated" },
+  { value: "Draft Allocation", label: "Draft Allocation" },
+  { value: "Outline Submission", label: "Outline Submission" },
+  { value: "Outline Approval", label: "Outline Approval" },
+  { value: "Full Submission", label: "Full Submission" },
+  { value: "Full Approval", label: "Full Approval" },
+  { value: "Detailed Submission", label: "Detailed Submission" },
+  { value: "Detailed Approval", label: "Detailed Approval" },
+  { value: "Appeal Lodged", label: "Appeal Lodged" },
+  { value: "Appeal Allowed", label: "Appeal Allowed" },
 ];
 
 export function PlanningStatusFilter({ value, onChange }) {

@@ -6,11 +6,11 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 
 const landPurchaseStatuses = [
-  { value: "land-offer", label: "Land Offer Stage" },
-  { value: "preferred-buyer", label: "Preferred Buyer" },
-  { value: "heads-of-terms", label: "Heads of Terms Agreed" },
-  { value: "contracts-exchanged", label: "Contracts Exchanged" },
-  { value: "purchase-completed", label: "Purchase Completed" },
+  { value: "Land Offer Stage", label: "Land Offer Stage" },
+  { value: "Preferred Buyer", label: "Preferred Buyer" },
+  { value: "Heads of Terms Agreed", label: "Heads of Terms Agreed" },
+  { value: "Contracts Exchanged", label: "Contracts Exchanged" },
+  { value: "Purchase Completed", label: "Purchase Completed" },
 ];
 
 export function LandPurchaseFilter({ value, onChange }) {
