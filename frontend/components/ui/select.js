@@ -43,6 +43,10 @@ const SelectContent = React.forwardRef(
           className
         )}
         position={position}
+        side="bottom"
+        sideOffset={4}
+        align="start"
+        avoidCollisions={false}
         {...props}
       >
         <SelectPrimitive.Viewport

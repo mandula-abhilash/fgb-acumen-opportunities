@@ -60,8 +60,8 @@ export function BuyerSidebar({
       </div>
 
       {/* Scrollable Filters Section */}
-      <div className="flex-1 overflow-y-auto pb-8">
-        <div className="p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 space-y-6">
           <h3 className="text-sm font-semibold px-2 uppercase tracking-wider text-havelock-blue">
             Filters
           </h3>
@@ -88,31 +88,29 @@ export function BuyerSidebar({
             onChange={(value) => onFilterChange("landPurchaseStatus", value)}
           />
 
-          <div className="px-2">
-            <DateFilter
-              icon={Calendar}
-              label="Start on Site Date"
-              value={filters.startDate}
-              onChange={(value) => onFilterChange("startDate", value)}
-            />
-          </div>
+          <div className="px-2 pb-[300px]">
+            <div className="space-y-6">
+              <DateFilter
+                icon={Calendar}
+                label="Start on Site Date"
+                value={filters.startDate}
+                onChange={(value) => onFilterChange("startDate", value)}
+              />
 
-          <div className="px-2">
-            <DateFilter
-              icon={Timer}
-              label="First Handover Date"
-              value={filters.firstHandoverDate}
-              onChange={(value) => onFilterChange("firstHandoverDate", value)}
-            />
-          </div>
+              <DateFilter
+                icon={Timer}
+                label="First Handover Date"
+                value={filters.firstHandoverDate}
+                onChange={(value) => onFilterChange("firstHandoverDate", value)}
+              />
 
-          <div className="px-2">
-            <DateFilter
-              icon={Timer}
-              label="Final Handover Date"
-              value={filters.finalHandoverDate}
-              onChange={(value) => onFilterChange("finalHandoverDate", value)}
-            />
+              <DateFilter
+                icon={Timer}
+                label="Final Handover Date"
+                value={filters.finalHandoverDate}
+                onChange={(value) => onFilterChange("finalHandoverDate", value)}
+              />
+            </div>
           </div>
         </div>
       </div>
