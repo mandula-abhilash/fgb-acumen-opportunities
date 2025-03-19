@@ -3,29 +3,37 @@
 import { useEffect, useState } from "react";
 import { Globe2 } from "lucide-react";
 
-import { getRegions } from "@/lib/api/regions";
+import { getDefaultRegions } from "@/lib/api/regions";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/components/ui/use-toast";
 
 export function RegionFilter({ value, onChange }) {
+  const { toast } = useToast();
   const [regions, setRegions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRegions = async () => {
       try {
-        const data = await getRegions();
+        setLoading(true);
+        const data = await getDefaultRegions();
         setRegions(data);
       } catch (error) {
         console.error("Failed to fetch regions:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load regions. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchRegions();
-  }, []);
+  }, [toast]);
 
   if (loading) {
     return (
