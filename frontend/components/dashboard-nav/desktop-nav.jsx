@@ -29,20 +29,6 @@ export function DesktopNav({ activeTab }) {
       ...prev,
       [filterKey]: value,
     }));
-
-    // Update URL with filter parameters
-    const params = new URLSearchParams(searchParams);
-
-    if (filterKey === "regions" && Array.isArray(value)) {
-      if (value.length > 0) {
-        params.set("regions", value.join(","));
-      } else {
-        params.delete("regions");
-      }
-    }
-
-    // Update the URL with the new parameters
-    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleViewModeChange = () => {
