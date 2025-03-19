@@ -1,5 +1,6 @@
 "use client";
 
+import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,20 +16,20 @@ import { PlanningStatusFilter } from "./planning-status-filter";
 import { RegionFilter } from "./region-filter";
 
 export function BuyerSidebar({
-  viewMode,
-  onViewModeChange,
   filters,
   onFilterChange,
   showShortlisted,
   onShortlistedChange,
 }) {
+  const { viewMode, handleViewModeChange } = useFilters();
+
   return (
     <div className="w-72 h-full flex flex-col">
       <div className="p-4 border-b">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map"}
-          onPressedChange={onViewModeChange}
+          onPressedChange={handleViewModeChange}
           className="w-full justify-start h-9"
         >
           {viewMode === "list" ? (

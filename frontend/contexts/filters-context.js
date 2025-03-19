@@ -14,6 +14,8 @@ export function FiltersProvider({ children }) {
     handoverDate: {},
   });
 
+  const [viewMode, setViewMode] = useState("list");
+
   const handleFilterChange = (filterKey, value) => {
     setFilters((prev) => ({
       ...prev,
@@ -21,8 +23,19 @@ export function FiltersProvider({ children }) {
     }));
   };
 
+  const handleViewModeChange = () => {
+    setViewMode((prev) => (prev === "list" ? "map" : "list"));
+  };
+
   return (
-    <FiltersContext.Provider value={{ filters, handleFilterChange }}>
+    <FiltersContext.Provider
+      value={{
+        filters,
+        handleFilterChange,
+        viewMode,
+        handleViewModeChange,
+      }}
+    >
       {children}
     </FiltersContext.Provider>
   );

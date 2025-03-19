@@ -23,10 +23,9 @@ import { OpportunityCard } from "@/components/opportunities/opportunity-card";
 
 export default function OpportunitiesPage() {
   const { user, loading: authLoading } = useAuth();
-  const { filters } = useFilters();
+  const { filters, viewMode } = useFilters();
   const router = useRouter();
   const { toast } = useToast();
-  const [viewMode, setViewMode] = useState("list");
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,29 +40,7 @@ export default function OpportunitiesPage() {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
-        const response = await getLiveOpportunitySites({
-          regions: filters.regions.length > 0 ? filters.regions : undefined,
-          plots:
-            filters.plots && Object.keys(filters.plots).length > 0
-              ? filters.plots
-              : undefined,
-          planningStatus:
-            filters.planningStatus.length > 0
-              ? filters.planningStatus
-              : undefined,
-          landPurchaseStatus:
-            filters.landPurchaseStatus.length > 0
-              ? filters.landPurchaseStatus
-              : undefined,
-          startDate:
-            filters.startDate && Object.keys(filters.startDate).length > 0
-              ? filters.startDate
-              : undefined,
-          handoverDate:
-            filters.handoverDate && Object.keys(filters.handoverDate).length > 0
-              ? filters.handoverDate
-              : undefined,
-        });
+        const response = await getLiveOpportunitySites(filters);
         setOpportunities(response.data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
@@ -81,10 +58,6 @@ export default function OpportunitiesPage() {
       fetchOpportunities();
     }
   }, [user, filters, toast]);
-
-  const handleViewModeChange = () => {
-    setViewMode((prev) => (prev === "list" ? "map" : "list"));
-  };
 
   const handleSubmitSiteClick = () => {
     router.push("/dashboard/sites/options");
