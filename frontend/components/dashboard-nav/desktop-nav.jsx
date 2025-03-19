@@ -7,7 +7,7 @@ import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { BuyerSidebar } from "@/components/filters/sidebar/buyer-sidebar";
 import { SellerSidebar } from "@/components/filters/sidebar/seller-sidebar";
 
-export function DesktopNav({ activeTab, role, filters, onFilterChange }) {
+export function DesktopNav({ activeTab, filters, onFilterChange }) {
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();

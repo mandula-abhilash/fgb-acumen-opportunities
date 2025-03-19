@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,13 +22,9 @@ export function BuyerSidebar({
   showShortlisted,
   onShortlistedChange,
 }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
   return (
-    <div
-      className={`h-full transition-all duration-300 ${isCollapsed ? "w-16" : "w-72"}`}
-    >
-      <div className="flex flex-col space-y-4 p-4">
+    <div className="w-72 h-full flex flex-col">
+      <div className="p-4 border-b">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map"}
@@ -50,7 +45,7 @@ export function BuyerSidebar({
         </Toggle>
 
         {/* Shortlisted Toggle */}
-        <div className="flex items-center space-x-2 px-2">
+        <div className="flex items-center space-x-2 px-2 mt-4">
           <Checkbox
             id="shortlisted"
             checked={showShortlisted}
@@ -61,11 +56,11 @@ export function BuyerSidebar({
             <div className="flex items-center">Show Shortlisted Only</div>
           </Label>
         </div>
+      </div>
 
-        <Separator />
-
-        {/* Filters */}
-        <div className="space-y-4">
+      {/* Scrollable Filters Section */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 space-y-4">
           <h3 className="text-sm font-semibold px-2 uppercase tracking-wider text-havelock-blue">
             Filters
           </h3>
@@ -111,30 +106,6 @@ export function BuyerSidebar({
           </div>
         </div>
       </div>
-
-      {/* Collapse Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute -right-3 top-3 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-accent hover:text-accent-foreground"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        <span className="sr-only">
-          {isCollapsed ? "Expand" : "Collapse"} Sidebar
-        </span>
-        <svg
-          className={`h-4 w-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m9 18 6-6-6-6" />
-        </svg>
-      </Button>
     </div>
   );
 }
