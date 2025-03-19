@@ -8,11 +8,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { PlotsFilter } from "@/components/filters/plots-filter";
 
 import { DateFilter } from "./date-filter";
 import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
-import { PlotsFilter } from "./plots-filter";
 import { RegionFilter } from "./region-filter";
 
 export function BuyerSidebar({
@@ -75,10 +75,12 @@ export function BuyerSidebar({
             onChange={(value) => onFilterChange("regions", value)}
           />
 
-          <PlotsFilter
-            value={filters.plots}
-            onChange={(value) => onFilterChange("plots", value)}
-          />
+          <div className="px-2">
+            <PlotsFilter
+              value={filters.plots}
+              onChange={(value) => onFilterChange("plots", value)}
+            />
+          </div>
 
           <PlanningStatusFilter
             value={filters.planningStatus}

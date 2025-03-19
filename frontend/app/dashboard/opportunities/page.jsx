@@ -43,6 +43,10 @@ export default function OpportunitiesPage() {
         setLoading(true);
         const response = await getLiveOpportunitySites({
           regions: filters.regions.length > 0 ? filters.regions : undefined,
+          plots:
+            filters.plots && Object.keys(filters.plots).length > 0
+              ? filters.plots
+              : undefined,
         });
         setOpportunities(response.data);
       } catch (error) {

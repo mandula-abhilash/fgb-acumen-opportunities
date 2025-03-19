@@ -20,6 +20,17 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("regions", filters.regions.join(","));
     }
 
+    // Add plots filter
+    if (filters.plots?.mode) {
+      params.set("plotsMode", filters.plots.mode);
+      if (filters.plots.mode === "between") {
+        params.set("plotsMin", filters.plots.min);
+        params.set("plotsMax", filters.plots.max);
+      } else {
+        params.set("plotsValue", filters.plots.single);
+      }
+    }
+
     const url = `/api/live-opportunities${params.toString() ? `?${params.toString()}` : ""}`;
     const response = await api.get(url);
     return response.data;

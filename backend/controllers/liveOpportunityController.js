@@ -140,7 +140,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
-  const { regions } = req.query;
+  const { regions, plotsMode, plotsMin, plotsMax, plotsValue } = req.query;
 
   // Parse regions from query string
   const selectedRegions = regions ? regions.split(",") : [];
@@ -170,30 +170,57 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   `;
 
   // Add user filter for non-admin users
+  const conditions = [];
+  const params = [];
+
   if (!isAdmin) {
-    query += ` WHERE o.user_id = $1`;
+    conditions.push(`o.user_id = $${params.length + 1}`);
+    params.push(req.user.userId);
   }
 
   // Add region filter if regions are selected
   if (selectedRegions.length > 0) {
-    query += `${!isAdmin ? " AND" : " WHERE"} o.region && $${
-      isAdmin ? 1 : 2
-    }::text[]`;
+    conditions.push(`o.region && $${params.length + 1}::text[]`);
+    params.push(selectedRegions);
+  }
+
+  // Add plots filter based on mode
+  if (plotsMode) {
+    switch (plotsMode) {
+      case "between":
+        if (plotsMin && plotsMax) {
+          conditions.push(
+            `o.plots >= $${params.length + 1} AND o.plots <= $${
+              params.length + 2
+            }`
+          );
+          params.push(parseInt(plotsMin), parseInt(plotsMax));
+        }
+        break;
+      case "more-than":
+        if (plotsValue) {
+          conditions.push(`o.plots > $${params.length + 1}`);
+          params.push(parseInt(plotsValue));
+        }
+        break;
+      case "less-than":
+        if (plotsValue) {
+          conditions.push(`o.plots < $${params.length + 1}`);
+          params.push(parseInt(plotsValue));
+        }
+        break;
+    }
+  }
+
+  // Add WHERE clause if there are conditions
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(" AND ")}`;
   }
 
   // Add group by clause
   query += ` GROUP BY o.id ORDER BY o.created_at DESC`;
 
   try {
-    // Prepare query parameters
-    const params = [];
-    if (!isAdmin) {
-      params.push(req.user.userId);
-    }
-    if (selectedRegions.length > 0) {
-      params.push(selectedRegions);
-    }
-
     const sites = await db.any(query, params);
 
     // Transform the response to include both IDs and names
