@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import db from "../config/db.js";
+import { UserModel } from "../models/User.js";
 import { sendInterestNotification } from "../utils/ses.js";
 
 // @desc    Create a new opportunity
@@ -712,22 +713,27 @@ export const expressInterest = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
 
   try {
-    // Get opportunity details including the owner's email
+    // Get opportunity details
     const opportunity = await db.one(
       `
-      SELECT o.*, u.email as user_email
+      SELECT o.*
       FROM live_opportunities o
-      JOIN users u ON o.user_id = u.id
       WHERE o.id = $1
     `,
       [opportunityId]
     );
 
-    // Get interested user's details
-    const interestedUser = await db.one(
-      `SELECT name, email, organization FROM users WHERE id = $1`,
-      [userId]
-    );
+    // Get the site creator's details from MongoDB
+    const siteCreator = await UserModel.findById(opportunity.user_id);
+    if (!siteCreator) {
+      throw new Error("Site creator not found");
+    }
+
+    // Get interested user's details from MongoDB
+    const interestedUser = await UserModel.findById(userId);
+    if (!interestedUser) {
+      throw new Error("Interested user not found");
+    }
 
     // Record the interest in the database
     await db.none(
@@ -742,8 +748,18 @@ export const expressInterest = asyncHandler(async (req, res) => {
       [opportunityId, userId]
     );
 
-    // Send email notification
-    await sendInterestNotification(opportunity, interestedUser);
+    // Send email notification with the correct user details
+    await sendInterestNotification(
+      {
+        ...opportunity,
+        user_email: siteCreator.email,
+      },
+      {
+        name: interestedUser.name,
+        email: interestedUser.email,
+        organization: interestedUser.businessName || "Not specified",
+      }
+    );
 
     res.status(200).json({
       success: true,
@@ -753,7 +769,7 @@ export const expressInterest = asyncHandler(async (req, res) => {
     console.error("Error expressing interest:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to register interest",
+      message: error.message || "Failed to register interest",
     });
   }
 });
