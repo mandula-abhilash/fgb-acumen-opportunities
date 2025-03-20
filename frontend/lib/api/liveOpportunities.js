@@ -127,3 +127,16 @@ export async function deleteLiveOpportunitySite(id) {
     );
   }
 }
+
+export async function expressInterest(opportunityId) {
+  try {
+    const response = await api.post(
+      `/api/live-opportunities/${opportunityId}/interest`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to express interest"
+    );
+  }
+}

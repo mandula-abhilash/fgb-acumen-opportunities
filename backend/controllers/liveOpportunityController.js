@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import db from "../config/db.js";
+import { sendInterestNotification } from "../utils/ses.js";
 
 // @desc    Create a new opportunity
 // @route   POST /api/live-opportunities
@@ -701,4 +702,58 @@ export const deleteLiveOpportunitySite = asyncHandler(async (req, res) => {
     success: true,
     data: {},
   });
+});
+
+// @desc    Express interest in an opportunity
+// @route   POST /api/live-opportunities/:id/interest
+// @access  Private
+export const expressInterest = asyncHandler(async (req, res) => {
+  const opportunityId = req.params.id;
+  const userId = req.user.userId;
+
+  try {
+    // Get opportunity details including the owner's email
+    const opportunity = await db.one(
+      `
+      SELECT o.*, u.email as user_email
+      FROM live_opportunities o
+      JOIN users u ON o.user_id = u.id
+      WHERE o.id = $1
+    `,
+      [opportunityId]
+    );
+
+    // Get interested user's details
+    const interestedUser = await db.one(
+      `SELECT name, email, organization FROM users WHERE id = $1`,
+      [userId]
+    );
+
+    // Record the interest in the database
+    await db.none(
+      `
+      INSERT INTO opportunity_interests (
+        opportunity_id,
+        user_id,
+        created_at
+      ) VALUES ($1, $2, NOW())
+      ON CONFLICT (opportunity_id, user_id) DO NOTHING
+    `,
+      [opportunityId, userId]
+    );
+
+    // Send email notification
+    await sendInterestNotification(opportunity, interestedUser);
+
+    res.status(200).json({
+      success: true,
+      message: "Interest registered successfully",
+    });
+  } catch (error) {
+    console.error("Error expressing interest:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to register interest",
+    });
+  }
 });

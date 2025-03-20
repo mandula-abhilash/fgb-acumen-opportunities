@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Building2,
@@ -14,18 +15,45 @@ import {
   Users,
 } from "lucide-react";
 
+import { expressInterest } from "@/lib/api/liveOpportunities";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
 import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 
 export function OpportunityCard({ opportunity, onRemove }) {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleConfirmInterest = async () => {
+    try {
+      setIsSubmitting(true);
+      await expressInterest(opportunity.id);
+      toast({
+        title: "Success",
+        description:
+          "Your interest has been registered. The site owner will be notified.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          error.message || "Failed to register interest. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Card className="p-4 shadow-md">
       <div className="flex flex-col gap-4">
@@ -179,9 +207,18 @@ export function OpportunityCard({ opportunity, onRemove }) {
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="secondary" className="flex-1">
-                      <MessageSquareMore className="h-4 w-4 mr-2" />
-                      Confirm Interest
+                    <Button
+                      variant="secondary"
+                      className="flex-1"
+                      onClick={handleConfirmInterest}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <Spinner size="sm" className="mr-2" />
+                      ) : (
+                        <MessageSquareMore className="h-4 w-4 mr-2" />
+                      )}
+                      {isSubmitting ? "Confirming..." : "Confirm Interest"}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
