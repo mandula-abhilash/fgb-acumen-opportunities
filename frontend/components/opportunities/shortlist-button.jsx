@@ -1,34 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
 
-import {
-  addToShortlist,
-  checkShortlistStatus,
-  removeFromShortlist,
-} from "@/lib/api/shortlists";
+import { addToShortlist, removeFromShortlist } from "@/lib/api/shortlists";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-export function ShortlistButton({ opportunityId, className }) {
+export function ShortlistButton({
+  opportunityId,
+  isShortlisted: initialShortlisted = false,
+  className,
+}) {
   const { toast } = useToast();
-  const [isShortlisted, setIsShortlisted] = useState(false);
+  const [isShortlisted, setIsShortlisted] = useState(initialShortlisted);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const response = await checkShortlistStatus(opportunityId);
-        setIsShortlisted(response.isShortlisted);
-      } catch (error) {
-        console.error("Error checking shortlist status:", error);
-      }
-    };
-
-    checkStatus();
-  }, [opportunityId]);
 
   const handleShortlistToggle = async () => {
     try {

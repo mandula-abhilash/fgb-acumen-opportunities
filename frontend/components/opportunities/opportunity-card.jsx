@@ -166,7 +166,10 @@ export function OpportunityCard({ opportunity }) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <ShortlistButton opportunityId={opportunity.id} />
+                    <ShortlistButton
+                      opportunityId={opportunity.id}
+                      isShortlisted={opportunity.is_shortlisted}
+                    />
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
                     <p>Add this site to your shortlisted opportunities</p>

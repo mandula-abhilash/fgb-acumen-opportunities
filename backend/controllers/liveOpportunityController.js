@@ -140,6 +140,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
+  const userId = req.user.userId;
   const {
     regions,
     plotsMode,
@@ -167,6 +168,11 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 
   // Build the base query
   let query = `
+    WITH shortlisted AS (
+      SELECT opportunity_id, true as is_shortlisted
+      FROM shortlists
+      WHERE user_id = $1
+    )
     SELECT 
       o.id,
       o.site_name,
@@ -183,15 +189,17 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
       ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
       ARRAY_AGG(DISTINCT r.name) as region_names,
       o.created_at,
-      o.updated_at
+      o.updated_at,
+      COALESCE(s.is_shortlisted, false) as is_shortlisted
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
+    LEFT JOIN shortlisted s ON s.opportunity_id = o.id
   `;
 
   // Build conditions array and params array
   const conditions = [];
-  const params = [];
+  const params = [userId]; // First parameter is always userId for shortlist check
 
   // Helper function to format date string to YYYY-MM-DD
   const formatDateParam = (dateString) => {
@@ -202,7 +210,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   // Add user filter for non-admin users
   if (!isAdmin) {
     conditions.push(`o.user_id = $${params.length + 1}`);
-    params.push(req.user.userId);
+    params.push(userId);
   }
 
   // Add region filter if regions are selected
@@ -366,7 +374,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   }
 
   // Add group by clause
-  query += ` GROUP BY o.id ORDER BY o.created_at DESC`;
+  query += ` GROUP BY o.id, s.is_shortlisted ORDER BY o.created_at DESC`;
 
   try {
     const sites = await db.any(query, params);
@@ -400,6 +408,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 // @access  Private
 export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
+  const userId = req.user.userId;
 
   const query = `
     WITH developer_region_names AS (
@@ -411,6 +420,11 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
         FROM live_opportunities
         WHERE id = $1
       )
+    ),
+    shortlisted AS (
+      SELECT true as is_shortlisted
+      FROM shortlists
+      WHERE user_id = $2 AND opportunity_id = $1
     )
     SELECT 
       o.*,
@@ -421,7 +435,8 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
       ARRAY_AGG(DISTINCT l.lpa22cd) as lpa_codes,
       ARRAY_AGG(DISTINCT r.id) as region_ids,
       ARRAY_AGG(DISTINCT r.description) as region_descriptions,
-      (SELECT names FROM developer_region_names) as developer_region_names
+      (SELECT names FROM developer_region_names) as developer_region_names,
+      COALESCE((SELECT is_shortlisted FROM shortlisted), false) as is_shortlisted
     FROM live_opportunities o
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
@@ -429,7 +444,7 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
     GROUP BY o.id
   `;
 
-  const params = isAdmin ? [req.params.id] : [req.params.id, req.user.userId];
+  const params = isAdmin ? [req.params.id, userId] : [req.params.id, userId];
 
   const site = await db.oneOrNone(query, params);
 
@@ -496,6 +511,7 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
     created_at: site.created_at,
     updated_at: site.updated_at,
     user_id: site.user_id,
+    is_shortlisted: site.is_shortlisted,
   };
 
   res.json({
