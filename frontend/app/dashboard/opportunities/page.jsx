@@ -63,6 +63,12 @@ export default function OpportunitiesPage() {
     router.push("/dashboard/sites/options");
   };
 
+  const handleOpportunityRemove = (opportunityId) => {
+    setOpportunities((prevOpportunities) =>
+      prevOpportunities.filter((opp) => opp.id !== opportunityId)
+    );
+  };
+
   const renderActionButton = () => {
     if (user?.role === "seller" || user?.role === "admin") {
       return (
@@ -122,6 +128,7 @@ export default function OpportunitiesPage() {
                 <OpportunityCard
                   key={opportunity.id}
                   opportunity={opportunity}
+                  onRemove={handleOpportunityRemove}
                 />
               ))}
             </div>

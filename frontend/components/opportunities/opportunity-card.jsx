@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 
-export function OpportunityCard({ opportunity }) {
+export function OpportunityCard({ opportunity, onRemove }) {
   return (
     <Card className="p-4 shadow-md">
       <div className="flex flex-col gap-4">
@@ -169,6 +169,7 @@ export function OpportunityCard({ opportunity }) {
                     <ShortlistButton
                       opportunityId={opportunity.id}
                       isShortlisted={opportunity.is_shortlisted}
+                      onRemove={onRemove}
                     />
                   </TooltipTrigger>
                   <TooltipContent side="bottom">

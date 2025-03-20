@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFilters } from "@/contexts/filters-context";
 import { Heart } from "lucide-react";
 
 import { addToShortlist, removeFromShortlist } from "@/lib/api/shortlists";
@@ -12,8 +13,10 @@ export function ShortlistButton({
   opportunityId,
   isShortlisted: initialShortlisted = false,
   className,
+  onRemove,
 }) {
   const { toast } = useToast();
+  const { filters } = useFilters();
   const [isShortlisted, setIsShortlisted] = useState(initialShortlisted);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,6 +29,11 @@ export function ShortlistButton({
           title: "Success",
           description: "Removed from shortlist",
         });
+
+        // If showing only shortlisted items, trigger removal callback
+        if (filters.showShortlisted && onRemove) {
+          onRemove(opportunityId);
+        }
       } else {
         await addToShortlist(opportunityId);
         toast({
