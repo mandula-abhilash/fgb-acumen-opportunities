@@ -34,201 +34,278 @@ export const sendEmail = async (to, subject, html) => {
   }
 };
 
+// Email styles using table-based layout for better email client compatibility
 const emailStyles = `
-  <style>
+  <style type="text/css">
+    /* Client-specific styles */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; }
+
     /* Reset styles */
-    body, table, td, div, p, a { font-family: Arial, sans-serif; line-height: 1.5; }
-    
-    /* Responsive container */
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    table { border-collapse: collapse !important; }
+    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+    /* iOS blue links */
+    a[x-apple-data-detectors] {
+      color: inherit !important;
+      text-decoration: none !important;
+      font-size: inherit !important;
+      font-family: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
+    }
+
+    /* Custom styles */
     .container {
-      width: 100%;
+      background-color: #ffffff;
+      padding: 20px;
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
-      background-color: #ffffff;
     }
-    
-    /* Header styles */
+
     .header {
       background-color: #F09C00;
-      color: white;
       padding: 20px;
-      text-align: center;
       border-radius: 8px 8px 0 0;
+      text-align: center;
     }
-    
+
     .header h2 {
-      margin: 0;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
       font-size: 24px;
-      color: white;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.4;
     }
-    
-    /* Content styles */
+
     .content {
-      padding: 20px;
       background-color: #f8f9fa;
+      padding: 20px;
       border-radius: 0 0 8px 8px;
     }
-    
-    /* Section styles */
+
     .section {
-      background-color: white;
+      background-color: #ffffff;
       padding: 15px;
       margin-bottom: 15px;
       border-radius: 6px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    
+
     .section-title {
       color: #F09C00;
+      font-family: Arial, sans-serif;
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 10px;
-      border-bottom: 2px solid #F09C00;
       padding-bottom: 5px;
+      border-bottom: 2px solid #F09C00;
     }
-    
-    /* List styles */
+
     .info-list {
-      list-style: none;
+      list-style-type: none;
       padding: 0;
       margin: 0;
     }
-    
+
     .info-list li {
       padding: 8px 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #eeeeee;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
     }
-    
+
     .info-list li:last-child {
       border-bottom: none;
     }
-    
-    /* Label styles */
+
     .label {
       font-weight: bold;
-      color: #555;
+      color: #555555;
       margin-right: 5px;
     }
-    
-    /* Footer styles */
+
     .footer {
       text-align: center;
       padding-top: 20px;
-      color: #666;
+      color: #666666;
+      font-family: Arial, sans-serif;
       font-size: 12px;
     }
-    
-    /* Responsive design */
+
+    /* Mobile styles */
     @media screen and (max-width: 600px) {
-      .container { width: 100% !important; padding: 10px !important; }
-      .header { padding: 15px !important; }
-      .content { padding: 15px !important; }
-      .section { padding: 10px !important; }
+      .container {
+        width: 100% !important;
+        padding: 10px !important;
+      }
+      .header {
+        padding: 15px !important;
+      }
+      .content {
+        padding: 15px !important;
+      }
+      .section {
+        padding: 10px !important;
+      }
     }
   </style>
 `;
 
 const generateSiteOwnerEmail = (opportunity, interestedUser) => {
   return `
-    ${emailStyles}
-    <div class="container">
-      <div class="header">
-        <h2>New Interest in Your Site</h2>
-      </div>
-      
-      <div class="content">
-        <div class="section">
-          <div class="section-title">Site Details</div>
-          <ul class="info-list">
-            <li><span class="label">Site Name:</span> ${
-              opportunity.site_name
-            }</li>
-            <li><span class="label">Site Address:</span> ${
-              opportunity.site_address
-            }</li>
-            <li><span class="label">Number of Plots:</span> ${
-              opportunity.plots
-            }</li>
-          </ul>
-        </div>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      ${emailStyles}
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f8f9fa;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center" style="padding: 20px 0;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="container">
+              <tr>
+                <td class="header">
+                  <h2>New Interest in Your Site</h2>
+                </td>
+              </tr>
+              <tr>
+                <td class="content">
+                  <div class="section">
+                    <div class="section-title">Site Details</div>
+                    <ul class="info-list">
+                      <li><span class="label">Site Name:</span> ${
+                        opportunity.site_name
+                      }</li>
+                      <li><span class="label">Site Address:</span> ${
+                        opportunity.site_address
+                      }</li>
+                      <li><span class="label">Number of Plots:</span> ${
+                        opportunity.plots
+                      }</li>
+                    </ul>
+                  </div>
 
-        <div class="section">
-          <div class="section-title">Interested Party Details</div>
-          <ul class="info-list">
-            <li><span class="label">Name:</span> ${interestedUser.name}</li>
-            <li><span class="label">Email:</span> ${interestedUser.email}</li>
-            <li><span class="label">Organization:</span> ${
-              interestedUser.organization || "Not specified"
-            }</li>
-          </ul>
-        </div>
+                  <div class="section">
+                    <div class="section-title">Interested Party Details</div>
+                    <ul class="info-list">
+                      <li><span class="label">Name:</span> ${
+                        interestedUser.name
+                      }</li>
+                      <li><span class="label">Email:</span> ${
+                        interestedUser.email
+                      }</li>
+                      <li><span class="label">Organization:</span> ${
+                        interestedUser.organization || "Not specified"
+                      }</li>
+                    </ul>
+                  </div>
 
-        <div class="section">
-          <p style="margin: 0;">Please follow up with the interested party at your earliest convenience.</p>
-        </div>
+                  <div class="section">
+                    <p style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+                      Please follow up with the interested party at your earliest convenience.
+                    </p>
+                  </div>
 
-        <div class="footer">
-          <p>This is an automated message from FGB Acumen Opportunities Hub.</p>
-        </div>
-      </div>
-    </div>
+                  <div class="footer">
+                    <p>This is an automated message from FGB Acumen Opportunities Hub.</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
   `;
 };
 
 const generateAdminEmail = (opportunity, interestedUser) => {
   return `
-    ${emailStyles}
-    <div class="container">
-      <div class="header">
-        <h2>New Site Interest Notification</h2>
-      </div>
-      
-      <div class="content">
-        <div class="section">
-          <div class="section-title">Site Details</div>
-          <ul class="info-list">
-            <li><span class="label">Site Name:</span> ${
-              opportunity.site_name
-            }</li>
-            <li><span class="label">Site Address:</span> ${
-              opportunity.site_address
-            }</li>
-            <li><span class="label">Developer:</span> ${
-              opportunity.developer_name
-            }</li>
-            <li><span class="label">Number of Plots:</span> ${
-              opportunity.plots
-            }</li>
-          </ul>
-        </div>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      ${emailStyles}
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f8f9fa;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center" style="padding: 20px 0;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="container">
+              <tr>
+                <td class="header">
+                  <h2>New Site Interest Notification</h2>
+                </td>
+              </tr>
+              <tr>
+                <td class="content">
+                  <div class="section">
+                    <div class="section-title">Site Details</div>
+                    <ul class="info-list">
+                      <li><span class="label">Site Name:</span> ${
+                        opportunity.site_name
+                      }</li>
+                      <li><span class="label">Site Address:</span> ${
+                        opportunity.site_address
+                      }</li>
+                      <li><span class="label">Developer:</span> ${
+                        opportunity.developer_name
+                      }</li>
+                      <li><span class="label">Number of Plots:</span> ${
+                        opportunity.plots
+                      }</li>
+                    </ul>
+                  </div>
 
-        <div class="section">
-          <div class="section-title">Site Owner Details</div>
-          <ul class="info-list">
-            <li><span class="label">Name:</span> ${
-              opportunity.owner?.name || "Not specified"
-            }</li>
-            <li><span class="label">Email:</span> ${opportunity.user_email}</li>
-          </ul>
-        </div>
+                  <div class="section">
+                    <div class="section-title">Site Owner Details</div>
+                    <ul class="info-list">
+                      <li><span class="label">Name:</span> ${
+                        opportunity.owner?.name || "Not specified"
+                      }</li>
+                      <li><span class="label">Email:</span> ${
+                        opportunity.user_email
+                      }</li>
+                    </ul>
+                  </div>
 
-        <div class="section">
-          <div class="section-title">Interested Party Details</div>
-          <ul class="info-list">
-            <li><span class="label">Name:</span> ${interestedUser.name}</li>
-            <li><span class="label">Email:</span> ${interestedUser.email}</li>
-            <li><span class="label">Organization:</span> ${
-              interestedUser.organization || "Not specified"
-            }</li>
-          </ul>
-        </div>
+                  <div class="section">
+                    <div class="section-title">Interested Party Details</div>
+                    <ul class="info-list">
+                      <li><span class="label">Name:</span> ${
+                        interestedUser.name
+                      }</li>
+                      <li><span class="label">Email:</span> ${
+                        interestedUser.email
+                      }</li>
+                      <li><span class="label">Organization:</span> ${
+                        interestedUser.organization || "Not specified"
+                      }</li>
+                    </ul>
+                  </div>
 
-        <div class="footer">
-          <p>This is an automated message from FGB Acumen Opportunities Hub.</p>
-        </div>
-      </div>
-    </div>
+                  <div class="footer">
+                    <p>This is an automated message from FGB Acumen Opportunities Hub.</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
   `;
 };
 
