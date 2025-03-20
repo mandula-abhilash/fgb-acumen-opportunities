@@ -12,6 +12,7 @@ import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import regionsRoutes from "./routes/regionsRoutes.js";
 import lpaRoutes from "./routes/lpaRoutes.js";
+import shortlistRoutes from "./routes/shortlistRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -82,6 +83,9 @@ const startServer = async () => {
 
     // Mount the LPA routes
     app.use("/api/lpas", lpaRoutes);
+
+    // Mount the shortlist routes
+    app.use("/api/shortlists", shortlistRoutes);
 
     // Catch-all for undefined routes
     app.use((req, res) => {

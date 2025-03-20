@@ -5,7 +5,6 @@ import {
   Building2,
   FileText,
   Globe2,
-  Heart,
   Home,
   Landmark,
   MapPin,
@@ -24,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 
 export function OpportunityCard({ opportunity }) {
   return (
@@ -166,10 +166,7 @@ export function OpportunityCard({ opportunity }) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" className="flex-1">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Shortlist
-                    </Button>
+                    <ShortlistButton opportunityId={opportunity.id} />
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
                     <p>Add this site to your shortlisted opportunities</p>
