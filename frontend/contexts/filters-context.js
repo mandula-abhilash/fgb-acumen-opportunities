@@ -24,8 +24,12 @@ export function FiltersProvider({ children }) {
     }));
   };
 
-  const handleViewModeChange = () => {
-    setViewMode((prev) => (prev === "list" ? "map" : "list"));
+  const handleViewModeChange = (mode) => {
+    if (mode) {
+      setViewMode(mode);
+    } else {
+      setViewMode((prev) => (prev === "list" ? "map" : "list"));
+    }
   };
 
   return (

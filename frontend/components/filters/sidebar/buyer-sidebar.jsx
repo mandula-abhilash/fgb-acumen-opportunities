@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
@@ -24,12 +24,15 @@ export function BuyerSidebar({
 }) {
   const { viewMode, handleViewModeChange } = useFilters();
   const router = useRouter();
+  const pathname = usePathname();
+  const isOpportunitiesPage = pathname.includes("/opportunities");
 
   const handleViewModeToggle = () => {
-    handleViewModeChange();
-    // Navigate to opportunities page if not already there
-    if (!window.location.pathname.includes("/opportunities")) {
+    if (!isOpportunitiesPage) {
+      handleViewModeChange("list"); // Force list view when navigating
       router.push("/dashboard/opportunities");
+    } else {
+      handleViewModeChange(); // Toggle between views when on opportunities page
     }
   };
 
@@ -42,7 +45,12 @@ export function BuyerSidebar({
           onPressedChange={handleViewModeToggle}
           className="w-full justify-start h-9"
         >
-          {viewMode === "list" ? (
+          {!isOpportunitiesPage ? (
+            <>
+              <List className="h-4 w-4 mr-2" />
+              Live Opportunities
+            </>
+          ) : viewMode === "list" ? (
             <>
               <Map className="h-4 w-4 mr-2" />
               Explore on Map
