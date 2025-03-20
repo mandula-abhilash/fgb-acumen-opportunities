@@ -13,6 +13,7 @@ export function FiltersProvider({ children }) {
     startDate: {},
     firstHandoverDate: {},
     finalHandoverDate: {},
+    showShortlisted: false,
   });
 
   const [viewMode, setViewMode] = useState("list");

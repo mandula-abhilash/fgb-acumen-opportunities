@@ -41,6 +41,11 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("landPurchaseStatus", filters.landPurchaseStatus.join(","));
     }
 
+    // Add shortlisted filter
+    if (filters.showShortlisted) {
+      params.set("showShortlisted", "true");
+    }
+
     // Add start date filter
     if (filters.startDate?.mode) {
       params.set("startDateMode", filters.startDate.mode);

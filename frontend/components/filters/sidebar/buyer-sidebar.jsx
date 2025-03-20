@@ -16,12 +16,7 @@ import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
 import { RegionFilter } from "./region-filter";
 
-export function BuyerSidebar({
-  filters,
-  onFilterChange,
-  showShortlisted,
-  onShortlistedChange,
-}) {
+export function BuyerSidebar({ filters, onFilterChange }) {
   const { viewMode, handleViewModeChange } = useFilters();
   const router = useRouter();
   const pathname = usePathname();
@@ -67,8 +62,10 @@ export function BuyerSidebar({
         <div className="flex items-center space-x-2 px-2 mt-4">
           <Checkbox
             id="shortlisted"
-            checked={showShortlisted}
-            onCheckedChange={onShortlistedChange}
+            checked={filters.showShortlisted}
+            onCheckedChange={(checked) =>
+              onFilterChange("showShortlisted", checked)
+            }
             className="h-4 w-4 ml-1"
           />
           <Label htmlFor="shortlisted" className="text-sm cursor-pointer">

@@ -161,6 +161,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     finalHandoverDateStart,
     finalHandoverDateEnd,
     finalHandoverDateSingle,
+    showShortlisted,
   } = req.query;
 
   // Parse regions from query string
@@ -211,6 +212,15 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   if (!isAdmin) {
     conditions.push(`o.user_id = $${params.length + 1}`);
     params.push(userId);
+  }
+
+  // Add shortlisted filter
+  if (showShortlisted === "true") {
+    conditions.push(`EXISTS (
+      SELECT 1 FROM shortlists
+      WHERE shortlists.opportunity_id = o.id
+      AND shortlists.user_id = $1
+    )`);
   }
 
   // Add region filter if regions are selected
