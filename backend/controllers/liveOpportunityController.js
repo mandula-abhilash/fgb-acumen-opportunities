@@ -204,12 +204,6 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const conditions = [];
   const params = [userId]; // First parameter is always userId for shortlist check
 
-  // Helper function to format date string to YYYY-MM-DD
-  const formatDateParam = (dateString) => {
-    if (!dateString) return null;
-    return new Date(dateString).toISOString().split("T")[0];
-  };
-
   // Add user filter for non-admin users
   if (!isAdmin) {
     conditions.push(`o.user_id = $${params.length + 1}`);
@@ -753,6 +747,7 @@ export const expressInterest = asyncHandler(async (req, res) => {
       {
         ...opportunity,
         user_email: siteCreator.email,
+        owner: siteCreator,
       },
       {
         name: interestedUser.name,
