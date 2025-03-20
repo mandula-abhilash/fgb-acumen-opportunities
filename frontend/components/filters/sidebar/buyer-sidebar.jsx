@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
@@ -22,6 +23,15 @@ export function BuyerSidebar({
   onShortlistedChange,
 }) {
   const { viewMode, handleViewModeChange } = useFilters();
+  const router = useRouter();
+
+  const handleViewModeToggle = () => {
+    handleViewModeChange();
+    // Navigate to opportunities page if not already there
+    if (!window.location.pathname.includes("/opportunities")) {
+      router.push("/dashboard/opportunities");
+    }
+  };
 
   return (
     <div className="w-72 h-full flex flex-col">
@@ -29,7 +39,7 @@ export function BuyerSidebar({
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map"}
-          onPressedChange={handleViewModeChange}
+          onPressedChange={handleViewModeToggle}
           className="w-full justify-start h-9"
         >
           {viewMode === "list" ? (
