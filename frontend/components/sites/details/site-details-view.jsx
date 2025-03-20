@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import {
-  ArrowLeft,
   Building2,
   Calendar,
   Clock,
@@ -19,7 +18,6 @@ import {
   Landmark,
   MapPin,
   MessageSquareMore,
-  Pencil,
   PoundSterling,
   ScrollText,
   Store,
@@ -30,7 +28,6 @@ import { expressInterest } from "@/lib/api/liveOpportunities";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/components/ui/use-toast";
 import { ExploreMap } from "@/components/explore/explore-map";
@@ -77,7 +74,7 @@ export function SiteDetailsView({ site }) {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-web-orange/10 via-web-orange/5 to-transparent border rounded-lg p-6">
+      <div className="bg-web-orange/5 border rounded-lg p-6">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-web-orange">
@@ -96,6 +93,7 @@ export function SiteDetailsView({ site }) {
               onClick={() =>
                 router.push(`/dashboard/opportunities/${site.id}/edit`)
               }
+              size="sm"
               className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg"
             >
               <Edit2 className="h-4 w-4 mr-2" />
@@ -165,7 +163,11 @@ export function SiteDetailsView({ site }) {
         <Card className="overflow-hidden shadow-lg">
           <div className="relative h-[400px]">
             <img
-              src={site.sitePlanImage || "https://placehold.in/600x400"}
+              src={
+                "https://planning-applications-bucket.s3.eu-west-2.amazonaws.com/65ae31514a033c25afd3487b.jpeg?etag=59248ab241972cc690f857dff37b5c71" ||
+                site.sitePlanImage ||
+                "https://placehold.in/400"
+              }
               alt={site.siteName}
               className="w-full h-full object-cover"
             />
@@ -195,24 +197,21 @@ export function SiteDetailsView({ site }) {
       {/* Key Information Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <Building2 className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Developer Information</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Developer Information
+          </h2>
           <div className="space-y-4">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <Users className="h-4 w-4" />
-                <h3 className="font-medium">Developer Name</h3>
-              </div>
+              <h3 className="font-medium text-muted-foreground mb-2">
+                Developer Name
+              </h3>
               <p>{site.developerName}</p>
             </div>
             {site.developer_region_names?.length > 0 && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Globe2 className="h-4 w-4" />
-                  <h3 className="font-medium">Developer Regions</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Developer Regions
+                </h3>
                 <div className="flex flex-wrap gap-1">
                   {site.developer_region_names.map((region) => (
                     <Badge key={region} variant="secondary" className="text-xs">
@@ -224,10 +223,9 @@ export function SiteDetailsView({ site }) {
             )}
             {site.developerInfo && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Info className="h-4 w-4" />
-                  <h3 className="font-medium">Additional Information</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Additional Information
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.developerInfo}
                 </p>
@@ -237,16 +235,14 @@ export function SiteDetailsView({ site }) {
         </Card>
 
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <Globe2 className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Location Information</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Location Information
+          </h2>
           <div className="space-y-4">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <MapPin className="h-4 w-4" />
-                <h3 className="font-medium">Regions</h3>
-              </div>
+              <h3 className="font-medium text-muted-foreground mb-2">
+                Regions
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {site.region_names?.map((region) => (
                   <Badge key={region} variant="outline">
@@ -256,10 +252,9 @@ export function SiteDetailsView({ site }) {
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <Landmark className="h-4 w-4" />
-                <h3 className="font-medium">Local Planning Authorities</h3>
-              </div>
+              <h3 className="font-medium text-muted-foreground mb-2">
+                Local Planning Authorities
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {site.lpa_names?.map((lpa) => (
                   <Badge key={lpa} variant="secondary" className="text-xs">
@@ -272,24 +267,21 @@ export function SiteDetailsView({ site }) {
         </Card>
 
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <ScrollText className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Planning Information</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Planning Information
+          </h2>
           <div className="space-y-4">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <Store className="h-4 w-4" />
-                <h3 className="font-medium">Land Purchase Status</h3>
-              </div>
+              <h3 className="font-medium text-muted-foreground mb-2">
+                Land Purchase Status
+              </h3>
               <Badge variant="outline">{site.landPurchaseStatus}</Badge>
             </div>
             {site.planningOverview && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Info className="h-4 w-4" />
-                  <h3 className="font-medium">Planning Overview</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Planning Overview
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.planningOverview}
                 </p>
@@ -297,10 +289,9 @@ export function SiteDetailsView({ site }) {
             )}
             {site.proposedDevelopment && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Building2 className="h-4 w-4" />
-                  <h3 className="font-medium">Proposed Development</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Proposed Development
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.proposedDevelopment}
                 </p>
@@ -308,10 +299,9 @@ export function SiteDetailsView({ site }) {
             )}
             {site.siteContext && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Info className="h-4 w-4" />
-                  <h3 className="font-medium">Site Context</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Site Context
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.siteContext}
                 </p>
@@ -321,40 +311,35 @@ export function SiteDetailsView({ site }) {
         </Card>
 
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <Calendar className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Timeline</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Timeline
+          </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Calendar className="h-4 w-4" />
-                  <h3 className="font-medium">Start on Site</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Start on Site
+                </h3>
                 <p>{formatDate(site.startOnSiteDate)}</p>
               </div>
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Clock className="h-4 w-4" />
-                  <h3 className="font-medium">First Handover</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  First Handover
+                </h3>
                 <p>{formatDate(site.firstHandoverDate)}</p>
               </div>
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Clock className="h-4 w-4" />
-                  <h3 className="font-medium">Final Handover</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Final Handover
+                </h3>
                 <p>{formatDate(site.finalHandoverDate)}</p>
               </div>
             </div>
             {site.projectProgramme && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Calendar className="h-4 w-4" />
-                  <h3 className="font-medium">Project Programme</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Project Programme
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.projectProgramme}
                 </p>
@@ -364,16 +349,14 @@ export function SiteDetailsView({ site }) {
         </Card>
 
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <Home className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Tenure Information</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Tenure Information
+          </h2>
           <div className="space-y-4">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <Home className="h-4 w-4" />
-                <h3 className="font-medium">Tenures</h3>
-              </div>
+              <h3 className="font-medium text-muted-foreground mb-2">
+                Tenures
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {site.tenures?.map((tenure) => (
                   <Badge key={tenure} variant="outline">
@@ -384,12 +367,9 @@ export function SiteDetailsView({ site }) {
             </div>
             {site.detailedTenureAccommodation && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Info className="h-4 w-4" />
-                  <h3 className="font-medium">
-                    Detailed Tenure & Accommodation
-                  </h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Detailed Tenure & Accommodation
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.detailedTenureAccommodation}
                 </p>
@@ -399,17 +379,15 @@ export function SiteDetailsView({ site }) {
         </Card>
 
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <PoundSterling className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Commercial Information</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Commercial Information
+          </h2>
           <div className="space-y-4">
             {site.paymentTerms && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <PoundSterling className="h-4 w-4" />
-                  <h3 className="font-medium">Payment Terms</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Payment Terms
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.paymentTerms}
                 </p>
@@ -417,19 +395,17 @@ export function SiteDetailsView({ site }) {
             )}
             {site.vatPosition && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <PoundSterling className="h-4 w-4" />
-                  <h3 className="font-medium">VAT Position</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  VAT Position
+                </h3>
                 <p className="text-muted-foreground">{site.vatPosition}</p>
               </div>
             )}
             {site.agentTerms && (
               <div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Users className="h-4 w-4" />
-                  <h3 className="font-medium">Agent Terms</h3>
-                </div>
+                <h3 className="font-medium text-muted-foreground mb-2">
+                  Agent Terms
+                </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {site.agentTerms}
                 </p>
@@ -442,10 +418,9 @@ export function SiteDetailsView({ site }) {
       {/* Documents Section */}
       {(site.proposedSpecification || site.s106Agreement) && (
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex items-center gap-2 text-havelock-blue mb-4">
-            <FileText className="h-5 w-5" />
-            <h2 className="text-xl font-semibold">Documents</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-havelock-blue mb-4">
+            Documents
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {site.proposedSpecification && (
               <Link
