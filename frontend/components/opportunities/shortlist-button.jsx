@@ -57,7 +57,7 @@ export function ShortlistButton({
     <Button
       variant="outline"
       className={cn(
-        "flex-1 transition-colors",
+        "transition-colors",
         isShortlisted &&
           "bg-destructive/10 hover:bg-destructive/20 border-destructive/50 hover:border-destructive",
         className

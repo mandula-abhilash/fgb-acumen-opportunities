@@ -138,15 +138,15 @@ export function SiteDetailsView({ site }) {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-4 mt-6">
             <ShortlistButton
               opportunityId={site.id}
               isShortlisted={site.is_shortlisted}
-              className="w-full sm:flex-1 shadow-lg"
+              className="w-full sm:w-[200px] shadow-lg"
             />
             <Button
               variant="secondary"
-              className="w-full sm:flex-1 shadow-lg bg-background hover:bg-accent"
+              className="w-full sm:w-[200px] shadow-lg bg-background hover:bg-accent"
               onClick={handleConfirmInterest}
               disabled={isSubmitting}
             >
@@ -210,7 +210,7 @@ export function SiteDetailsView({ site }) {
                 <Building2 className="h-4 w-4" />
                 Developer Name
               </h3>
-              <p>{site.developerName}</p>
+              <p className="text-foreground">{site.developerName}</p>
             </div>
             {site.developer_region_names?.length > 0 && (
               <div>
@@ -233,7 +233,7 @@ export function SiteDetailsView({ site }) {
                   <Info className="h-4 w-4" />
                   Additional Information
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.developerInfo}
                 </p>
               </div>
@@ -285,7 +285,9 @@ export function SiteDetailsView({ site }) {
                 <Store className="h-4 w-4" />
                 Land Purchase Status
               </h3>
-              <Badge variant="outline">{site.landPurchaseStatus}</Badge>
+              <Badge variant="outline" className="text-foreground">
+                {site.landPurchaseStatus}
+              </Badge>
             </div>
             {site.planningOverview && (
               <div>
@@ -293,7 +295,7 @@ export function SiteDetailsView({ site }) {
                   <ScrollText className="h-4 w-4" />
                   Planning Overview
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.planningOverview}
                 </p>
               </div>
@@ -304,7 +306,7 @@ export function SiteDetailsView({ site }) {
                   <Building2 className="h-4 w-4" />
                   Proposed Development
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.proposedDevelopment}
                 </p>
               </div>
@@ -315,7 +317,7 @@ export function SiteDetailsView({ site }) {
                   <Info className="h-4 w-4" />
                   Site Context
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.siteContext}
                 </p>
               </div>
@@ -334,21 +336,27 @@ export function SiteDetailsView({ site }) {
                   <Calendar className="h-4 w-4" />
                   Start on Site
                 </h3>
-                <p>{formatDate(site.startOnSiteDate)}</p>
+                <p className="text-foreground">
+                  {formatDate(site.startOnSiteDate)}
+                </p>
               </div>
               <div>
                 <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
                   <Clock className="h-4 w-4" />
                   First Handover
                 </h3>
-                <p>{formatDate(site.firstHandoverDate)}</p>
+                <p className="text-foreground">
+                  {formatDate(site.firstHandoverDate)}
+                </p>
               </div>
               <div>
                 <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
                   <Clock className="h-4 w-4" />
                   Final Handover
                 </h3>
-                <p>{formatDate(site.finalHandoverDate)}</p>
+                <p className="text-foreground">
+                  {formatDate(site.finalHandoverDate)}
+                </p>
               </div>
             </div>
             {site.projectProgramme && (
@@ -357,7 +365,7 @@ export function SiteDetailsView({ site }) {
                   <Calendar className="h-4 w-4" />
                   Project Programme
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.projectProgramme}
                 </p>
               </div>
@@ -377,7 +385,11 @@ export function SiteDetailsView({ site }) {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {site.tenures?.map((tenure) => (
-                  <Badge key={tenure} variant="outline">
+                  <Badge
+                    key={tenure}
+                    variant="outline"
+                    className="text-foreground"
+                  >
                     {tenure}
                   </Badge>
                 ))}
@@ -389,7 +401,7 @@ export function SiteDetailsView({ site }) {
                   <Info className="h-4 w-4" />
                   Detailed Tenure & Accommodation
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.detailedTenureAccommodation}
                 </p>
               </div>
@@ -408,7 +420,7 @@ export function SiteDetailsView({ site }) {
                   <PoundSterling className="h-4 w-4" />
                   Payment Terms
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.paymentTerms}
                 </p>
               </div>
@@ -419,7 +431,7 @@ export function SiteDetailsView({ site }) {
                   <PoundSterling className="h-4 w-4" />
                   VAT Position
                 </h3>
-                <p className="text-muted-foreground">{site.vatPosition}</p>
+                <p className="text-foreground">{site.vatPosition}</p>
               </div>
             )}
             {site.agentTerms && (
@@ -428,7 +440,7 @@ export function SiteDetailsView({ site }) {
                   <Users className="h-4 w-4" />
                   Agent Terms
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {site.agentTerms}
                 </p>
               </div>
