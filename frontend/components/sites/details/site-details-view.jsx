@@ -74,86 +74,90 @@ export function SiteDetailsView({ site }) {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Section */}
-      <div className="bg-web-orange/5 border rounded-lg p-6">
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-web-orange">
-              <Building2 className="h-5 w-5" />
-              <h1 className="text-3xl font-bold">{site.siteName}</h1>
+      <div className="bg-web-orange/5 border rounded-lg p-4 sm:p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div className="space-y-2 w-full sm:w-auto">
+              <div className="flex items-center gap-2 text-web-orange">
+                <Building2 className="h-5 w-5 flex-shrink-0" />
+                <h1 className="text-2xl sm:text-3xl font-bold">
+                  {site.siteName}
+                </h1>
+              </div>
+              <div className="flex items-start gap-2 text-muted-foreground">
+                <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
+                <p className="text-base sm:text-lg">
+                  {site.customSiteAddress || site.siteAddress}
+                </p>
+              </div>
             </div>
-            <div className="flex items-start gap-2 text-muted-foreground">
-              <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
-              <p className="text-lg">
-                {site.customSiteAddress || site.siteAddress}
-              </p>
-            </div>
-          </div>
-          {canEdit && (
-            <Button
-              onClick={() =>
-                router.push(`/dashboard/opportunities/${site.id}/edit`)
-              }
-              size="sm"
-              className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg"
-            >
-              <Edit2 className="h-4 w-4 mr-2" />
-              Edit Site
-            </Button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          <div className="bg-background/40 backdrop-blur-sm rounded-lg p-4">
-            <div className="flex items-center gap-2 text-web-orange mb-2">
-              <GripHorizontal className="h-4 w-4" />
-              <h3 className="font-semibold">Opportunity Type</h3>
-            </div>
-            <Badge variant="outline" className="capitalize">
-              {site.opportunityType.replace(/-/g, " ")}
-            </Badge>
-          </div>
-
-          <div className="bg-background/40 backdrop-blur-sm rounded-lg p-4">
-            <div className="flex items-center gap-2 text-web-orange mb-2">
-              <Users className="h-4 w-4" />
-              <h3 className="font-semibold">Number of Plots</h3>
-            </div>
-            <p className="text-lg font-medium">{site.plots} units</p>
-          </div>
-
-          <div className="bg-background/40 backdrop-blur-sm rounded-lg p-4">
-            <div className="flex items-center gap-2 text-web-orange mb-2">
-              <ScrollText className="h-4 w-4" />
-              <h3 className="font-semibold">Planning Status</h3>
-            </div>
-            <Badge
-              variant="outline"
-              className="border-web-orange text-web-orange"
-            >
-              {site.planningStatus}
-            </Badge>
-          </div>
-        </div>
-
-        <div className="flex gap-4 mt-6">
-          <ShortlistButton
-            opportunityId={site.id}
-            isShortlisted={site.is_shortlisted}
-            className="flex-1 shadow-lg"
-          />
-          <Button
-            variant="secondary"
-            className="flex-1 shadow-lg bg-background hover:bg-accent"
-            onClick={handleConfirmInterest}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Spinner size="sm" className="mr-2" />
-            ) : (
-              <MessageSquareMore className="h-4 w-4 mr-2" />
+            {canEdit && (
+              <Button
+                onClick={() =>
+                  router.push(`/dashboard/opportunities/${site.id}/edit`)
+                }
+                size="sm"
+                className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg w-full sm:w-auto"
+              >
+                <Edit2 className="h-4 w-4 mr-2" />
+                Edit Site
+              </Button>
             )}
-            {isSubmitting ? "Confirming..." : "Confirm Interest"}
-          </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <div className="bg-background/40 shadow-md rounded-lg p-4">
+              <div className="flex items-center gap-2 text-web-orange mb-2">
+                <GripHorizontal className="h-4 w-4" />
+                <h3 className="font-semibold">Opportunity Type</h3>
+              </div>
+              <Badge variant="outline" className="capitalize">
+                {site.opportunityType.replace(/-/g, " ")}
+              </Badge>
+            </div>
+
+            <div className="bg-background/40 shadow-md rounded-lg p-4">
+              <div className="flex items-center gap-2 text-web-orange mb-2">
+                <Users className="h-4 w-4" />
+                <h3 className="font-semibold">Number of Plots</h3>
+              </div>
+              <p className="text-lg font-medium">{site.plots} units</p>
+            </div>
+
+            <div className="bg-background/40 shadow-md rounded-lg p-4">
+              <div className="flex items-center gap-2 text-web-orange mb-2">
+                <ScrollText className="h-4 w-4" />
+                <h3 className="font-semibold">Planning Status</h3>
+              </div>
+              <Badge
+                variant="outline"
+                className="border-web-orange text-web-orange"
+              >
+                {site.planningStatus}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <ShortlistButton
+              opportunityId={site.id}
+              isShortlisted={site.is_shortlisted}
+              className="w-full sm:flex-1 shadow-lg"
+            />
+            <Button
+              variant="secondary"
+              className="w-full sm:flex-1 shadow-lg bg-background hover:bg-accent"
+              onClick={handleConfirmInterest}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <Spinner size="sm" className="mr-2" />
+              ) : (
+                <MessageSquareMore className="h-4 w-4 mr-2" />
+              )}
+              {isSubmitting ? "Confirming..." : "Confirm Interest"}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -202,14 +206,16 @@ export function SiteDetailsView({ site }) {
           </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-muted-foreground mb-2">
+              <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                <Building2 className="h-4 w-4" />
                 Developer Name
               </h3>
               <p>{site.developerName}</p>
             </div>
             {site.developer_region_names?.length > 0 && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Globe2 className="h-4 w-4" />
                   Developer Regions
                 </h3>
                 <div className="flex flex-wrap gap-1">
@@ -223,7 +229,8 @@ export function SiteDetailsView({ site }) {
             )}
             {site.developerInfo && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Info className="h-4 w-4" />
                   Additional Information
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -240,7 +247,8 @@ export function SiteDetailsView({ site }) {
           </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-muted-foreground mb-2">
+              <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                <Globe2 className="h-4 w-4" />
                 Regions
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -252,7 +260,8 @@ export function SiteDetailsView({ site }) {
               </div>
             </div>
             <div>
-              <h3 className="font-medium text-muted-foreground mb-2">
+              <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                <Landmark className="h-4 w-4" />
                 Local Planning Authorities
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -272,14 +281,16 @@ export function SiteDetailsView({ site }) {
           </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-muted-foreground mb-2">
+              <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                <Store className="h-4 w-4" />
                 Land Purchase Status
               </h3>
               <Badge variant="outline">{site.landPurchaseStatus}</Badge>
             </div>
             {site.planningOverview && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <ScrollText className="h-4 w-4" />
                   Planning Overview
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -289,7 +300,8 @@ export function SiteDetailsView({ site }) {
             )}
             {site.proposedDevelopment && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Building2 className="h-4 w-4" />
                   Proposed Development
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -299,7 +311,8 @@ export function SiteDetailsView({ site }) {
             )}
             {site.siteContext && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Info className="h-4 w-4" />
                   Site Context
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -317,19 +330,22 @@ export function SiteDetailsView({ site }) {
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Calendar className="h-4 w-4" />
                   Start on Site
                 </h3>
                 <p>{formatDate(site.startOnSiteDate)}</p>
               </div>
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Clock className="h-4 w-4" />
                   First Handover
                 </h3>
                 <p>{formatDate(site.firstHandoverDate)}</p>
               </div>
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Clock className="h-4 w-4" />
                   Final Handover
                 </h3>
                 <p>{formatDate(site.finalHandoverDate)}</p>
@@ -337,7 +353,8 @@ export function SiteDetailsView({ site }) {
             </div>
             {site.projectProgramme && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Calendar className="h-4 w-4" />
                   Project Programme
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -354,7 +371,8 @@ export function SiteDetailsView({ site }) {
           </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-muted-foreground mb-2">
+              <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                <Home className="h-4 w-4" />
                 Tenures
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -367,7 +385,8 @@ export function SiteDetailsView({ site }) {
             </div>
             {site.detailedTenureAccommodation && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Info className="h-4 w-4" />
                   Detailed Tenure & Accommodation
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -385,7 +404,8 @@ export function SiteDetailsView({ site }) {
           <div className="space-y-4">
             {site.paymentTerms && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <PoundSterling className="h-4 w-4" />
                   Payment Terms
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -395,7 +415,8 @@ export function SiteDetailsView({ site }) {
             )}
             {site.vatPosition && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <PoundSterling className="h-4 w-4" />
                   VAT Position
                 </h3>
                 <p className="text-muted-foreground">{site.vatPosition}</p>
@@ -403,7 +424,8 @@ export function SiteDetailsView({ site }) {
             )}
             {site.agentTerms && (
               <div>
-                <h3 className="font-medium text-muted-foreground mb-2">
+                <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+                  <Users className="h-4 w-4" />
                   Agent Terms
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">
