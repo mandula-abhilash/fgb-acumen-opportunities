@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { ArrowLeft } from "lucide-react";
 
+import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -13,6 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
 import { PageHeader } from "@/components/layout/page-header";
 import { EditSiteForm } from "@/components/sites/edit/edit-site-form";
 
@@ -20,7 +22,9 @@ export default function EditSitePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const params = useParams();
-  const site = router.query?.state?.site;
+  const { toast } = useToast();
+  const [site, setSite] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -28,25 +32,61 @@ export default function EditSitePage() {
       return;
     }
 
-    // Check if we have site data and user has permission
-    if (site && user && user.role !== "admin" && user.id !== site.user_id) {
-      router.push("/dashboard/opportunities");
-      return;
-    }
+    const loadSiteData = async () => {
+      try {
+        // Try to get site data from sessionStorage first
+        const storedSite = sessionStorage.getItem("editSiteData");
+        if (storedSite) {
+          const parsedSite = JSON.parse(storedSite);
+          setSite(parsedSite);
+          setLoading(false);
+          // Clear the stored data
+          sessionStorage.removeItem("editSiteData");
+          return;
+        }
 
-    // If no site data in state, redirect back to view page
-    if (!site) {
-      router.push(`/dashboard/opportunities/${params.id}`);
-      return;
-    }
-  }, [authLoading, user, router, site, params.id]);
+        // If no stored data, fetch from API
+        const response = await getLiveOpportunitySite(params.id);
+        setSite(response.data);
 
-  if (authLoading || !user || !site) {
+        // Check user permission
+        if (user.role !== "admin" && user.id !== response.data.user_id) {
+          toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "You don't have permission to edit this site.",
+          });
+          router.push("/dashboard/opportunities");
+          return;
+        }
+      } catch (error) {
+        console.error("Error loading site:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load site details. Please try again.",
+        });
+        router.push("/dashboard/opportunities");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      loadSiteData();
+    }
+  }, [authLoading, user, router, params.id, toast]);
+
+  if (loading || authLoading || !user) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <Spinner size="lg" className="text-web-orange" />
       </div>
     );
+  }
+
+  if (!site) {
+    return null;
   }
 
   return (

@@ -28,25 +28,29 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { useToast } from "@/components/ui/use-toast";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 
 export function SiteDetailsView({ site }) {
   const { user } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const canEdit = user?.role === "admin" || user?.id === site.user_id;
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "Not specified";
-    return new Date(dateString).toLocaleDateString("en-GB", {
+  const formatDate = (date) => {
+    if (!date) return "Not specified";
+    return new Date(date).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "long",
       year: "numeric",
     });
+  };
+
+  const handleEditClick = () => {
+    // Store site data in sessionStorage before navigating
+    sessionStorage.setItem("editSiteData", JSON.stringify(site));
+    router.push(`/dashboard/opportunities/${site.id}/edit`);
   };
 
   const handleConfirmInterest = async () => {
@@ -68,13 +72,6 @@ export function SiteDetailsView({ site }) {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleEditClick = () => {
-    // Navigate to edit page with state containing site data
-    router.push(`/dashboard/opportunities/${site.id}/edit`, {
-      state: { site },
-    });
   };
 
   return (

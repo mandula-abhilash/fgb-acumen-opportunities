@@ -6,6 +6,7 @@ import {
   Building2,
   FileText,
   Globe2,
+  Heart,
   Home,
   Landmark,
   MapPin,
@@ -193,14 +194,14 @@ export function OpportunityCard({ opportunity, onRemove }) {
             <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto justify-end">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
+                  <div>
                     <ShortlistButton
                       opportunityId={opportunity.id}
                       isShortlisted={opportunity.is_shortlisted}
                       onRemove={onRemove}
                       className="w-full sm:w-[200px]"
                     />
-                  </TooltipTrigger>
+                  </div>
                   <TooltipContent side="bottom">
                     <p>Add this site to your shortlisted opportunities</p>
                   </TooltipContent>
