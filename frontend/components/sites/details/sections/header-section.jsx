@@ -33,7 +33,8 @@ export function HeaderSection({ site, canEdit }) {
           <Button
             onClick={handleEditClick}
             size="sm"
-            className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg w-full sm:w-auto"
+            variant="outline"
+            className="w-full sm:w-auto border-2 hover:bg-accent"
           >
             <Edit2 className="h-4 w-4 mr-2" />
             Edit Site
