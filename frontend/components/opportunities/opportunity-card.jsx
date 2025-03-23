@@ -190,7 +190,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto justify-end">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -198,6 +198,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
                       opportunityId={opportunity.id}
                       isShortlisted={opportunity.is_shortlisted}
                       onRemove={onRemove}
+                      className="w-full sm:w-[200px]"
                     />
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -209,7 +210,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
                   <TooltipTrigger asChild>
                     <Button
                       variant="secondary"
-                      className="flex-1"
+                      className="w-full sm:w-[200px]"
                       onClick={handleConfirmInterest}
                       disabled={isSubmitting}
                     >
