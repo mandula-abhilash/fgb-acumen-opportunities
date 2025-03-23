@@ -18,8 +18,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { vatPositions } from "@/components/sites/form-constants";
 
-export function CommercialInformation({ register, setValue, watch, errors }) {
-  const currentVatPosition = watch("vatPosition");
+export function CommercialInformation({
+  register,
+  setValue,
+  watch,
+  errors,
+  disabled,
+}) {
+  const currentVatPosition = watch?.("vatPosition") || "";
 
   const handleVatPositionChange = (value) => {
     setValue("vatPosition", value);
@@ -29,7 +35,7 @@ export function CommercialInformation({ register, setValue, watch, errors }) {
     <Card>
       <CardHeader>
         <CardTitle>Commercial Information</CardTitle>
-        <CardDescription>Update commercial and payment details</CardDescription>
+        <CardDescription>Enter commercial and payment details</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
@@ -38,6 +44,7 @@ export function CommercialInformation({ register, setValue, watch, errors }) {
             id="paymentTerms"
             {...register("paymentTerms")}
             placeholder="Describe the payment terms..."
+            disabled={disabled}
           />
         </div>
 
@@ -46,6 +53,7 @@ export function CommercialInformation({ register, setValue, watch, errors }) {
           <Select
             value={currentVatPosition}
             onValueChange={handleVatPositionChange}
+            disabled={disabled}
           >
             <SelectTrigger
               className={errors?.vatPosition ? "border-destructive" : ""}
@@ -54,7 +62,7 @@ export function CommercialInformation({ register, setValue, watch, errors }) {
             </SelectTrigger>
             <SelectContent>
               {vatPositions.map((position) => (
-                <SelectItem key={position.value} value={position.value}>
+                <SelectItem key={position.value} value={position.label}>
                   {position.label}
                 </SelectItem>
               ))}
@@ -68,6 +76,7 @@ export function CommercialInformation({ register, setValue, watch, errors }) {
             id="agentTerms"
             {...register("agentTerms")}
             placeholder="Specify any agent terms if applicable..."
+            disabled={disabled}
           />
         </div>
       </CardContent>

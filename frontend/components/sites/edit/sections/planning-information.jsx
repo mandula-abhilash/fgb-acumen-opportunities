@@ -138,7 +138,7 @@ export function PlanningInformation({
               </SelectTrigger>
               <SelectContent>
                 {planningStatuses.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
+                  <SelectItem key={status.value} value={status.label}>
                     {status.label}
                   </SelectItem>
                 ))}
@@ -168,7 +168,7 @@ export function PlanningInformation({
               </SelectTrigger>
               <SelectContent>
                 {landPurchaseStatuses.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
+                  <SelectItem key={status.value} value={status.label}>
                     {status.label}
                   </SelectItem>
                 ))}

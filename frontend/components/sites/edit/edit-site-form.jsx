@@ -77,6 +77,31 @@ export function EditSiteForm({ site }) {
     },
   });
 
+  // Set initial values for select fields
+  useEffect(() => {
+    if (site) {
+      // For single select fields
+      setValue("opportunityType", site.opportunityType);
+      setValue("planningStatus", site.planningStatus);
+      setValue("landPurchaseStatus", site.landPurchaseStatus);
+      setValue("vatPosition", site.vatPosition);
+
+      // For multi-select fields
+      setValue("tenures", site.tenures);
+      setValue("region", site.region);
+      setValue("lpa", site.lpa);
+      setValue("developerRegion", site.developerRegion);
+
+      // For dates
+      if (site.startOnSiteDate)
+        setValue("startOnSiteDate", new Date(site.startOnSiteDate));
+      if (site.firstHandoverDate)
+        setValue("firstHandoverDate", new Date(site.firstHandoverDate));
+      if (site.finalHandoverDate)
+        setValue("finalHandoverDate", new Date(site.finalHandoverDate));
+    }
+  }, [site, setValue]);
+
   const onSubmit = async (data) => {
     try {
       if (!selectedLocation) {

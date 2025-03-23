@@ -48,7 +48,7 @@ export default function EditSitePage() {
           router.push("/dashboard/opportunities");
           return;
         }
-
+        console.log(JSON.stringify(response.data, null, 2));
         setSite(response.data);
       } catch (error) {
         console.error("Error fetching site:", error);
