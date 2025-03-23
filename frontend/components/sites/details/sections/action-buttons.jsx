@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, MessageSquareMore } from "lucide-react";
+import { MessageSquareMore } from "lucide-react";
 
 import { expressInterest } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
@@ -35,27 +35,25 @@ export function ActionButtons({ site }) {
   };
 
   return (
-    <div className="p-3 border-t bg-background/95 backdrop-blur-sm">
-      <div className="flex gap-2 justify-end">
-        <ShortlistButton
-          opportunityId={site.id}
-          isShortlisted={site.is_shortlisted}
-          className="w-full sm:w-[200px]"
-        />
-        <Button
-          variant="secondary"
-          className="w-full sm:w-[200px]"
-          onClick={handleConfirmInterest}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <Spinner size="sm" className="mr-2" />
-          ) : (
-            <MessageSquareMore className="h-4 w-4 mr-2" />
-          )}
-          {isSubmitting ? "Processing..." : "Confirm Interest"}
-        </Button>
-      </div>
+    <div className="flex flex-col sm:flex-row gap-3 justify-end">
+      <ShortlistButton
+        opportunityId={site.id}
+        isShortlisted={site.is_shortlisted}
+        className="w-full sm:w-[200px]"
+      />
+      <Button
+        variant="secondary"
+        className="w-full sm:w-[200px] bg-background hover:bg-accent"
+        onClick={handleConfirmInterest}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <Spinner size="sm" className="mr-2" />
+        ) : (
+          <MessageSquareMore className="h-4 w-4 mr-2" />
+        )}
+        {isSubmitting ? "Processing..." : "Confirm Interest"}
+      </Button>
     </div>
   );
 }

@@ -33,10 +33,14 @@ export function SiteDetailsView({ site }) {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Section */}
-      <div className="bg-web-orange/5 border rounded-lg p-4 sm:p-6">
+      <div className="bg-background border rounded-lg shadow-sm">
         <HeaderSection site={site} canEdit={canEdit} />
-        <KeyDetailsSection site={site} />
-        <ActionButtons site={site} />
+        <div className="p-4 sm:p-6">
+          <KeyDetailsSection site={site} />
+          <div className="mt-6">
+            <ActionButtons site={site} />
+          </div>
+        </div>
       </div>
 
       {/* Image and Map Section */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Edit2 } from "lucide-react";
+import { Building2, Edit2, MapPin } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -15,17 +15,25 @@ export function HeaderSection({ site, canEdit }) {
   };
 
   return (
-    <div className="flex flex-col space-y-1 p-3 bg-muted/30 border-b">
-      <h2 className="text-lg font-bold text-havelock-blue">{site.site_name}</h2>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center text-muted-foreground">
-          <span className="text-sm">{site.site_address}</span>
+    <div className="p-4 sm:p-6 border-b">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-havelock-blue">
+            <Building2 className="h-5 w-5 flex-shrink-0" />
+            <h1 className="text-2xl sm:text-3xl font-bold">{site.site_name}</h1>
+          </div>
+          <div className="flex items-start gap-2 text-muted-foreground">
+            <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
+            <p className="text-base sm:text-lg">
+              {site.customSiteAddress || site.siteAddress}
+            </p>
+          </div>
         </div>
         {canEdit && (
           <Button
             onClick={handleEditClick}
             size="sm"
-            className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg"
+            className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg w-full sm:w-auto"
           >
             <Edit2 className="h-4 w-4 mr-2" />
             Edit Site
