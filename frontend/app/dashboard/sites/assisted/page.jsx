@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/tooltip";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PageHeader } from "@/components/layout/page-header";
-import { SubmitAssistedSiteForm } from "@/components/sites/submit-assisted-form";
+import { AssistedSiteForm } from "@/components/sites/assisted/assisted-site-form";
 
-export default function SubmitNewSitePage() {
+export default function AssistedSubmissionPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -43,27 +43,27 @@ export default function SubmitNewSitePage() {
 
   return (
     <div className="flex flex-col">
-      <PageHeader title="Submit New Site">
+      <PageHeader title="Submit New Site (Assisted)">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant="outline"
-                onClick={() => router.push("/dashboard/opportunities")}
+                onClick={() => router.push("/dashboard/sites/options")}
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span className="hidden sm:inline-block sm:ml-2">Back</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              <p>Return to opportunities</p>
+              <p>Return to submission options</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto">
-        <SubmitAssistedSiteForm />
+        <AssistedSiteForm />
       </div>
     </div>
   );
