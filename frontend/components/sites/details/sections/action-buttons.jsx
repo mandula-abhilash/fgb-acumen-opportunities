@@ -42,8 +42,7 @@ export function ActionButtons({ site }) {
         className="w-full sm:w-[200px]"
       />
       <Button
-        variant="secondary"
-        className="w-full sm:w-[200px] bg-background hover:bg-accent"
+        className="w-full sm:w-[200px] bg-web-orange hover:bg-web-orange/90 text-white"
         onClick={handleConfirmInterest}
         disabled={isSubmitting}
       >

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useFilters } from "@/contexts/filters-context";
 import { Heart } from "lucide-react";
 
 import { addToShortlist, removeFromShortlist } from "@/lib/api/shortlists";
@@ -16,7 +15,6 @@ export function ShortlistButton({
   onRemove,
 }) {
   const { toast } = useToast();
-  const { filters } = useFilters();
   const [isShortlisted, setIsShortlisted] = useState(initialShortlisted);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,8 +28,7 @@ export function ShortlistButton({
           description: "Removed from shortlist",
         });
 
-        // If showing only shortlisted items, trigger removal callback
-        if (filters.showShortlisted && onRemove) {
+        if (onRemove) {
           onRemove(opportunityId);
         }
       } else {
@@ -57,9 +54,10 @@ export function ShortlistButton({
     <Button
       variant="outline"
       className={cn(
-        "transition-colors",
-        isShortlisted &&
-          "bg-destructive/10 hover:bg-destructive/20 border-destructive/50 hover:border-destructive",
+        "border-2 hover:bg-accent",
+        isShortlisted
+          ? "border-web-orange text-web-orange hover:text-web-orange hover:border-web-orange/90"
+          : "border-muted-foreground/20 hover:border-web-orange hover:text-web-orange",
         className
       )}
       onClick={handleShortlistToggle}
@@ -68,7 +66,7 @@ export function ShortlistButton({
       <Heart
         className={cn(
           "h-4 w-4 mr-2",
-          isShortlisted && "fill-destructive text-destructive"
+          isShortlisted && "fill-web-orange text-web-orange"
         )}
       />
       {isShortlisted ? "Remove from Shortlist" : "Shortlist"}
