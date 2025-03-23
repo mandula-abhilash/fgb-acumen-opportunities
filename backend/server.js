@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import visdakSesamModule from "visdak-sesam";
 import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
 import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
+import assistedSiteRoutes from "./routes/assistedSiteRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import regionsRoutes from "./routes/regionsRoutes.js";
 import lpaRoutes from "./routes/lpaRoutes.js";
@@ -74,6 +75,7 @@ const startServer = async () => {
 
     // Mount the sites routes with updated path
     app.use("/api/live-opportunities", liveOpportunityRoutes);
+    app.use("/api/assisted-sites", assistedSiteRoutes);
 
     // Mount the upload routes
     app.use("/api/upload", uploadRoutes);
