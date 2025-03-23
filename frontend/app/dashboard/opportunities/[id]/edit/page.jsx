@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { ArrowLeft } from "lucide-react";
 
-import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -14,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
 import { PageHeader } from "@/components/layout/page-header";
 import { EditSiteForm } from "@/components/sites/edit/edit-site-form";
 
@@ -22,62 +20,33 @@ export default function EditSitePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const params = useParams();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [site, setSite] = useState(null);
+  const site = router.query?.state?.site;
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
+      return;
     }
-  }, [authLoading, user, router]);
 
-  useEffect(() => {
-    const fetchSite = async () => {
-      try {
-        setLoading(true);
-        const response = await getLiveOpportunitySite(params.id);
-
-        // Check if user has permission to edit this site
-        if (user?.role !== "admin" && user?.id !== response.data.user_id) {
-          toast({
-            variant: "destructive",
-            title: "Access Denied",
-            description: "You don't have permission to edit this site.",
-          });
-          router.push("/dashboard/opportunities");
-          return;
-        }
-        console.log(JSON.stringify(response.data, null, 2));
-        setSite(response.data);
-      } catch (error) {
-        console.error("Error fetching site:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch site details",
-        });
-        router.push("/dashboard/opportunities");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (params.id && user) {
-      fetchSite();
+    // Check if we have site data and user has permission
+    if (site && user && user.role !== "admin" && user.id !== site.user_id) {
+      router.push("/dashboard/opportunities");
+      return;
     }
-  }, [params.id, user, toast, router]);
 
-  if (loading || authLoading) {
+    // If no site data in state, redirect back to view page
+    if (!site) {
+      router.push(`/dashboard/opportunities/${params.id}`);
+      return;
+    }
+  }, [authLoading, user, router, site, params.id]);
+
+  if (authLoading || !user || !site) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <Spinner size="lg" className="text-web-orange" />
       </div>
     );
-  }
-
-  if (!user || !site) {
-    return null;
   }
 
   return (

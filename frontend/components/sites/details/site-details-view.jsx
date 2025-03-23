@@ -9,10 +9,9 @@ import {
   Calendar,
   Clock,
   Edit2,
-  ExternalLink,
   FileText,
   Globe2,
-  GripHorizontal,
+  Heart,
   Home,
   Info,
   Landmark,
@@ -71,6 +70,13 @@ export function SiteDetailsView({ site }) {
     }
   };
 
+  const handleEditClick = () => {
+    // Navigate to edit page with state containing site data
+    router.push(`/dashboard/opportunities/${site.id}/edit`, {
+      state: { site },
+    });
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Section */}
@@ -93,9 +99,7 @@ export function SiteDetailsView({ site }) {
             </div>
             {canEdit && (
               <Button
-                onClick={() =>
-                  router.push(`/dashboard/opportunities/${site.id}/edit`)
-                }
+                onClick={handleEditClick}
                 size="sm"
                 className="bg-web-orange hover:bg-web-orange/90 text-white shadow-lg w-full sm:w-auto"
               >
@@ -108,7 +112,7 @@ export function SiteDetailsView({ site }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <div className="bg-background/40 shadow-md rounded-lg p-4">
               <div className="flex items-center gap-2 text-web-orange mb-2">
-                <GripHorizontal className="h-4 w-4" />
+                <Store className="h-4 w-4" />
                 <h3 className="font-semibold">Opportunity Type</h3>
               </div>
               <Badge variant="outline" className="capitalize">
