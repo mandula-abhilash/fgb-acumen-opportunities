@@ -6,7 +6,6 @@ import {
   Building2,
   FileText,
   Globe2,
-  Heart,
   Home,
   Landmark,
   MapPin,
@@ -154,10 +153,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
                       <ScrollText className="h-4 w-4" />
                       <span className="text-sm">Planning Status</span>
                     </div>
-                    <Badge
-                      variant="outline"
-                      className="border-web-orange text-web-orange mt-1"
-                    >
+                    <Badge variant="outline">
                       {opportunity.planning_status}
                     </Badge>
                   </div>
@@ -167,7 +163,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
                       <Store className="h-4 w-4" />
                       <span className="text-sm">Purchase Stage</span>
                     </div>
-                    <Badge variant="outline mt-1">
+                    <Badge variant="outline">
                       {opportunity.land_purchase_status}
                     </Badge>
                   </div>
@@ -188,46 +184,45 @@ export function OpportunityCard({ opportunity, onRemove }) {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto justify-end">
-              <TooltipProvider>
-                <Tooltip>
-                  <div>
-                    <ShortlistButton
-                      opportunityId={opportunity.id}
-                      isShortlisted={opportunity.is_shortlisted}
-                      onRemove={onRemove}
-                      className="w-full sm:w-[200px]"
-                    />
-                  </div>
-                  <TooltipContent side="bottom">
-                    <p>Add this site to your shortlisted opportunities</p>
-                  </TooltipContent>
-                </Tooltip>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto justify-end">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ShortlistButton
+                        opportunityId={opportunity.id}
+                        isShortlisted={opportunity.is_shortlisted}
+                        onRemove={onRemove}
+                        className="w-full sm:w-[200px]"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>Add this site to your shortlisted opportunities</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      className="w-full sm:w-[200px]"
-                      onClick={handleConfirmInterest}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <Spinner size="sm" className="mr-2" />
-                      ) : (
-                        <MessageSquareMore className="h-4 w-4 mr-2" />
-                      )}
-                      {isSubmitting ? "Confirming..." : "Confirm Interest"}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>We will inform the seller that you are interested</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="w-full sm:w-[200px] bg-web-orange hover:bg-web-orange/90 text-white"
+                        onClick={handleConfirmInterest}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <Spinner size="sm" className="mr-2" />
+                        ) : (
+                          <MessageSquareMore className="h-4 w-4 mr-2" />
+                        )}
+                        {isSubmitting ? "Processing..." : "Confirm Interest"}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>We will inform the seller that you are interested</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
         </div>
