@@ -6,6 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 export function LocationInformation({ site }) {
+  // Function to clean LPA names
+  const cleanLpaName = (lpa) => {
+    return lpa.replace(/ LPA$/, "");
+  };
+
   return (
     <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
       <h2 className="text-xl font-semibold text-havelock-blue mb-4">
@@ -33,7 +38,7 @@ export function LocationInformation({ site }) {
           <div className="flex flex-wrap gap-2">
             {site.lpa_names?.map((lpa) => (
               <Badge key={lpa} variant="secondary" className="text-xs">
-                {lpa}
+                {cleanLpaName(lpa)}
               </Badge>
             ))}
           </div>

@@ -54,6 +54,11 @@ export function OpportunityCard({ opportunity, onRemove }) {
     }
   };
 
+  // Function to clean LPA names
+  const cleanLpaName = (lpa) => {
+    return lpa.replace(/ LPA$/, "");
+  };
+
   return (
     <Card className="p-4 shadow-md">
       <div className="flex flex-col gap-4">
@@ -123,7 +128,8 @@ export function OpportunityCard({ opportunity, onRemove }) {
                       <span className="text-sm">LPA</span>
                     </div>
                     <p className="font-medium text-sm">
-                      {opportunity.lpa_names?.join(", ") || "Not specified"}
+                      {opportunity.lpa_names?.map(cleanLpaName).join(", ") ||
+                        "Not specified"}
                     </p>
                   </div>
 
