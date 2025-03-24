@@ -15,7 +15,7 @@ export function SellerSidebar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const isOpportunitiesPage = pathname.includes("/opportunities");
+  const isOpportunitiesPage = pathname === "/dashboard/opportunities";
 
   const handleViewModeToggle = () => {
     if (!isOpportunitiesPage) {
@@ -30,7 +30,7 @@ export function SellerSidebar({
       <div className="p-4 space-y-4 border-b">
         {/* View Mode Toggle */}
         <Toggle
-          pressed={viewMode === "map"}
+          pressed={viewMode === "map" && isOpportunitiesPage}
           onPressedChange={handleViewModeToggle}
           className="w-full justify-start h-9"
         >
