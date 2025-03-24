@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,21 +14,18 @@ import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
 import { RegionFilter } from "./region-filter";
 
-export function BuyerSidebar({
-  filters,
-  onFilterChange,
-  viewMode,
-  onViewModeChange,
-}) {
+export function BuyerSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
+    useFilters();
   const isOpportunitiesPage = pathname === "/dashboard/opportunities";
 
   const handleViewModeToggle = () => {
     if (!isOpportunitiesPage) {
       router.push("/dashboard/opportunities");
     } else {
-      onViewModeChange();
+      handleViewModeChange();
     }
   };
 
@@ -64,7 +62,7 @@ export function BuyerSidebar({
             id="shortlisted"
             checked={filters.showShortlisted}
             onCheckedChange={(checked) =>
-              onFilterChange("showShortlisted", checked)
+              handleFilterChange("showShortlisted", checked)
             }
             className="h-4 w-4 ml-1"
           />
@@ -83,24 +81,26 @@ export function BuyerSidebar({
 
           <RegionFilter
             value={filters.regions}
-            onChange={(value) => onFilterChange("regions", value)}
+            onChange={(value) => handleFilterChange("regions", value)}
           />
 
           <div className="px-2">
             <PlotsFilter
               value={filters.plots}
-              onChange={(value) => onFilterChange("plots", value)}
+              onChange={(value) => handleFilterChange("plots", value)}
             />
           </div>
 
           <PlanningStatusFilter
             value={filters.planningStatus}
-            onChange={(value) => onFilterChange("planningStatus", value)}
+            onChange={(value) => handleFilterChange("planningStatus", value)}
           />
 
           <LandPurchaseFilter
             value={filters.landPurchaseStatus}
-            onChange={(value) => onFilterChange("landPurchaseStatus", value)}
+            onChange={(value) =>
+              handleFilterChange("landPurchaseStatus", value)
+            }
           />
 
           <div className="px-2 pb-[300px]">
@@ -109,21 +109,25 @@ export function BuyerSidebar({
                 icon={Calendar}
                 label="Start on Site Date"
                 value={filters.startDate}
-                onChange={(value) => onFilterChange("startDate", value)}
+                onChange={(value) => handleFilterChange("startDate", value)}
               />
 
               <DateFilter
                 icon={Timer}
                 label="First Handover Date"
                 value={filters.firstHandoverDate}
-                onChange={(value) => onFilterChange("firstHandoverDate", value)}
+                onChange={(value) =>
+                  handleFilterChange("firstHandoverDate", value)
+                }
               />
 
               <DateFilter
                 icon={Timer}
                 label="Final Handover Date"
                 value={filters.finalHandoverDate}
-                onChange={(value) => onFilterChange("finalHandoverDate", value)}
+                onChange={(value) =>
+                  handleFilterChange("finalHandoverDate", value)
+                }
               />
             </div>
           </div>

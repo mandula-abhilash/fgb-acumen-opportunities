@@ -25,9 +25,7 @@ export default function DashboardLayout({ children }) {
       <FiltersProvider>
         <GoogleMapsProvider>
           <div className="h-[calc(100vh-3.5rem)] flex">
-            <div className="hidden lg:block h-full border-r">
-              <DashboardNav activeTab={getActiveTab()} />
-            </div>
+            <DashboardNav activeTab={getActiveTab()} />
             <main className="flex-1 overflow-y-auto">{children}</main>
           </div>
         </GoogleMapsProvider>

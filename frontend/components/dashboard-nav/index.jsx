@@ -2,15 +2,13 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useFilters } from "@/contexts/filters-context";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { DesktopNav } from "./desktop-nav";
+import { MobileNav } from "./mobile-nav";
 
 export function DashboardNav({ activeTab }) {
   const { user, loading } = useAuth();
-  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
-    useFilters();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,13 +26,13 @@ export function DashboardNav({ activeTab }) {
   }
 
   return (
-    <DesktopNav
-      activeTab={activeTab}
-      role={user.role}
-      filters={filters}
-      onFilterChange={handleFilterChange}
-      viewMode={viewMode}
-      onViewModeChange={handleViewModeChange}
-    />
+    <>
+      <div className="hidden lg:block h-full border-r">
+        <DesktopNav activeTab={activeTab} />
+      </div>
+      <div className="lg:hidden">
+        <MobileNav />
+      </div>
+    </>
   );
 }

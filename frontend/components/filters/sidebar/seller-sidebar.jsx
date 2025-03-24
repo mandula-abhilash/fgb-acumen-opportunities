@@ -1,27 +1,25 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useFilters } from "@/contexts/filters-context";
 import { List, Map } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 
-export function SellerSidebar({
-  filters,
-  onFilterChange,
-  viewMode,
-  onViewModeChange,
-}) {
+export function SellerSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
+    useFilters();
   const isOpportunitiesPage = pathname === "/dashboard/opportunities";
 
   const handleViewModeToggle = () => {
     if (!isOpportunitiesPage) {
       router.push("/dashboard/opportunities");
     } else {
-      onViewModeChange();
+      handleViewModeChange();
     }
   };
 
@@ -58,7 +56,7 @@ export function SellerSidebar({
             id="shortlisted"
             checked={filters.showShortlisted}
             onCheckedChange={(checked) =>
-              onFilterChange("showShortlisted", checked)
+              handleFilterChange("showShortlisted", checked)
             }
             className="h-4 w-4 ml-1"
           />
