@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useFilters } from "@/contexts/filters-context";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { X } from "lucide-react";
 
@@ -13,53 +14,38 @@ export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
+  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
+    useFilters();
 
-  // Close the sidebar when clicking outside of it
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (
-        isOpen &&
-        e.target.closest(".mobile-nav-content") === null &&
-        e.target.closest(".mobile-nav-toggle") === null
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    // Lock body scroll when nav is open
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
-
-  // Determine which sidebar to show based on user role
   const renderSidebar = () => {
     if (user?.role === "seller") {
-      return <SellerSidebar />;
+      return (
+        <SellerSidebar
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          viewMode={viewMode}
+          onViewModeChange={handleViewModeChange}
+        />
+      );
     }
 
-    // Default to buyer view (also used when user.role === "buyer")
-    return <BuyerSidebar />;
+    return (
+      <BuyerSidebar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+      />
+    );
   };
 
   return (
     <div className="lg:hidden">
-      {/* Toggle button */}
       <Button
         variant="ghost"
         size="icon"
-        className="fixed right-4 top-4 z-[60] rounded-full lg:hidden mobile-nav-toggle"
+        className="fixed right-4 top-4 z-[60] rounded-full lg:hidden"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? "Close navigation" : "Open navigation"}
       >
         {isOpen ? (
           <X className="h-5 w-5" />
@@ -82,20 +68,13 @@ export function MobileNav() {
         )}
       </Button>
 
-      {/* Mobile navigation drawer */}
-      <div
-        className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 transition-opacity duration-300 lg:hidden ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div
-          className={`mobile-nav-content fixed top-14 right-0 w-72 h-[calc(100vh-3.5rem)] bg-background border-l shadow-xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
-            isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <div className="pt-4">{renderSidebar()}</div>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50">
+          <div className="fixed top-14 right-0 w-72 h-[calc(100vh-3.5rem)] bg-background border-l shadow-xl overflow-y-auto">
+            <div className="pt-4">{renderSidebar()}</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
