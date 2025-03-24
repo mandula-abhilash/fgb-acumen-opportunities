@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -25,6 +26,14 @@ import { Textarea } from "@/components/ui/textarea";
 export function ResponseSection({ register, setValue, watch, errors }) {
   const initialEOIDate = watch("initialEOIDate");
   const bidSubmissionDate = watch("bidSubmissionDate");
+  const [queriesPhoneValue, setQueriesPhoneValue] = useState("");
+
+  const handlePhoneChange = (e) => {
+    // Only allow numbers, +, -, and spaces
+    const value = e.target.value.replace(/[^\d+\- ]/g, "");
+    setQueriesPhoneValue(value);
+    setValue("queriesContactPhone", value);
+  };
 
   return (
     <Card>
@@ -59,7 +68,7 @@ export function ResponseSection({ register, setValue, watch, errors }) {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={initialEOIDate}
@@ -113,7 +122,7 @@ export function ResponseSection({ register, setValue, watch, errors }) {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={bidSubmissionDate}
@@ -151,7 +160,8 @@ export function ResponseSection({ register, setValue, watch, errors }) {
                 <Input
                   id="queriesContactPhone"
                   placeholder="Phone number"
-                  {...register("queriesContactPhone")}
+                  value={queriesPhoneValue}
+                  onChange={handlePhoneChange}
                   className={
                     errors.queriesContactPhone ? "border-destructive" : ""
                   }

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -11,7 +13,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export function ContactInformation({ register, errors }) {
+export function ContactInformation({ register, errors, setValue }) {
+  const [phoneValue, setPhoneValue] = useState("");
+
+  const handlePhoneChange = (e) => {
+    // Only allow numbers, +, -, and spaces
+    const value = e.target.value.replace(/[^\d+\- ]/g, "");
+    setPhoneValue(value);
+    setValue("contactPhone", value);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -42,8 +53,10 @@ export function ContactInformation({ register, errors }) {
           <Label htmlFor="contactPhone">Phone Number</Label>
           <Input
             id="contactPhone"
-            {...register("contactPhone")}
+            value={phoneValue}
+            onChange={handlePhoneChange}
             className={errors.contactPhone ? "border-destructive" : ""}
+            placeholder="e.g., +44 1234567890"
           />
           {errors.contactPhone && (
             <p className="text-sm text-destructive">

@@ -9,12 +9,12 @@ import { createAssistedSite } from "@/lib/api/assistedSites";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-import { ResponseSection } from "../assisted-form/response-section";
 import { assistedSiteSchema } from "./schema";
 import { BasicInformation } from "./sections/basic-information";
 import { ContactInformation } from "./sections/contact-information";
 import { HowItWorks } from "./sections/how-it-works";
 import { PaymentInformation } from "./sections/payment-information";
+import { ResponseSection } from "./sections/response-section";
 import { SiteLocation } from "./sections/site-location";
 
 export function AssistedSiteForm() {
@@ -125,7 +125,6 @@ export function AssistedSiteForm() {
               register={register}
               errors={errors}
               selectedAddress={selectedAddress}
-              handleSitePlanUpload={handleSitePlanUpload}
             />
           </div>
 
@@ -150,7 +149,11 @@ export function AssistedSiteForm() {
 
         {/* Contact Information and Payment Information */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <ContactInformation register={register} errors={errors} />
+          <ContactInformation
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
 
           <PaymentInformation
             manageBidsProcess={manageBidsProcess}
