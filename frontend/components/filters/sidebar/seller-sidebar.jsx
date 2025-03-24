@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Heart, List, Map } from "lucide-react";
+import { List, Map } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -63,10 +63,7 @@ export function SellerSidebar({
             className="h-4 w-4 ml-1"
           />
           <Label htmlFor="shortlisted" className="text-sm cursor-pointer">
-            <div className="flex items-center">
-              <Heart className="h-4 w-4 mr-2" />
-              Show Shortlisted Only
-            </div>
+            <div className="flex items-center">Show Shortlisted Only</div>
           </Label>
         </div>
       </div>

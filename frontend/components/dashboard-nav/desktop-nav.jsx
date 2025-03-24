@@ -21,7 +21,7 @@ export function DesktopNav({
     router.push("/dashboard/sites/options");
   };
 
-  if (user?.role === "admin") {
+  if (user?.role === "buyer") {
     return (
       <BuyerSidebar
         viewMode={viewMode}
