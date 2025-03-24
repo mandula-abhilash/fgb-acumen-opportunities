@@ -22,7 +22,7 @@ export function DesktopNav({ activeTab, filters, onFilterChange }) {
     router.push("/dashboard/sites/options");
   };
 
-  if (user?.role === "admin") {
+  if (user?.role === "buyer") {
     return (
       <BuyerSidebar
         viewMode={viewMode}
@@ -35,7 +35,7 @@ export function DesktopNav({ activeTab, filters, onFilterChange }) {
     );
   }
 
-  if (user?.role === "seller") {
+  if (user?.role === "admin") {
     return (
       <SellerSidebar
         filters={filters}
