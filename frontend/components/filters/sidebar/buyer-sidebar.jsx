@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,18 +13,21 @@ import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
 import { RegionFilter } from "./region-filter";
 
-export function BuyerSidebar({ filters, onFilterChange }) {
-  const { viewMode, handleViewModeChange } = useFilters();
+export function BuyerSidebar({
+  filters,
+  onFilterChange,
+  viewMode,
+  onViewModeChange,
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const isOpportunitiesPage = pathname.includes("/opportunities");
 
   const handleViewModeToggle = () => {
     if (!isOpportunitiesPage) {
-      handleViewModeChange("list"); // Force list view when navigating
       router.push("/dashboard/opportunities");
     } else {
-      handleViewModeChange(); // Toggle between views when on opportunities page
+      onViewModeChange();
     }
   };
 

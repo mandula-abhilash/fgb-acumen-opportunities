@@ -9,7 +9,8 @@ import { DesktopNav } from "./desktop-nav";
 
 export function DashboardNav({ activeTab }) {
   const { user, loading } = useAuth();
-  const { filters, handleFilterChange } = useFilters();
+  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
+    useFilters();
   const router = useRouter();
 
   useEffect(() => {
@@ -32,6 +33,8 @@ export function DashboardNav({ activeTab }) {
       role={user.role}
       filters={filters}
       onFilterChange={handleFilterChange}
+      viewMode={viewMode}
+      onViewModeChange={handleViewModeChange}
     />
   );
 }

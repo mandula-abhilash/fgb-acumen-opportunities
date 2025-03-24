@@ -1,20 +1,28 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useFilters } from "@/contexts/filters-context";
+import { usePathname, useRouter } from "next/navigation";
 import { Heart, List, Map } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 
-export function SellerSidebar({ onSubmitNewSite }) {
+export function SellerSidebar({
+  filters,
+  onFilterChange,
+  viewMode,
+  onViewModeChange,
+}) {
   const router = useRouter();
-  const { viewMode, handleViewModeChange, filters, handleFilterChange } =
-    useFilters();
+  const pathname = usePathname();
+  const isOpportunitiesPage = pathname.includes("/opportunities");
 
   const handleViewModeToggle = () => {
-    handleViewModeChange();
+    if (!isOpportunitiesPage) {
+      router.push("/dashboard/opportunities");
+    } else {
+      onViewModeChange();
+    }
   };
 
   return (
@@ -26,7 +34,12 @@ export function SellerSidebar({ onSubmitNewSite }) {
           onPressedChange={handleViewModeToggle}
           className="w-full justify-start h-9"
         >
-          {viewMode === "list" ? (
+          {!isOpportunitiesPage ? (
+            <>
+              <List className="h-4 w-4 mr-2" />
+              Live Opportunities
+            </>
+          ) : viewMode === "list" ? (
             <>
               <Map className="h-4 w-4 mr-2" />
               Explore on Map
@@ -45,12 +58,15 @@ export function SellerSidebar({ onSubmitNewSite }) {
             id="shortlisted"
             checked={filters.showShortlisted}
             onCheckedChange={(checked) =>
-              handleFilterChange("showShortlisted", checked)
+              onFilterChange("showShortlisted", checked)
             }
             className="h-4 w-4 ml-1"
           />
           <Label htmlFor="shortlisted" className="text-sm cursor-pointer">
-            <div className="flex items-center">Show Shortlisted Only</div>
+            <div className="flex items-center">
+              <Heart className="h-4 w-4 mr-2" />
+              Show Shortlisted Only
+            </div>
           </Label>
         </div>
       </div>
