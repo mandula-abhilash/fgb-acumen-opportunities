@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
-import { Calendar, List, Map, Timer } from "lucide-react";
+import { Calendar, Check, List, Map, Timer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -60,16 +60,26 @@ export function BuyerSidebar() {
         {/* Shortlisted Toggle */}
         <div className="flex items-center space-x-2 px-2 mt-4">
           <div className="flex items-center space-x-2">
-            <Checkbox
-              id="shortlisted"
-              checked={filters.showShortlisted}
-              onCheckedChange={(checked) =>
-                handleFilterChange("showShortlisted", checked)
+            <button
+              onClick={() =>
+                handleFilterChange("showShortlisted", !filters.showShortlisted)
               }
-              className="h-4 w-4 ml-1 data-[state=checked]:bg-web-orange data-[state=checked]:text-primary-foreground"
-            />
+              className={`h-4 w-4 ml-1 rounded flex items-center justify-center ${
+                filters.showShortlisted
+                  ? "bg-web-orange"
+                  : "border border-gray-300"
+              }`}
+              aria-checked={filters.showShortlisted}
+              role="checkbox"
+            >
+              {filters.showShortlisted && (
+                <Check className="h-3 w-3 text-white" />
+              )}
+            </button>
             <Label
-              htmlFor="shortlisted"
+              onClick={() =>
+                handleFilterChange("showShortlisted", !filters.showShortlisted)
+              }
               className="text-sm cursor-pointer select-none"
             >
               Show Shortlisted Only
