@@ -111,7 +111,7 @@ export function Header() {
                     <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                       <UserControls
                         className="flex-col gap-2"
-                        showLabels={false}
+                        showLabels={true}
                       />
                     </div>
                   </FiltersProvider>

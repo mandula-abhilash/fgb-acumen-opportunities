@@ -26,7 +26,7 @@ export function UserControls({ className, showLabels = true }) {
       >
         <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
         <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        {showLabels && <span className="lg:inline-block">Toggle Theme</span>}
+        {showLabels && <span>Toggle Theme</span>}
       </Button>
 
       <Link href="/dashboard/profile" className="w-full">
@@ -36,7 +36,7 @@ export function UserControls({ className, showLabels = true }) {
           className="flex items-center gap-2 w-full justify-start"
         >
           <User className="h-4 w-4" />
-          {showLabels && <span className="lg:inline-block">View Profile</span>}
+          {showLabels && <span>View Profile</span>}
         </Button>
       </Link>
 
@@ -47,7 +47,7 @@ export function UserControls({ className, showLabels = true }) {
         className="flex items-center gap-2 w-full justify-start"
       >
         <CirclePower className="h-4 w-4" />
-        {showLabels && <span className="lg:inline-block">Logout</span>}
+        {showLabels && <span>Logout</span>}
       </Button>
     </div>
   );
