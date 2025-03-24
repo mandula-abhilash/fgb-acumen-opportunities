@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { format } from "date-fns";
 import {
   Building2,
@@ -8,20 +7,16 @@ import {
   Globe2,
   Home,
   MapPin,
-  MessageSquareMore,
   ScrollText,
   Store,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShortlistButton } from "@/components/opportunities/shortlist-button";
+
+import { ActionButtons } from "../sites/details/sections/action-buttons";
 
 export function OpportunityDetails({ opportunity }) {
-  const { user } = useAuth();
-  const canConfirmInterest = user?.role === "admin" || user?.role === "buyer";
-
   if (!opportunity) return null;
 
   const formatDate = (date) => {
@@ -351,19 +346,7 @@ export function OpportunityDetails({ opportunity }) {
 
       {/* Action Buttons - Fixed at bottom */}
       <div className="p-3 border-t bg-background/95 backdrop-blur-sm">
-        <div className="flex gap-2">
-          <ShortlistButton
-            opportunityId={opportunity.id}
-            isShortlisted={opportunity.is_shortlisted}
-            className="flex-1 border hover:bg-web-orange/5 h-8 text-sm"
-          />
-          {canConfirmInterest && (
-            <Button className="flex-1 bg-web-orange hover:bg-web-orange/90 text-white h-8 text-sm">
-              <MessageSquareMore className="h-3 w-3 mr-1.5" />
-              Confirm Interest
-            </Button>
-          )}
-        </div>
+        <ActionButtons opportunity={opportunity} className="flex gap-2" />
       </div>
     </div>
   );

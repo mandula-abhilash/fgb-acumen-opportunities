@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useFilters } from "@/contexts/filters-context";
-import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import {
   Building2,
   FileText,
@@ -11,54 +9,19 @@ import {
   Home,
   Landmark,
   MapPin,
-  MessageSquareMore,
   ScrollText,
   Store,
   Users,
 } from "lucide-react";
 
-import { expressInterest } from "@/lib/api/liveOpportunities";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
-import { ShortlistButton } from "@/components/opportunities/shortlist-button";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+import { ActionButtons } from "../sites/details/sections/action-buttons";
 
 export function OpportunityCard({ opportunity, onRemove }) {
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { filters } = useFilters();
-  const canConfirmInterest = user?.role === "admin" || user?.role === "buyer";
-
-  const handleConfirmInterest = async () => {
-    try {
-      setIsSubmitting(true);
-      await expressInterest(opportunity.id);
-      toast({
-        title: "Success",
-        description:
-          "Your interest has been registered. The site owner will be notified.",
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description:
-          error.message || "Failed to register interest. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   // Function to clean LPA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
@@ -206,41 +169,11 @@ export function OpportunityCard({ opportunity, onRemove }) {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4 mt-auto justify-end">
                 <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ShortlistButton
-                        opportunityId={opportunity.id}
-                        isShortlisted={opportunity.is_shortlisted}
-                        onRemove={handleShortlistRemove}
-                        className="w-full sm:w-[200px]"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>Add this site to your shortlisted opportunities</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  {canConfirmInterest && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          className="w-full sm:w-[200px] bg-web-orange hover:bg-web-orange/90 text-white"
-                          onClick={handleConfirmInterest}
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? (
-                            <Spinner size="sm" className="mr-2" />
-                          ) : (
-                            <MessageSquareMore className="h-4 w-4 mr-2" />
-                          )}
-                          {isSubmitting ? "Processing..." : "Confirm Interest"}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        <p>We will inform the seller that you are interested</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
+                  <ActionButtons
+                    opportunity={opportunity}
+                    onRemove={handleShortlistRemove}
+                    className="flex flex-col sm:flex-row gap-3"
+                  />
                 </TooltipProvider>
               </div>
             </div>
