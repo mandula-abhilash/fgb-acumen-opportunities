@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useFilters } from "@/contexts/filters-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import {
   Building2,
   FileText,
@@ -32,8 +33,10 @@ import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 
 export function OpportunityCard({ opportunity, onRemove }) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { filters } = useFilters();
+  const canConfirmInterest = user?.role === "admin" || user?.role === "buyer";
 
   const handleConfirmInterest = async () => {
     try {
@@ -217,25 +220,27 @@ export function OpportunityCard({ opportunity, onRemove }) {
                     </TooltipContent>
                   </Tooltip>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        className="w-full sm:w-[200px] bg-web-orange hover:bg-web-orange/90 text-white"
-                        onClick={handleConfirmInterest}
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <Spinner size="sm" className="mr-2" />
-                        ) : (
-                          <MessageSquareMore className="h-4 w-4 mr-2" />
-                        )}
-                        {isSubmitting ? "Processing..." : "Confirm Interest"}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>We will inform the seller that you are interested</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  {canConfirmInterest && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          className="w-full sm:w-[200px] bg-web-orange hover:bg-web-orange/90 text-white"
+                          onClick={handleConfirmInterest}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? (
+                            <Spinner size="sm" className="mr-2" />
+                          ) : (
+                            <MessageSquareMore className="h-4 w-4 mr-2" />
+                          )}
+                          {isSubmitting ? "Processing..." : "Confirm Interest"}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        <p>We will inform the seller that you are interested</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
                 </TooltipProvider>
               </div>
             </div>
