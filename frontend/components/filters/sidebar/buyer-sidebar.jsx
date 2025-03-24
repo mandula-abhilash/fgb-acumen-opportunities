@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";

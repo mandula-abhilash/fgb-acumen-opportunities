@@ -3,47 +3,31 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FiltersProvider } from "@/contexts/filters-context";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { CirclePower, Menu, User } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { MobileNav } from "@/components/dashboard-nav/mobile-nav";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { BuyerSidebar } from "@/components/filters/sidebar/buyer-sidebar";
+import { SellerSidebar } from "@/components/filters/sidebar/seller-sidebar";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
-import { ThemeToggle } from "@/components/theme-toggle";
+
+import { UserControls } from "./user-controls";
 
 export function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout, loading } = useAuth();
+  const { user, loading } = useAuth();
   const isLoggedIn = !!user;
+  const isDashboardPage = pathname.startsWith("/dashboard");
 
-  const getActiveTab = () => {
-    if (pathname.includes("/opportunities")) return "live-opportunities";
-    if (pathname.includes("/requests")) return "my-requests";
-    if (pathname.includes("/profile")) return "profile";
-    if (pathname.includes("/explore")) return "explore-map";
-    if (pathname.includes("/shortlisted")) return "shortlisted";
-    if (pathname.includes("/sites/new")) return "submit-site";
-    return "live-opportunities";
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    setIsOpen(false);
+  const renderSidebar = () => {
+    if (user?.role === "seller") {
+      return <SellerSidebar />;
+    }
+    return <BuyerSidebar />;
   };
 
   // Don't show auth buttons while loading
@@ -59,7 +43,6 @@ export function Header() {
               <LogoWhite />
             </div>
           </Link>
-          <ThemeToggle />
         </div>
       </header>
     );
@@ -81,50 +64,11 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-2">
-          <ThemeToggle />
+        <div className="hidden lg:flex items-center">
           {isLoggedIn ? (
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/dashboard/profile">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <User className="h-5 w-5" />
-                        <span className="sr-only">Profile</span>
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Profile</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      onClick={handleLogout}
-                    >
-                      <CirclePower className="h-5 w-5" />
-                      <span className="sr-only">Logout</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Logout</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </>
+            <UserControls showLabels={true} />
           ) : (
-            <>
+            <div className="flex items-center gap-3">
               <Link href="/login">
                 <Button variant="ghost">Login</Button>
               </Link>
@@ -133,56 +77,59 @@ export function Header() {
                   Register
                 </Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Mobile Navigation */}
-        <div className="md:hidden flex items-center space-x-2">
-          <ThemeToggle />
+        {/* Mobile/Tablet Navigation */}
+        <div className="lg:hidden">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <SheetTitle>Navigation Menu</SheetTitle>
-              <SheetDescription>
-                Access your account and navigation options
-              </SheetDescription>
-              <nav className="flex flex-col space-y-4 mt-8">
+              )}
+              <span className="sr-only">
+                {isOpen ? "Close menu" : "Open menu"}
+              </span>
+            </Button>
+            <SheetContent side="right" className="w-72 p-0">
+              <div className="flex flex-col h-full">
                 {isLoggedIn ? (
-                  <>
-                    <MobileNav
-                      activeTab={getActiveTab()}
-                      onClose={() => setIsOpen(false)}
-                    />
-                    <Button
-                      variant="ghost"
-                      className="justify-start"
-                      onClick={handleLogout}
-                    >
-                      <CirclePower className="h-5 w-5 mr-2" />
-                      Logout
-                    </Button>
-                  </>
+                  <FiltersProvider>
+                    {isDashboardPage && (
+                      <div className="flex-1 overflow-y-auto">
+                        {renderSidebar()}
+                      </div>
+                    )}
+                    <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                      <UserControls
+                        className="flex-col gap-2"
+                        showLabels={false}
+                      />
+                    </div>
+                  </FiltersProvider>
                 ) : (
-                  <>
-                    <Link href="/login">
+                  <div className="p-4 flex flex-col gap-2">
+                    <Link href="/login" className="w-full">
                       <Button variant="ghost" className="w-full justify-start">
                         Login
                       </Button>
                     </Link>
-                    <Link href="/register">
+                    <Link href="/register" className="w-full">
                       <Button className="w-full justify-start bg-web-orange hover:bg-web-orange/90 text-white">
                         Register
                       </Button>
                     </Link>
-                  </>
+                  </div>
                 )}
-              </nav>
+              </div>
             </SheetContent>
           </Sheet>
         </div>

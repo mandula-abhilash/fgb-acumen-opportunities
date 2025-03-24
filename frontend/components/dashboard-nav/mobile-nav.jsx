@@ -52,12 +52,12 @@ export function MobileNav() {
   };
 
   return (
-    <>
+    <div className="lg:hidden">
       {/* Toggle button */}
       <Button
         variant="ghost"
         size="icon"
-        className="fixed right-4 top-4 z-50 rounded-full md:hidden mobile-nav-toggle"
+        className="fixed right-4 top-4 z-[60] rounded-full lg:hidden mobile-nav-toggle"
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? "Close navigation" : "Open navigation"}
       >
@@ -84,18 +84,18 @@ export function MobileNav() {
 
       {/* Mobile navigation drawer */}
       <div
-        className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 transition-opacity duration-300 lg:hidden ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
         <div
-          className={`mobile-nav-content fixed top-0 right-0 w-72 h-full bg-background border-l shadow-xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+          className={`mobile-nav-content fixed top-14 right-0 w-72 h-[calc(100vh-3.5rem)] bg-background border-l shadow-xl transform transition-transform duration-300 ease-in-out overflow-y-auto ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          {renderSidebar()}
+          <div className="pt-4">{renderSidebar()}</div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
