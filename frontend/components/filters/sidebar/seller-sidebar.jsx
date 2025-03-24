@@ -23,13 +23,6 @@ export function SellerSidebar() {
     }
   };
 
-  // Create a specific handler for the shortlist checkbox
-  const handleShortlistedChange = (checked) => {
-    // Convert to boolean if needed (as checked might come as "indeterminate")
-    const newValue = checked === true;
-    handleFilterChange("showShortlisted", newValue);
-  };
-
   return (
     <div className="w-72 h-full flex flex-col">
       <div className="p-4 space-y-4 border-b">
@@ -61,15 +54,16 @@ export function SellerSidebar() {
         <div className="flex items-center space-x-2 px-2">
           <div className="flex items-center space-x-2">
             <Checkbox
-              id="shortlisted"
+              id="shortlisted-mobile"
               checked={filters.showShortlisted}
-              onCheckedChange={handleShortlistedChange}
-              className="h-4 w-4 ml-1"
+              onCheckedChange={(checked) =>
+                handleFilterChange("showShortlisted", checked)
+              }
+              className="h-4 w-4 ml-1 data-[state=checked]:bg-web-orange data-[state=checked]:text-primary-foreground"
             />
             <Label
-              htmlFor="shortlisted"
+              htmlFor="shortlisted-mobile"
               className="text-sm cursor-pointer select-none"
-              onClick={() => handleShortlistedChange(!filters.showShortlisted)}
             >
               Show Shortlisted Only
             </Label>
