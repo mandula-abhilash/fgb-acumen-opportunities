@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useFilters } from "@/contexts/filters-context";
 import {
   Building2,
   FileText,
@@ -32,6 +33,7 @@ import { ShortlistButton } from "@/components/opportunities/shortlist-button";
 export function OpportunityCard({ opportunity, onRemove }) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { filters } = useFilters();
 
   const handleConfirmInterest = async () => {
     try {
@@ -57,6 +59,13 @@ export function OpportunityCard({ opportunity, onRemove }) {
   // Function to clean LPA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
+  };
+
+  const handleShortlistRemove = (opportunityId) => {
+    // Only remove from view if "Shortlisted Only" filter is active
+    if (filters.showShortlisted && onRemove) {
+      onRemove(opportunityId);
+    }
   };
 
   return (
@@ -199,7 +208,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
                       <ShortlistButton
                         opportunityId={opportunity.id}
                         isShortlisted={opportunity.is_shortlisted}
-                        onRemove={onRemove}
+                        onRemove={handleShortlistRemove}
                         className="w-full sm:w-[200px]"
                       />
                     </TooltipTrigger>

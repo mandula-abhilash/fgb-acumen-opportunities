@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { Heart } from "lucide-react";
 
 import { addToShortlist, removeFromShortlist } from "@/lib/api/shortlists";
@@ -8,12 +8,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-export function ShortlistButton({
-  opportunityId,
-  isShortlisted: initialShortlisted = false,
-  className,
-  onRemove,
-}) {
+const ShortlistButton = forwardRef(function ShortlistButton(
+  {
+    opportunityId,
+    isShortlisted: initialShortlisted = false,
+    className,
+    onRemove,
+  },
+  ref
+) {
   const { toast } = useToast();
   const [isShortlisted, setIsShortlisted] = useState(initialShortlisted);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +55,7 @@ export function ShortlistButton({
 
   return (
     <Button
+      ref={ref}
       variant="outline"
       className={cn(
         "border-2 hover:bg-accent",
@@ -72,4 +76,6 @@ export function ShortlistButton({
       {isShortlisted ? "Remove from Shortlist" : "Shortlist"}
     </Button>
   );
-}
+});
+
+export { ShortlistButton };
