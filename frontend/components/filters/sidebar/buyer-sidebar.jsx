@@ -4,13 +4,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
 import { Calendar, List, Map, Timer } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
-import { DateFilter } from "@/components/filters/date-filter";
-import { PlotsFilter } from "@/components/filters/plots-filter";
+import { DateFilter } from "@/components/filters/sidebar/date-filter";
+import { PlotsFilter } from "@/components/filters/sidebar/plots-filter";
 
 import { LandPurchaseFilter } from "./land-purchase-filter";
 import { PlanningStatusFilter } from "./planning-status-filter";
