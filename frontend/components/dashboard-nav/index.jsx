@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { DesktopNav } from "./desktop-nav";
-import { MobileNav } from "./mobile-nav";
 
 const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 const log = {
@@ -36,12 +35,6 @@ export function DashboardNav() {
       {/* Desktop Navigation */}
       <div className="hidden lg:block h-full border-r">
         <DesktopNav />
-      </div>
-
-      {/* Mobile Navigation */}
-      <div className="block lg:hidden h-full border-r">
-        {/* <MobileNav activeTab={activeTab} /> */}
-        {/* <DesktopNav activeTab={activeTab} /> */}
       </div>
     </>
   );

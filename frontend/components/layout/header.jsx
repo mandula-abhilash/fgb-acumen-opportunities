@@ -68,7 +68,7 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile/Tablet Navigation */}
+        {/* Mobile Navigation */}
         <div className="lg:hidden">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <Button
@@ -90,7 +90,9 @@ export function Header() {
               <div className="flex flex-col h-full">
                 {isLoggedIn ? (
                   <>
-                    <MobileNav />
+                    <div className="flex-1 overflow-y-auto">
+                      <MobileNav />
+                    </div>
                     <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                       <UserControls
                         className="flex-col gap-2"
