@@ -3,6 +3,12 @@ import db from "../config/db.js";
 import { UserModel } from "../models/User.js";
 import { sendInterestNotification } from "../utils/ses.js";
 
+// Helper function to format date parameter
+const formatDateParam = (dateStr) => {
+  if (!dateStr) return null;
+  return new Date(dateStr).toISOString().split("T")[0];
+};
+
 // @desc    Create a new opportunity
 // @route   POST /api/live-opportunities
 // @access  Private
@@ -166,9 +172,6 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     showShortlisted,
   } = req.query;
 
-  // Parse regions from query string
-  const selectedRegions = regions ? regions.split(",") : [];
-
   // Build the base query
   let query = `
     WITH shortlisted AS (
@@ -219,13 +222,14 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     )`);
   }
 
-  // Add region filter if regions are selected
-  if (selectedRegions.length > 0) {
+  // Add region filter
+  if (regions) {
+    const selectedRegions = regions.split(",");
     conditions.push(`o.region && $${params.length + 1}::text[]`);
     params.push(selectedRegions);
   }
 
-  // Add plots filter based on mode
+  // Add plots filter
   if (plotsMode) {
     switch (plotsMode) {
       case "between":
