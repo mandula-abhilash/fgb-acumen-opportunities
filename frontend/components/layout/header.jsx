@@ -93,7 +93,7 @@ export function Header() {
             </Button>
             <SheetContent side="right" className="w-72 p-0">
               <SheetHeader className="px-4 py-2">
-                <SheetTitle>Navigation</SheetTitle>
+                <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col h-full">
                 {isLoggedIn ? (

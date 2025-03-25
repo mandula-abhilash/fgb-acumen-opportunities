@@ -32,7 +32,7 @@ export function BuyerSidebar() {
 
   return (
     <div className="w-72 h-full flex flex-col">
-      <div className="p-4 border-b pt-14 lg:pt-4">
+      <div className="p-4 border-b">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map" && isOpportunitiesPage}
