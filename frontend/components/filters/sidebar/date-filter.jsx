@@ -130,12 +130,14 @@ export function DateFilter({
         </CollapsibleTrigger>
 
         {isFilterActive() && !isOpen && (
-          <div className="flex items-center gap-2 px-6 py-1 bg-muted/50 rounded-md">
-            <span className="flex-1 text-sm">{getFilterLabel()}</span>
+          <div className="flex items-center gap-2 px-6 py-1 bg-muted/100 rounded-md group transition-colors hover:bg-muted">
+            <span className="flex-1 text-sm font-medium group-hover:text-havelock-blue transition-colors">
+              {getFilterLabel()}
+            </span>
             <Button
               variant="ghost"
               size="sm"
-              className="h-6 w-6 p-0 hover:bg-muted"
+              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
               onClick={handleEdit}
             >
               <Pencil className="h-3 w-3" />
@@ -144,7 +146,7 @@ export function DateFilter({
             <Button
               variant="ghost"
               size="sm"
-              className="h-6 w-6 p-0 hover:bg-muted"
+              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
               onClick={handleClearFilter}
             >
               <X className="h-4 w-4" />
