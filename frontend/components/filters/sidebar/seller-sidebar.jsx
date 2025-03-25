@@ -25,7 +25,7 @@ export function SellerSidebar() {
 
   return (
     <div className="w-72 h-full flex flex-col">
-      <div className="p-4 space-y-4 border-b">
+      <div className="p-4 space-y-4 border-b pt-14 lg:pt-4">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map" && isOpportunitiesPage}
