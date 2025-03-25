@@ -59,7 +59,7 @@ export function BuyerSidebar() {
 
         {/* Shortlisted Toggle */}
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 px-3">
             <button
               onClick={() =>
                 handleFilterChange("showShortlisted", !filters.showShortlisted)
