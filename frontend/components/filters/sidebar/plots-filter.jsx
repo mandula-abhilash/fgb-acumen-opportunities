@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Building2, X } from "lucide-react";
+import { Building2, Pencil, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,8 +26,19 @@ const modes = [
 ];
 
 export function PlotsFilter({ value = {}, onChange }) {
+  // Define isFilterActive before using it in useState
+  const isFilterActive = (val = value) => {
+    return (
+      val &&
+      val.mode &&
+      ((val.mode === "between" && val.min && val.max) ||
+        (["more-than", "less-than"].includes(val.mode) && val.single))
+    );
+  };
+
   const [localValue, setLocalValue] = useState(value);
   const [isDirty, setIsDirty] = useState(false);
+  const [isOpen, setIsOpen] = useState(!isFilterActive(value));
 
   const handleModeChange = (mode) => {
     setLocalValue({ mode, min: "", max: "", single: "" });
@@ -48,12 +64,20 @@ export function PlotsFilter({ value = {}, onChange }) {
 
     onChange(filterValue);
     setIsDirty(false);
+    setIsOpen(false);
   };
 
-  const handleClearFilter = () => {
+  const handleClearFilter = (e) => {
+    e.stopPropagation();
     setLocalValue({});
     setIsDirty(false);
     onChange({});
+    setIsOpen(true);
+  };
+
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    setIsOpen(true);
   };
 
   const isValid = () => {
@@ -74,89 +98,116 @@ export function PlotsFilter({ value = {}, onChange }) {
     return false;
   };
 
-  const isFilterActive = () => {
-    return (
-      value &&
-      value.mode &&
-      ((value.mode === "between" && value.min && value.max) ||
-        (["more-than", "less-than"].includes(value.mode) && value.single))
-    );
+  const getFilterLabel = () => {
+    if (!isFilterActive()) return null;
+
+    if (value.mode === "between") {
+      return `Between ${value.min} and ${value.max} plots`;
+    } else if (value.mode === "more-than") {
+      return `More than ${value.single} plots`;
+    } else if (value.mode === "less-than") {
+      return `Less than ${value.single} plots`;
+    }
   };
 
   return (
-    <div className="space-y-2 px-2">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2 flex-1">
-          <Building2 className="h-4 w-4" />
-          <Label className="text-sm font-medium">Number of Plots</Label>
-          {isFilterActive() && (
-            <div className="h-2 w-2 rounded-full bg-havelock-blue" />
-          )}
-        </div>
-        {isFilterActive() && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0 hover:bg-muted"
-            onClick={handleClearFilter}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Clear filter</span>
-          </Button>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="space-y-2 px-2">
+        <CollapsibleTrigger asChild>
+          <div className="flex items-center gap-2 cursor-pointer">
+            <div className="flex items-center gap-2 flex-1">
+              <Building2 className="h-4 w-4" />
+              <Label className="text-sm font-medium flex-1">
+                Number of Plots
+              </Label>
+              {isFilterActive() && (
+                <div className="h-2 w-2 rounded-full bg-havelock-blue" />
+              )}
+            </div>
+          </div>
+        </CollapsibleTrigger>
+
+        {isFilterActive() && !isOpen && (
+          <div className="flex items-center gap-2 px-6 py-1 bg-muted/50 rounded-md">
+            <span className="flex-1 text-sm">{getFilterLabel()}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 hover:bg-muted"
+              onClick={handleEdit}
+            >
+              <Pencil className="h-3 w-3" />
+              <span className="sr-only">Edit filter</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 hover:bg-muted"
+              onClick={handleClearFilter}
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Clear filter</span>
+            </Button>
+          </div>
         )}
+
+        <CollapsibleContent>
+          <div className="space-y-2 pt-2">
+            <Select value={localValue.mode} onValueChange={handleModeChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select filter type" />
+              </SelectTrigger>
+              <SelectContent>
+                {modes.map((mode) => (
+                  <SelectItem key={mode.value} value={mode.value}>
+                    {mode.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {localValue.mode === "between" && (
+              <div className="space-y-2">
+                <Input
+                  type="number"
+                  placeholder="Minimum plots"
+                  value={localValue.min || ""}
+                  onChange={(e) => handleValueChange("min", e.target.value)}
+                  min="0"
+                />
+                <Input
+                  type="number"
+                  placeholder="Maximum plots"
+                  value={localValue.max || ""}
+                  onChange={(e) => handleValueChange("max", e.target.value)}
+                  min="0"
+                />
+              </div>
+            )}
+
+            {(localValue.mode === "more-than" ||
+              localValue.mode === "less-than") && (
+              <Input
+                type="number"
+                placeholder={`${localValue.mode === "more-than" ? "Minimum" : "Maximum"} plots`}
+                value={localValue.single || ""}
+                onChange={(e) => handleValueChange("single", e.target.value)}
+                min="0"
+              />
+            )}
+
+            {localValue.mode && (
+              <Button
+                onClick={handleApplyFilter}
+                disabled={!isValid() || !isDirty}
+                className="w-full mt-2 bg-web-orange hover:bg-web-orange/90 text-white"
+              >
+                Apply Filter
+              </Button>
+            )}
+          </div>
+        </CollapsibleContent>
       </div>
-
-      <Select value={localValue.mode} onValueChange={handleModeChange}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select filter type" />
-        </SelectTrigger>
-        <SelectContent>
-          {modes.map((mode) => (
-            <SelectItem key={mode.value} value={mode.value}>
-              {mode.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {localValue.mode === "between" && (
-        <div className="space-y-2">
-          <Input
-            type="number"
-            placeholder="Minimum plots"
-            value={localValue.min || ""}
-            onChange={(e) => handleValueChange("min", e.target.value)}
-            min="0"
-          />
-          <Input
-            type="number"
-            placeholder="Maximum plots"
-            value={localValue.max || ""}
-            onChange={(e) => handleValueChange("max", e.target.value)}
-            min="0"
-          />
-        </div>
-      )}
-
-      {(localValue.mode === "more-than" || localValue.mode === "less-than") && (
-        <Input
-          type="number"
-          placeholder={`${localValue.mode === "more-than" ? "Minimum" : "Maximum"} plots`}
-          value={localValue.single || ""}
-          onChange={(e) => handleValueChange("single", e.target.value)}
-          min="0"
-        />
-      )}
-
-      {localValue.mode && (
-        <Button
-          onClick={handleApplyFilter}
-          disabled={!isValid() || !isDirty}
-          className="w-full mt-2 bg-web-orange hover:bg-web-orange/90 text-white"
-        >
-          Apply Filter
-        </Button>
-      )}
-    </div>
+    </Collapsible>
   );
 }
