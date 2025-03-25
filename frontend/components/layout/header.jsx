@@ -6,7 +6,12 @@ import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
 
@@ -87,6 +92,9 @@ export function Header() {
               </span>
             </Button>
             <SheetContent side="right" className="w-72 p-0">
+              <SheetHeader className="px-4 py-2">
+                <SheetTitle>Navigation</SheetTitle>
+              </SheetHeader>
               <div className="flex flex-col h-full">
                 {isLoggedIn ? (
                   <>
