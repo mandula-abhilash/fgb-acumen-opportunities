@@ -45,14 +45,14 @@ export function ActionButtons({ opportunity, onRemove, className }) {
 
   return (
     <TooltipProvider>
-      <div className={className}>
+      <div className={`flex justify-end gap-4 ${className}`}>
         <Tooltip>
           <TooltipTrigger asChild>
             <ShortlistButton
               opportunityId={opportunity.id}
               isShortlisted={opportunity.is_shortlisted}
               onRemove={onRemove}
-              className="flex-1 min-w-[200px] border hover:bg-web-orange/5 h-10 text-sm"
+              className="min-w-[200px] border hover:bg-web-orange/5 h-10 text-sm"
             />
           </TooltipTrigger>
           <TooltipContent side="bottom">
@@ -64,7 +64,7 @@ export function ActionButtons({ opportunity, onRemove, className }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                className="flex-1 min-w-[200px] bg-web-orange hover:bg-web-orange/90 text-white h-10 text-sm"
+                className="min-w-[200px] bg-web-orange hover:bg-web-orange/90 text-white h-10 text-sm"
                 onClick={handleConfirmInterest}
                 disabled={isSubmitting}
               >

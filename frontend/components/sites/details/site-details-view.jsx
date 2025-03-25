@@ -38,7 +38,7 @@ export function SiteDetailsView({ site }) {
         <div className="p-4 sm:p-6">
           <KeyDetailsSection site={site} />
           <div className="mt-6">
-            <ActionButtons site={site} />
+            <ActionButtons opportunity={site} />
           </div>
         </div>
       </div>
