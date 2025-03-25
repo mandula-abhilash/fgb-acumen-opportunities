@@ -13,6 +13,7 @@ export function RegionFilter({ value, onChange }) {
   const { toast } = useToast();
   const [regions, setRegions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isFilterActive = Array.isArray(value) && value.length > 0;
 
   useEffect(() => {
     const fetchRegions = async () => {
@@ -48,6 +49,9 @@ export function RegionFilter({ value, onChange }) {
       <div className="flex items-center gap-2">
         <Globe2 className="h-4 w-4" />
         <Label className="text-sm font-medium flex-1">Region</Label>
+        {isFilterActive && (
+          <div className="h-2 w-2 rounded-full bg-havelock-blue" />
+        )}
       </div>
       <MultiSelect
         options={regions}

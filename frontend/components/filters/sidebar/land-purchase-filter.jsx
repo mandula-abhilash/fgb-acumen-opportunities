@@ -14,6 +14,8 @@ const landPurchaseStatuses = [
 ];
 
 export function LandPurchaseFilter({ value, onChange }) {
+  const isFilterActive = Array.isArray(value) && value.length > 0;
+
   return (
     <div className="space-y-2 px-2">
       <div className="flex items-center gap-2">
@@ -21,6 +23,9 @@ export function LandPurchaseFilter({ value, onChange }) {
         <Label className="text-sm font-medium flex-1">
           Land Purchase Status
         </Label>
+        {isFilterActive && (
+          <div className="h-2 w-2 rounded-full bg-havelock-blue" />
+        )}
       </div>
       <MultiSelect
         options={landPurchaseStatuses}

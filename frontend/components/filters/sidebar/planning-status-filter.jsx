@@ -19,11 +19,16 @@ const planningStatuses = [
 ];
 
 export function PlanningStatusFilter({ value, onChange }) {
+  const isFilterActive = Array.isArray(value) && value.length > 0;
+
   return (
     <div className="space-y-2 px-2">
       <div className="flex items-center gap-2">
         <ScrollText className="h-4 w-4" />
         <Label className="text-sm font-medium flex-1">Planning Status</Label>
+        {isFilterActive && (
+          <div className="h-2 w-2 rounded-full bg-havelock-blue" />
+        )}
       </div>
       <MultiSelect
         options={planningStatuses}
