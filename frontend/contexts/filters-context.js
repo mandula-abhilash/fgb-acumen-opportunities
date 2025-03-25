@@ -4,6 +4,13 @@ import { createContext, useContext, useState } from "react";
 
 const FiltersContext = createContext(null);
 
+const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
+const log = {
+  info: (...args) => DEBUG && console.log("🔵", ...args),
+  state: (...args) => DEBUG && console.log("📊", ...args),
+  action: (...args) => DEBUG && console.log("🎯", ...args),
+};
+
 export function FiltersProvider({ children }) {
   const [filters, setFilters] = useState({
     regions: [],
@@ -19,6 +26,7 @@ export function FiltersProvider({ children }) {
   const [viewMode, setViewMode] = useState("list");
 
   const handleFilterChange = (filterKey, value) => {
+    log.action("Filter change:", { filterKey, value });
     setFilters((prev) => ({
       ...prev,
       [filterKey]: value,
@@ -26,11 +34,15 @@ export function FiltersProvider({ children }) {
   };
 
   const handleViewModeChange = (mode) => {
-    if (mode) {
-      setViewMode(mode);
-    } else {
-      setViewMode((prev) => (prev === "list" ? "map" : "list"));
-    }
+    log.action("View mode change triggered");
+    log.state("Current view mode:", viewMode);
+
+    // If mode is provided, use it directly, otherwise toggle
+    const newMode = mode || (viewMode === "list" ? "map" : "list");
+    log.action("Setting new view mode:", newMode);
+
+    setViewMode(newMode);
+    log.state("Updated view mode:", newMode);
   };
 
   return (

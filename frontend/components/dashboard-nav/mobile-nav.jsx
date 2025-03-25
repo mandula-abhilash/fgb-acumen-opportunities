@@ -1,80 +1,61 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useFilters } from "@/contexts/filters-context";
+import React, { useState } from "react";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
-import { X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { BuyerSidebar } from "@/components/filters/sidebar/buyer-sidebar";
 import { SellerSidebar } from "@/components/filters/sidebar/seller-sidebar";
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
-  const router = useRouter();
-  const { filters, handleFilterChange, viewMode, handleViewModeChange } =
-    useFilters();
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   const renderSidebar = () => {
-    if (user?.role === "seller") {
-      return (
-        <SellerSidebar
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          viewMode={viewMode}
-          onViewModeChange={handleViewModeChange}
-        />
-      );
+    if (user?.role === "buyer") {
+      return <BuyerSidebar />;
     }
 
-    return (
-      <BuyerSidebar
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        viewMode={viewMode}
-        onViewModeChange={handleViewModeChange}
-      />
-    );
+    if (user?.role === "seller") {
+      return <SellerSidebar />;
+    }
+
+    // Default to buyer view
+    return <BuyerSidebar />;
   };
 
   return (
-    <div className="lg:hidden">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed right-4 top-4 z-[60] rounded-full lg:hidden"
-        onClick={() => setIsOpen(!isOpen)}
+    <>
+      {/* Mobile Menu Toggle Button */}
+      <button
+        onClick={toggleMenu}
+        className="fixed top-4 left-4 z-50 p-2 bg-gray-100 rounded-md shadow-md"
       >
-        {isOpen ? (
-          <X className="h-5 w-5" />
-        ) : (
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4 6H20M4 12H20M4 18H20"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-      </Button>
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
 
+      {/* Sliding Mobile Sidebar */}
+      <div
+        className={`
+          fixed inset-y-0 left-0 z-40 w-64 bg-white border-r 
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <div className="pt-16 h-full overflow-y-auto">{renderSidebar()}</div>
+      </div>
+
+      {/* Overlay when menu is open */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50">
-          <div className="fixed top-14 right-0 w-72 h-[calc(100vh-3.5rem)] bg-background border-l shadow-xl overflow-y-auto">
-            <div className="pt-4">{renderSidebar()}</div>
-          </div>
-        </div>
+        <div
+          onClick={toggleMenu}
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+        />
       )}
-    </div>
+    </>
   );
 }

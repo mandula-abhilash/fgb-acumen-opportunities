@@ -2,35 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FiltersProvider } from "@/contexts/filters-context";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { BuyerSidebar } from "@/components/filters/sidebar/buyer-sidebar";
-import { SellerSidebar } from "@/components/filters/sidebar/seller-sidebar";
 import LogoBlack from "@/components/logo/LogoBlack";
 import LogoWhite from "@/components/logo/LogoWhite";
 
+import { MobileNav } from "../dashboard-nav/mobile-nav";
 import { UserControls } from "./user-controls";
 
 export function Header() {
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { user, loading } = useAuth();
   const isLoggedIn = !!user;
-  const isDashboardPage = pathname.startsWith("/dashboard");
 
-  const renderSidebar = () => {
-    if (user?.role === "seller") {
-      return <SellerSidebar />;
-    }
-    return <BuyerSidebar />;
-  };
-
-  // Don't show auth buttons while loading
   if (loading) {
     return (
       <header className="fixed w-full top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-1">
@@ -102,19 +89,15 @@ export function Header() {
             <SheetContent side="right" className="w-72 p-0">
               <div className="flex flex-col h-full">
                 {isLoggedIn ? (
-                  <FiltersProvider>
-                    {isDashboardPage && (
-                      <div className="flex-1 overflow-y-auto">
-                        {renderSidebar()}
-                      </div>
-                    )}
+                  <>
+                    <MobileNav />
                     <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                       <UserControls
                         className="flex-col gap-2"
                         showLabels={true}
                       />
                     </div>
-                  </FiltersProvider>
+                  </>
                 ) : (
                   <div className="p-4 flex flex-col gap-2">
                     <Link href="/login" className="w-full">
