@@ -96,7 +96,7 @@ export function MultiSelect({
             <div className="flex justify-between items-center w-full">
               <div className="flex flex-wrap items-center gap-1">
                 {selected.length === 0 && (
-                  <span className="text-sm text-muted-foreground mx-3">
+                  <span className="text-sm text-muted-foreground placeholder:text-muted-foreground mx-3">
                     {placeholder}
                   </span>
                 )}
@@ -148,7 +148,7 @@ export function MultiSelect({
                     <Separator orientation="vertical" className="h-4" />
                   </>
                 )}
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-50 mr-2" />
               </div>
             </div>
           </Button>
@@ -158,8 +158,6 @@ export function MultiSelect({
           align="start"
           side="bottom"
           sideOffset={4}
-          avoidCollisions={false}
-          collisionPadding={20}
         >
           <Command shouldFilter={false}>
             <CommandInput

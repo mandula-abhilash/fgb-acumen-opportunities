@@ -5,7 +5,6 @@ import { useFilters } from "@/contexts/filters-context";
 import { Calendar, Check, List, Map, Timer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { DateFilter } from "@/components/filters/sidebar/date-filter";
@@ -32,7 +31,8 @@ export function BuyerSidebar() {
 
   return (
     <div className="w-72 h-full flex flex-col">
-      <div className="p-4 border-b">
+      {/* Header Section */}
+      <div className="p-4 border-b space-y-4">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map" && isOpportunitiesPage}
@@ -58,13 +58,13 @@ export function BuyerSidebar() {
         </Toggle>
 
         {/* Shortlisted Toggle */}
-        <div className="flex items-center space-x-2 px-2 mt-4">
+        <div className="flex items-center space-x-2">
           <div className="flex items-center space-x-2">
             <button
               onClick={() =>
                 handleFilterChange("showShortlisted", !filters.showShortlisted)
               }
-              className={`h-4 w-4 ml-1 rounded flex items-center justify-center ${
+              className={`h-4 w-4 rounded flex items-center justify-center ${
                 filters.showShortlisted
                   ? "bg-web-orange"
                   : "border border-gray-300"
@@ -91,36 +91,34 @@ export function BuyerSidebar() {
       {/* Scrollable Filters Section */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-6">
-          <h3 className="text-sm font-semibold px-2 uppercase tracking-wider text-havelock-blue">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-havelock-blue">
             Filters
           </h3>
 
-          <RegionFilter
-            value={filters.regions}
-            onChange={(value) => handleFilterChange("regions", value)}
-          />
+          <div className="space-y-6">
+            <RegionFilter
+              value={filters.regions}
+              onChange={(value) => handleFilterChange("regions", value)}
+            />
 
-          <div className="px-2">
             <PlotsFilter
               value={filters.plots}
               onChange={(value) => handleFilterChange("plots", value)}
             />
-          </div>
 
-          <PlanningStatusFilter
-            value={filters.planningStatus}
-            onChange={(value) => handleFilterChange("planningStatus", value)}
-          />
+            <PlanningStatusFilter
+              value={filters.planningStatus}
+              onChange={(value) => handleFilterChange("planningStatus", value)}
+            />
 
-          <LandPurchaseFilter
-            value={filters.landPurchaseStatus}
-            onChange={(value) =>
-              handleFilterChange("landPurchaseStatus", value)
-            }
-          />
+            <LandPurchaseFilter
+              value={filters.landPurchaseStatus}
+              onChange={(value) =>
+                handleFilterChange("landPurchaseStatus", value)
+              }
+            />
 
-          <div className="px-2 pb-[300px]">
-            <div className="space-y-6">
+            <div className="space-y-6 pb-[300px]">
               <DateFilter
                 icon={Calendar}
                 label="Start on Site Date"

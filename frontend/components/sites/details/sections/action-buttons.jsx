@@ -52,7 +52,7 @@ export function ActionButtons({ opportunity, onRemove, className }) {
               opportunityId={opportunity.id}
               isShortlisted={opportunity.is_shortlisted}
               onRemove={onRemove}
-              className="flex-1 min-w-[200px] border hover:bg-web-orange/5 h-8 text-sm"
+              className="flex-1 min-w-[200px] border hover:bg-web-orange/5 h-10 text-sm"
             />
           </TooltipTrigger>
           <TooltipContent side="bottom">
@@ -64,14 +64,14 @@ export function ActionButtons({ opportunity, onRemove, className }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                className="flex-1 min-w-[200px] bg-web-orange hover:bg-web-orange/90 text-white h-8 text-sm"
+                className="flex-1 min-w-[200px] bg-web-orange hover:bg-web-orange/90 text-white h-10 text-sm"
                 onClick={handleConfirmInterest}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <Spinner size="sm" className="mr-1.5" />
                 ) : (
-                  <MessageSquareMore className="h-3 w-3 mr-1.5" />
+                  <MessageSquareMore className="h-4 w-4 mr-1.5" />
                 )}
                 {isSubmitting ? "Processing..." : "Confirm Interest"}
               </Button>
