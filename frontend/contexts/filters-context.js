@@ -17,9 +17,11 @@ export function FiltersProvider({ children }) {
     plots: {},
     planningStatus: [],
     landPurchaseStatus: [],
+    opportunityType: [],
     startDate: {},
     firstHandoverDate: {},
     finalHandoverDate: {},
+    siteAddedDate: {},
     showShortlisted: false,
   });
 

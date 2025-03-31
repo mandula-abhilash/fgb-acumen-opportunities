@@ -1,3 +1,5 @@
+"use client";
+
 import api from "@/visdak-auth/src/api/axiosInstance";
 
 export async function createLiveOpportunitySite(siteData) {
@@ -41,6 +43,11 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("landPurchaseStatus", filters.landPurchaseStatus.join(","));
     }
 
+    // Add opportunity type filter
+    if (filters.opportunityType?.length > 0) {
+      params.set("opportunityType", filters.opportunityType.join(","));
+    }
+
     // Add shortlisted filter
     if (filters.showShortlisted) {
       params.set("showShortlisted", "true");
@@ -82,6 +89,17 @@ export async function getLiveOpportunitySites(filters = {}) {
         params.set("finalHandoverDateEnd", filters.finalHandoverDate.endDate);
       } else {
         params.set("finalHandoverDateSingle", filters.finalHandoverDate.single);
+      }
+    }
+
+    // Add site added date filter
+    if (filters.siteAddedDate?.mode) {
+      params.set("siteAddedDateMode", filters.siteAddedDate.mode);
+      if (filters.siteAddedDate.mode === "between") {
+        params.set("siteAddedDateStart", filters.siteAddedDate.startDate);
+        params.set("siteAddedDateEnd", filters.siteAddedDate.endDate);
+      } else {
+        params.set("siteAddedDateSingle", filters.siteAddedDate.single);
       }
     }
 

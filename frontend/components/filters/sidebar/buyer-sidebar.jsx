@@ -4,10 +4,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
 import { Calendar, Check, List, Map, Timer } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { DateFilter } from "@/components/filters/sidebar/date-filter";
+import { OpportunityTypeFilter } from "@/components/filters/sidebar/opportunity-type-filter";
 import { PlotsFilter } from "@/components/filters/sidebar/plots-filter";
 
 import { LandPurchaseFilter } from "./land-purchase-filter";
@@ -106,6 +106,11 @@ export function BuyerSidebar() {
               onChange={(value) => handleFilterChange("plots", value)}
             />
 
+            <OpportunityTypeFilter
+              value={filters.opportunityType}
+              onChange={(value) => handleFilterChange("opportunityType", value)}
+            />
+
             <PlanningStatusFilter
               value={filters.planningStatus}
               onChange={(value) => handleFilterChange("planningStatus", value)}
@@ -116,6 +121,13 @@ export function BuyerSidebar() {
               onChange={(value) =>
                 handleFilterChange("landPurchaseStatus", value)
               }
+            />
+
+            <DateFilter
+              icon={Calendar}
+              label="Site Added Date"
+              value={filters.siteAddedDate}
+              onChange={(value) => handleFilterChange("siteAddedDate", value)}
             />
 
             <div className="space-y-6 pb-[300px]">
