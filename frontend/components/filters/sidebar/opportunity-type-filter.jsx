@@ -4,7 +4,14 @@ import { FileText } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { opportunityTypes } from "@/components/sites/form-constants";
+
+export const opportunityTypes = [
+  { value: "Section 106", label: "Section 106" },
+  { value: "Grant Funded Land & Build", label: "Grant Funded Land & Build" },
+  { value: "Build to Rent", label: "Build to Rent" },
+  { value: "Care", label: "Care" },
+  { value: "Other", label: "Other" },
+];
 
 export function OpportunityTypeFilter({ value, onChange }) {
   const isFilterActive = Array.isArray(value) && value.length > 0;

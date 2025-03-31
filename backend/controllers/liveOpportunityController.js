@@ -104,17 +104,19 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       s106_agreement,
       vat_position,
       user_id,
-      geom
+      geom,
+      site_added_to_portal_date
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 
       $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33,
-      ST_SetSRID(ST_MakePoint($34, $35), 4326)
+      ST_SetSRID(ST_MakePoint($34, $35), 4326),
+      CURRENT_DATE
     ) RETURNING *`,
     [
       siteName,
       siteAddress,
       customSiteAddress,
-      opportunityType.value || opportunityType,
+      opportunityType.label || opportunityType,
       developerName,
       developerRegionValues,
       googleMapsLink,
@@ -169,6 +171,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     plotsValue,
     planningStatus,
     landPurchaseStatus,
+    opportunityType,
     startDateMode,
     startDateStart,
     startDateEnd,
@@ -181,6 +184,10 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     finalHandoverDateStart,
     finalHandoverDateEnd,
     finalHandoverDateSingle,
+    siteAddedDateMode,
+    siteAddedDateStart,
+    siteAddedDateEnd,
+    siteAddedDateSingle,
     showShortlisted,
   } = req.query;
 
@@ -247,6 +254,13 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     const selectedRegions = regions.split(",");
     conditions.push(`o.region && $${params.length + 1}::text[]`);
     params.push(selectedRegions);
+  }
+
+  // Add opportunity type filter
+  if (opportunityType) {
+    const types = opportunityType.split(",");
+    conditions.push(`o.opportunity_type = ANY($${params.length + 1}::text[])`);
+    params.push(types);
   }
 
   // Add plots filter
@@ -393,6 +407,43 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
             `o.final_handover_date >= $${params.length + 1}::date`
           );
           params.push(formatDateParam(finalHandoverDateSingle));
+        }
+        break;
+    }
+  }
+
+  // Add site added date filter
+  if (siteAddedDateMode) {
+    switch (siteAddedDateMode) {
+      case "between":
+        if (siteAddedDateStart && siteAddedDateEnd) {
+          conditions.push(
+            `o.site_added_to_portal_date >= $${
+              params.length + 1
+            }::date AND o.site_added_to_portal_date <= $${
+              params.length + 2
+            }::date`
+          );
+          params.push(
+            formatDateParam(siteAddedDateStart),
+            formatDateParam(siteAddedDateEnd)
+          );
+        }
+        break;
+      case "before":
+        if (siteAddedDateSingle) {
+          conditions.push(
+            `o.site_added_to_portal_date <= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(siteAddedDateSingle));
+        }
+        break;
+      case "after":
+        if (siteAddedDateSingle) {
+          conditions.push(
+            `o.site_added_to_portal_date >= $${params.length + 1}::date`
+          );
+          params.push(formatDateParam(siteAddedDateSingle));
         }
         break;
     }
