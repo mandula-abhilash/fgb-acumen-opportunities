@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,39 +22,52 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 export function ProjectTimeline({ register, watch, setValue, disabled }) {
-  const renderDatePicker = (fieldName, label) => (
-    <div className="space-y-2">
-      <Label>{label}</Label>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !watch(fieldName) && "text-muted-foreground"
-            )}
-            disabled={disabled}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {watch(fieldName) ? (
-              format(watch(fieldName), "PPP")
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={watch(fieldName)}
-            onSelect={(date) => setValue(fieldName, date)}
-            initialFocus
-            disabled={disabled}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
+  const renderDatePicker = (fieldName, label) => {
+    const selectedDate = watch(fieldName);
+
+    const handleClear = (e) => {
+      e.stopPropagation();
+      setValue(fieldName, null);
+    };
+
+    return (
+      <div className="space-y-2">
+        <Label>{label}</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !selectedDate && "text-muted-foreground"
+              )}
+              disabled={disabled}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              <span className="flex-1">
+                {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+              </span>
+              {selectedDate && !disabled && (
+                <X
+                  className="h-4 w-4 opacity-50 hover:opacity-100"
+                  onClick={handleClear}
+                />
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => setValue(fieldName, date)}
+              initialFocus
+              disabled={disabled}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  };
 
   return (
     <Card>
