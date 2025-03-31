@@ -809,12 +809,3 @@ export const expressInterest = asyncHandler(async (req, res) => {
     });
   }
 });
-
-export {
-  createLiveOpportunitySite,
-  getLiveOpportunitySites,
-  getLiveOpportunitySite,
-  updateLiveOpportunitySite,
-  deleteLiveOpportunitySite,
-  expressInterest,
-};

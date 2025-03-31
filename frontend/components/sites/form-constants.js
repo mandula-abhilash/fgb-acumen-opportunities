@@ -67,7 +67,11 @@ export const submitSiteSchema = z.object({
     .min(1, "Number of plots must be at least 1")
     .int("Number of plots must be a whole number"),
   tenures: z.array(z.string()).min(1, "Please select at least one tenure type"),
+  planningSubmissionDate: z.date().optional(),
+  planningDeterminationDate: z.date().optional(),
   startOnSiteDate: z.date().optional(),
+  firstGoldenBrickDate: z.date().optional(),
+  finalGoldenBrickDate: z.date().optional(),
   firstHandoverDate: z.date().optional(),
   finalHandoverDate: z.date().optional(),
   developerInfo: z.string().optional(),
