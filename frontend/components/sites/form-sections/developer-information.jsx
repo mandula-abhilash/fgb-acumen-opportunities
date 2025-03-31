@@ -36,7 +36,7 @@ export function DeveloperInformation({
         const regionsData = await getRegions();
         setDeveloperRegions(regionsData);
       } catch (error) {
-        console.error("Error fetching developer regions:", error);
+        console.error("Error fetching developer region:", error);
       } finally {
         setIsLoading(false);
       }
@@ -97,14 +97,14 @@ export function DeveloperInformation({
 
     if (defaultRegions.length > 0) {
       groups.push({
-        label: "Default Regions",
+        label: "Default Region",
         options: defaultRegions,
       });
     }
 
     if (customRegions.length > 0) {
       groups.push({
-        label: "Custom Regions",
+        label: "Custom Region",
         options: customRegions,
       });
     }

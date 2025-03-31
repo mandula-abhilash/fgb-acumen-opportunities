@@ -23,7 +23,7 @@ export function DeveloperInformation({ site }) {
           <div>
             <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
               <Globe2 className="h-4 w-4" />
-              Developer Regions
+              Developer Region
             </h3>
             <div className="flex flex-wrap gap-1">
               {site.developer_region_names.map((region) => (

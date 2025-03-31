@@ -99,7 +99,7 @@ export function OpportunityDetails({ opportunity }) {
                 opportunity.developer_region_names.length > 0 && (
                   <div>
                     <span className="text-sm text-muted-foreground">
-                      Developer Regions
+                      Developer Region
                     </span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {opportunity.developer_region_names.map((region) => (
@@ -128,7 +128,7 @@ export function OpportunityDetails({ opportunity }) {
 
             <div className="space-y-2">
               <div>
-                <span className="text-sm text-muted-foreground">Regions</span>
+                <span className="text-sm text-muted-foreground">Region</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.region_names?.map((region) => (
                     <Badge key={region} variant="secondary" className="text-xs">
@@ -140,7 +140,7 @@ export function OpportunityDetails({ opportunity }) {
 
               <div>
                 <span className="text-sm text-muted-foreground">
-                  Local Planning Authorities
+                  Local Planning Authority
                 </span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.lpa_names?.map((lpa) => (

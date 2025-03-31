@@ -20,7 +20,7 @@ export function LocationInformation({ site }) {
         <div>
           <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
             <Globe2 className="h-4 w-4" />
-            Regions
+            Region
           </h3>
           <div className="flex flex-wrap gap-2">
             {site.region_names?.map((region) => (
@@ -33,7 +33,7 @@ export function LocationInformation({ site }) {
         <div>
           <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
             <Landmark className="h-4 w-4" />
-            Local Planning Authorities
+            Local Planning Authority
           </h3>
           <div className="flex flex-wrap gap-2">
             {site.lpa_names?.map((lpa) => (
