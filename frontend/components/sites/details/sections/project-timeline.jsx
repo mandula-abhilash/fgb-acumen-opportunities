@@ -5,47 +5,32 @@ import { Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 export function ProjectTimeline({ site, formatDate }) {
+  const renderDateRow = (label, date) => {
+    if (!date) return null;
+    return (
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-muted-foreground">{label}</span>
+        <span className="text-sm font-medium">{formatDate(date)}</span>
+      </div>
+    );
+  };
+
   return (
     <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
       <h2 className="text-xl font-semibold text-havelock-blue mb-4">
         Project Timeline
       </h2>
       <div className="space-y-4">
-        {site.startOnSiteDate && (
-          <div className="flex justify-between items-center">
-            <h3 className="flex items-center gap-2 font-medium text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              Start on Site
-            </h3>
-            <span className="text-sm font-medium">
-              {formatDate(site.startOnSiteDate)}
-            </span>
-          </div>
+        {renderDateRow("Planning Submission", site.planningSubmissionDate)}
+        {renderDateRow(
+          "Planning Determination",
+          site.planningDeterminationDate
         )}
-
-        {site.firstHandoverDate && (
-          <div className="flex justify-between items-center">
-            <h3 className="flex items-center gap-2 font-medium text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              First Handover
-            </h3>
-            <span className="text-sm font-medium">
-              {formatDate(site.firstHandoverDate)}
-            </span>
-          </div>
-        )}
-
-        {site.finalHandoverDate && (
-          <div className="flex justify-between items-center">
-            <h3 className="flex items-center gap-2 font-medium text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              Final Handover
-            </h3>
-            <span className="text-sm font-medium">
-              {formatDate(site.finalHandoverDate)}
-            </span>
-          </div>
-        )}
+        {renderDateRow("Start on Site", site.startOnSiteDate)}
+        {renderDateRow("First Golden Brick", site.firstGoldenBrickDate)}
+        {renderDateRow("Final Golden Brick", site.finalGoldenBrickDate)}
+        {renderDateRow("First Handover", site.firstHandoverDate)}
+        {renderDateRow("Final Handover", site.finalHandoverDate)}
 
         {site.projectProgramme && (
           <div className="pt-2 border-t">

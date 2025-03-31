@@ -24,6 +24,16 @@ export function OpportunityDetails({ opportunity }) {
     return format(new Date(date), "dd MMM yyyy");
   };
 
+  const renderDateRow = (label, date) => {
+    if (!date) return null;
+    return (
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-muted-foreground">{label}</span>
+        <span className="text-sm font-medium">{formatDate(date)}</span>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full border-l shadow-lg">
       {/* Header Section - Fixed */}
@@ -42,11 +52,7 @@ export function OpportunityDetails({ opportunity }) {
         {/* Image Section */}
         <div className="relative w-full h-[200px] border-b">
           <img
-            src={
-              "https://planning-applications-bucket.s3.eu-west-2.amazonaws.com/65ae31514a033c25afd3487b.jpeg?etag=59248ab241972cc690f857dff37b5c71" ||
-              opportunity.site_plan_image ||
-              "https://placehold.in/400"
-            }
+            src={opportunity.site_plan_image || "https://placehold.in/400"}
             alt={opportunity.site_name}
             className="w-full h-full object-cover"
           />
@@ -73,7 +79,7 @@ export function OpportunityDetails({ opportunity }) {
           </Card>
 
           {/* Developer Info */}
-          <div className="space-y-2 p-3 rounded-md border bg-card">
+          <div className="space-y-3 p-3 rounded-md border bg-card">
             <div className="flex items-center gap-1.5 text-havelock-blue">
               <Building2 className="h-4 w-4" />
               <span className="text-sm font-semibold">
@@ -99,7 +105,7 @@ export function OpportunityDetails({ opportunity }) {
                 opportunity.developer_region_names.length > 0 && (
                   <div>
                     <span className="text-sm text-muted-foreground">
-                      Developer Region
+                      Developer Regions
                     </span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {opportunity.developer_region_names.map((region) => (
@@ -128,7 +134,7 @@ export function OpportunityDetails({ opportunity }) {
 
             <div className="space-y-2">
               <div>
-                <span className="text-sm text-muted-foreground">Region</span>
+                <span className="text-sm text-muted-foreground">Regions</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.region_names?.map((region) => (
                     <Badge key={region} variant="secondary" className="text-xs">
@@ -140,7 +146,7 @@ export function OpportunityDetails({ opportunity }) {
 
               <div>
                 <span className="text-sm text-muted-foreground">
-                  Local Planning Authority
+                  Local Planning Authorities
                 </span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.lpa_names?.map((lpa) => (
@@ -296,46 +302,33 @@ export function OpportunityDetails({ opportunity }) {
             </div>
 
             <div className="space-y-2">
-              {opportunity.start_on_site_date && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    Start on Site
-                  </span>
-                  <span className="text-sm font-medium">
-                    {formatDate(opportunity.start_on_site_date)}
-                  </span>
-                </div>
+              {renderDateRow(
+                "Planning Submission",
+                opportunity.planningSubmissionDate
               )}
-
-              {opportunity.first_handover_date && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    First Handover
-                  </span>
-                  <span className="text-sm font-medium">
-                    {formatDate(opportunity.first_handover_date)}
-                  </span>
-                </div>
+              {renderDateRow(
+                "Planning Determination",
+                opportunity.planningDeterminationDate
               )}
-
-              {opportunity.final_handover_date && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    Final Handover
-                  </span>
-                  <span className="text-sm font-medium">
-                    {formatDate(opportunity.final_handover_date)}
-                  </span>
-                </div>
+              {renderDateRow("Start on Site", opportunity.startOnSiteDate)}
+              {renderDateRow(
+                "First Golden Brick",
+                opportunity.firstGoldenBrickDate
               )}
+              {renderDateRow(
+                "Final Golden Brick",
+                opportunity.finalGoldenBrickDate
+              )}
+              {renderDateRow("First Handover", opportunity.firstHandoverDate)}
+              {renderDateRow("Final Handover", opportunity.finalHandoverDate)}
 
-              {opportunity.project_programme && (
+              {opportunity.projectProgramme && (
                 <div className="pt-2 border-t">
                   <span className="text-sm text-muted-foreground">
                     Project Programme
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
-                    {opportunity.project_programme}
+                    {opportunity.projectProgramme}
                   </p>
                 </div>
               )}
