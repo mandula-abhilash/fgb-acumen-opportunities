@@ -40,6 +40,13 @@ export function EditSiteForm({ site }) {
   const [polygonPath, setPolygonPath] = useState(site?.boundary || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const parseDate = (dateStr) => {
+    if (!dateStr) return undefined;
+    const date = new Date(dateStr);
+    date.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
+    return date;
+  };
+
   const {
     register,
     handleSubmit,
@@ -63,27 +70,13 @@ export function EditSiteForm({ site }) {
       landPurchaseStatus: site?.landPurchaseStatus || "",
       plots: site?.plots || 0,
       tenures: site?.tenures || [],
-      startOnSiteDate: site?.startOnSiteDate
-        ? new Date(site.startOnSiteDate)
-        : undefined,
-      firstHandoverDate: site?.firstHandoverDate
-        ? new Date(site.firstHandoverDate)
-        : undefined,
-      finalHandoverDate: site?.finalHandoverDate
-        ? new Date(site.finalHandoverDate)
-        : undefined,
-      planningSubmissionDate: site?.planningSubmissionDate
-        ? new Date(site.planningSubmissionDate)
-        : undefined,
-      planningDeterminationDate: site?.planningDeterminationDate
-        ? new Date(site.planningDeterminationDate)
-        : undefined,
-      firstGoldenBrickDate: site?.firstGoldenBrickDate
-        ? new Date(site.firstGoldenBrickDate)
-        : undefined,
-      finalGoldenBrickDate: site?.finalGoldenBrickDate
-        ? new Date(site.finalGoldenBrickDate)
-        : undefined,
+      startOnSiteDate: parseDate(site?.startOnSiteDate),
+      firstHandoverDate: parseDate(site?.firstHandoverDate),
+      finalHandoverDate: parseDate(site?.finalHandoverDate),
+      planningSubmissionDate: parseDate(site?.planningSubmissionDate),
+      planningDeterminationDate: parseDate(site?.planningDeterminationDate),
+      firstGoldenBrickDate: parseDate(site?.firstGoldenBrickDate),
+      finalGoldenBrickDate: parseDate(site?.finalGoldenBrickDate),
       developerInfo: site?.developerInfo || "",
       siteContext: site?.siteContext || "",
       planningOverview: site?.planningOverview || "",
@@ -111,26 +104,20 @@ export function EditSiteForm({ site }) {
       setValue("lpa", site.lpa);
       setValue("developerRegion", site.developerRegion);
 
-      if (site.startOnSiteDate)
-        setValue("startOnSiteDate", new Date(site.startOnSiteDate));
-      if (site.firstHandoverDate)
-        setValue("firstHandoverDate", new Date(site.firstHandoverDate));
-      if (site.finalHandoverDate)
-        setValue("finalHandoverDate", new Date(site.finalHandoverDate));
-      if (site.planningSubmissionDate)
-        setValue(
-          "planningSubmissionDate",
-          new Date(site.planningSubmissionDate)
-        );
-      if (site.planningDeterminationDate)
-        setValue(
-          "planningDeterminationDate",
-          new Date(site.planningDeterminationDate)
-        );
-      if (site.firstGoldenBrickDate)
-        setValue("firstGoldenBrickDate", new Date(site.firstGoldenBrickDate));
-      if (site.finalGoldenBrickDate)
-        setValue("finalGoldenBrickDate", new Date(site.finalGoldenBrickDate));
+      // Set dates
+      const setDateField = (field, dateStr) => {
+        if (dateStr) {
+          setValue(field, parseDate(dateStr));
+        }
+      };
+
+      setDateField("startOnSiteDate", site.startOnSiteDate);
+      setDateField("firstHandoverDate", site.firstHandoverDate);
+      setDateField("finalHandoverDate", site.finalHandoverDate);
+      setDateField("planningSubmissionDate", site.planningSubmissionDate);
+      setDateField("planningDeterminationDate", site.planningDeterminationDate);
+      setDateField("firstGoldenBrickDate", site.firstGoldenBrickDate);
+      setDateField("finalGoldenBrickDate", site.finalGoldenBrickDate);
 
       log.form("Initial form values set successfully");
     }
@@ -159,10 +146,23 @@ export function EditSiteForm({ site }) {
         return;
       }
 
+      // Format dates to YYYY-MM-DD
+      const formatDate = (date) => {
+        if (!date) return null;
+        return date.toISOString().split("T")[0];
+      };
+
       const siteData = {
         ...data,
         coordinates: selectedLocation,
         boundary: polygonPath,
+        startOnSiteDate: formatDate(data.startOnSiteDate),
+        firstHandoverDate: formatDate(data.firstHandoverDate),
+        finalHandoverDate: formatDate(data.finalHandoverDate),
+        planningSubmissionDate: formatDate(data.planningSubmissionDate),
+        planningDeterminationDate: formatDate(data.planningDeterminationDate),
+        firstGoldenBrickDate: formatDate(data.firstGoldenBrickDate),
+        finalGoldenBrickDate: formatDate(data.finalGoldenBrickDate),
       };
 
       log.submit("Submitting to API", siteData);

@@ -30,6 +30,24 @@ export function ProjectTimeline({ register, watch, setValue, disabled }) {
       setValue(fieldName, null);
     };
 
+    const formatSelectedDate = (date) => {
+      if (!date || !(date instanceof Date) || isNaN(date)) {
+        return null;
+      }
+      return format(date, "PPP");
+    };
+
+    const handleDateSelect = (date) => {
+      if (date) {
+        // Set to noon to avoid timezone issues
+        const newDate = new Date(date);
+        newDate.setHours(12, 0, 0, 0);
+        setValue(fieldName, newDate);
+      } else {
+        setValue(fieldName, null);
+      }
+    };
+
     return (
       <div className="space-y-2">
         <Label>{label}</Label>
@@ -45,7 +63,7 @@ export function ProjectTimeline({ register, watch, setValue, disabled }) {
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               <span className="flex-1">
-                {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                {formatSelectedDate(selectedDate) || "Pick a date"}
               </span>
               {selectedDate && !disabled && (
                 <X
@@ -59,7 +77,7 @@ export function ProjectTimeline({ register, watch, setValue, disabled }) {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => setValue(fieldName, date)}
+              onSelect={handleDateSelect}
               initialFocus
               disabled={disabled}
             />
