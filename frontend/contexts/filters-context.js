@@ -23,6 +23,7 @@ export function FiltersProvider({ children }) {
     finalHandoverDate: {},
     siteAddedDate: {},
     showShortlisted: false,
+    showDrafts: false,
   });
 
   const [viewMode, setViewMode] = useState("list");

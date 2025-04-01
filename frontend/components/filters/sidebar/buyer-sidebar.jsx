@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useFilters } from "@/contexts/filters-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import { Calendar, Check, List, Map, Timer } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
@@ -19,7 +20,9 @@ export function BuyerSidebar() {
   const pathname = usePathname();
   const { filters, handleFilterChange, viewMode, handleViewModeChange } =
     useFilters();
+  const { user } = useAuth();
   const isOpportunitiesPage = pathname === "/dashboard/opportunities";
+  const isAdmin = user?.role === "admin";
 
   const handleViewModeToggle = () => {
     if (!isOpportunitiesPage) {
@@ -32,7 +35,7 @@ export function BuyerSidebar() {
   return (
     <div className="w-72 h-full flex flex-col">
       {/* Header Section */}
-      <div className="p-4 border-b space-y-4">
+      <div className="p-4 border-b space-y-2">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map" && isOpportunitiesPage}
@@ -57,34 +60,75 @@ export function BuyerSidebar() {
           )}
         </Toggle>
 
-        {/* Shortlisted Toggle */}
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2 px-3">
-            <button
-              onClick={() =>
-                handleFilterChange("showShortlisted", !filters.showShortlisted)
-              }
-              className={`h-4 w-4 rounded flex items-center justify-center ${
-                filters.showShortlisted
-                  ? "bg-web-orange"
-                  : "border border-gray-300"
-              }`}
-              aria-checked={filters.showShortlisted}
-              role="checkbox"
-            >
-              {filters.showShortlisted && (
-                <Check className="h-3 w-3 text-white" />
-              )}
-            </button>
-            <Label
-              onClick={() =>
-                handleFilterChange("showShortlisted", !filters.showShortlisted)
-              }
-              className="text-sm cursor-pointer select-none"
-            >
-              Show Shortlisted Only
-            </Label>
+        {/* Filter Toggles */}
+        <div className="space-y-4">
+          {/* Shortlisted Toggle */}
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 px-3">
+              <button
+                onClick={() =>
+                  handleFilterChange(
+                    "showShortlisted",
+                    !filters.showShortlisted
+                  )
+                }
+                className={`h-4 w-4 rounded flex items-center justify-center ${
+                  filters.showShortlisted
+                    ? "bg-web-orange"
+                    : "border border-gray-300"
+                }`}
+                aria-checked={filters.showShortlisted}
+                role="checkbox"
+              >
+                {filters.showShortlisted && (
+                  <Check className="h-3 w-3 text-white" />
+                )}
+              </button>
+              <Label
+                onClick={() =>
+                  handleFilterChange(
+                    "showShortlisted",
+                    !filters.showShortlisted
+                  )
+                }
+                className="text-sm cursor-pointer select-none"
+              >
+                Show Shortlisted Only
+              </Label>
+            </div>
           </div>
+
+          {/* Draft Sites Toggle (Admin Only) */}
+          {isAdmin && (
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 px-3">
+                <button
+                  onClick={() =>
+                    handleFilterChange("showDrafts", !filters.showDrafts)
+                  }
+                  className={`h-4 w-4 rounded flex items-center justify-center ${
+                    filters.showDrafts
+                      ? "bg-web-orange"
+                      : "border border-gray-300"
+                  }`}
+                  aria-checked={filters.showDrafts}
+                  role="checkbox"
+                >
+                  {filters.showDrafts && (
+                    <Check className="h-3 w-3 text-white" />
+                  )}
+                </button>
+                <Label
+                  onClick={() =>
+                    handleFilterChange("showDrafts", !filters.showDrafts)
+                  }
+                  className="text-sm cursor-pointer select-none"
+                >
+                  Show Draft Sites
+                </Label>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

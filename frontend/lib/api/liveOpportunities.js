@@ -53,6 +53,11 @@ export async function getLiveOpportunitySites(filters = {}) {
       params.set("showShortlisted", "true");
     }
 
+    // Add draft sites filter
+    if (filters.showDrafts) {
+      params.set("showDrafts", "true");
+    }
+
     // Add start date filter
     if (filters.startDate?.mode) {
       params.set("startDateMode", filters.startDate.mode);

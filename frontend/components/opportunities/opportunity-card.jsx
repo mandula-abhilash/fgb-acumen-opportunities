@@ -25,14 +25,14 @@ export function OpportunityCard({ opportunity, onRemove }) {
   const { user } = useAuth();
   const { filters } = useFilters();
 
-  // Function to clean L PA names
+  // Function to clean LPA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
   };
 
   const handleShortlistRemove = (opportunityId) => {
     // Only remove from view if "Shortlisted Only" filter is active
-    if (filters.showShortlisted && onRemove) {
+    if ((filters.showShortlisted || filters.showDrafts) && onRemove) {
       onRemove(opportunityId);
     }
   };

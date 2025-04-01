@@ -221,9 +221,14 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     siteAddedDateEnd,
     siteAddedDateSingle,
     showShortlisted,
+    showDrafts,
     status,
   } = req.query;
 
+  console.log("showShortlisted : " + showShortlisted);
+
+  console.log("showDrafts : " + showDrafts);
+  console.log("status : " + status);
   // Build the base query
   let query = `
     WITH shortlisted AS (
@@ -252,8 +257,12 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const params = [userId];
 
   // Add status filter for admin viewing drafts
-  if (isAdmin && status === "draft") {
+  if (isAdmin && showDrafts === "true") {
     conditions.push(`o.status = 'draft'`);
+  } else if (isAdmin && status === "draft") {
+    conditions.push(`o.status = 'draft'`);
+  } else if (!isAdmin) {
+    conditions.push(`o.status = 'published'`);
   }
 
   // Add shortlisted filter
