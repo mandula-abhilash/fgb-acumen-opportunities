@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 
 import { Card } from "@/components/ui/card";
 import { ExploreMap } from "@/components/explore/explore-map";
 
 import { ActionButtons } from "./sections/action-buttons";
+import { AdminControls } from "./sections/admin-controls";
 import { CommercialInformation } from "./sections/commercial-information";
 import { DeveloperInformation } from "./sections/developer-information";
 import { DocumentsSection } from "./sections/documents-section";
@@ -17,9 +19,11 @@ import { PlanningInformation } from "./sections/planning-information";
 import { ProjectTimeline } from "./sections/project-timeline";
 import { TenureInformation } from "./sections/tenure-information";
 
-export function SiteDetailsView({ site }) {
+export function SiteDetailsView({ site: initialSite }) {
   const { user } = useAuth();
+  const [site, setSite] = useState(initialSite);
   const canEdit = user?.role === "admin" || user?.id === site.user_id;
+  const isAdmin = user?.role === "admin";
 
   const formatDate = (date) => {
     if (!date) return "Not specified";
@@ -30,6 +34,10 @@ export function SiteDetailsView({ site }) {
     });
   };
 
+  const handleSiteUpdated = (updatedSite) => {
+    setSite(updatedSite);
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Section */}
@@ -37,6 +45,11 @@ export function SiteDetailsView({ site }) {
         <HeaderSection site={site} canEdit={canEdit} />
         <div className="p-4 sm:p-6">
           <KeyDetailsSection site={site} />
+          {isAdmin && site.status === "draft" && (
+            <div className="mt-6">
+              <AdminControls site={site} onSiteUpdated={handleSiteUpdated} />
+            </div>
+          )}
           <div className="mt-6">
             <ActionButtons opportunity={site} />
           </div>

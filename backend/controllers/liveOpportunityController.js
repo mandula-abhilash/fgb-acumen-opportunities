@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import db from "../config/db.js";
 import { UserModel } from "../models/User.js";
 import { sendInterestNotification } from "../utils/ses.js";
+import { sendAdminNotifications } from "../utils/email.js";
 
 // Helper function to format date parameter
 const formatDateParam = (dateStr) => {
@@ -47,6 +48,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     s106Agreement,
     vatPosition,
     coordinates,
+    boundary,
   } = req.body;
 
   // Get the authenticated user's ID from the session
@@ -55,6 +57,13 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
   if (!userId) {
     res.status(401);
     throw new Error("User not authenticated");
+  }
+
+  // Get user details for email notification
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
   }
 
   // Extract region values from the developer region array
@@ -105,18 +114,22 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       vat_position,
       user_id,
       geom,
+      boundary,
+      status,
       site_added_to_portal_date
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 
       $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33,
       ST_SetSRID(ST_MakePoint($34, $35), 4326),
+      ST_SetSRID(ST_GeomFromGeoJSON($36), 4326),
+      'draft',
       CURRENT_DATE
     ) RETURNING *`,
     [
       siteName,
       siteAddress,
       customSiteAddress,
-      opportunityType.label || opportunityType,
+      opportunityType,
       developerName,
       developerRegionValues,
       googleMapsLink,
@@ -148,8 +161,17 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       userId,
       coordinates?.lng || null,
       coordinates?.lat || null,
+      JSON.stringify(boundary),
     ]
   );
+
+  // Send notifications to admin users
+  try {
+    await sendAdminNotifications(site, user);
+  } catch (error) {
+    console.error("Failed to send admin notifications:", error);
+    // Don't fail the request if notifications fail
+  }
 
   res.status(201).json({
     success: true,
@@ -163,6 +185,16 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
 export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
   const isAdmin = req.user.role === "admin";
   const userId = req.user.userId;
+  const userRole = req.user.role;
+
+  // Build the base query with role-based conditions
+  let roleCondition = "";
+  if (userRole === "seller") {
+    roleCondition = "AND o.user_id = $1";
+  } else if (userRole === "buyer") {
+    roleCondition = "AND o.status = 'published'";
+  }
+
   const {
     regions,
     plotsMode,
@@ -189,6 +221,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     siteAddedDateEnd,
     siteAddedDateSingle,
     showShortlisted,
+    status,
   } = req.query;
 
   // Build the base query
@@ -199,24 +232,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
       WHERE user_id = $1
     )
     SELECT 
-      o.id,
-      o.site_name,
-      o.site_address,
-      o.opportunity_type,
-      o.developer_name,
-      o.plots,
-      o.planning_status,
-      o.land_purchase_status,
-      o.tenures,
-      o.site_plan_image,
-      o.planning_submission_date,
-      o.planning_determination_date,
-      o.start_on_site_date,
-      o.first_golden_brick_date,
-      o.final_golden_brick_date,
-      o.first_handover_date,
-      o.final_handover_date,
-      o.site_added_to_portal_date,
+      o.*,
       ST_X(o.geom) as longitude,
       ST_Y(o.geom) as latitude,
       ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
@@ -228,16 +244,16 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     LEFT JOIN local_planning_authorities l ON l.lpa22cd = ANY(o.lpa)
     LEFT JOIN custom_regions r ON r.id::uuid = ANY(o.region::uuid[])
     LEFT JOIN shortlisted s ON s.opportunity_id = o.id
+    WHERE 1=1 ${roleCondition}
   `;
 
   // Build conditions array and params array
   const conditions = [];
-  const params = [userId]; // First parameter is always userId for shortlist check
+  const params = [userId];
 
-  // Add user filter for non-admin users
-  if (!isAdmin) {
-    conditions.push(`o.user_id = $${params.length + 1}`);
-    params.push(userId);
+  // Add status filter for admin viewing drafts
+  if (isAdmin && status === "draft") {
+    conditions.push(`o.status = 'draft'`);
   }
 
   // Add shortlisted filter
@@ -451,7 +467,7 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
 
   // Add WHERE clause if there are conditions
   if (conditions.length > 0) {
-    query += ` WHERE ${conditions.join(" AND ")}`;
+    query += ` AND ${conditions.join(" AND ")}`;
   }
 
   // Add group by clause
@@ -859,4 +875,39 @@ export const expressInterest = asyncHandler(async (req, res) => {
       message: error.message || "Failed to register interest",
     });
   }
+});
+
+// @desc    Publish a site
+// @route   PUT /api/live-opportunities/:id/publish
+// @access  Private/Admin
+export const publishSite = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Only admin users can publish sites
+  if (req.user.role !== "admin") {
+    res.status(403);
+    throw new Error("Not authorized to publish sites");
+  }
+
+  const site = await db.oneOrNone(
+    `
+    UPDATE live_opportunities
+    SET 
+      status = 'published',
+      updated_at = NOW()
+    WHERE id = $1
+    RETURNING *
+  `,
+    [id]
+  );
+
+  if (!site) {
+    res.status(404);
+    throw new Error("Site not found");
+  }
+
+  res.json({
+    success: true,
+    data: site,
+  });
 });

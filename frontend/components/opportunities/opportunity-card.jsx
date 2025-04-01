@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useFilters } from "@/contexts/filters-context";
+import { useAuth } from "@/visdak-auth/src/hooks/useAuth";
 import {
   Building2,
   FileText,
@@ -21,8 +22,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ActionButtons } from "../sites/details/sections/action-buttons";
 
 export function OpportunityCard({ opportunity, onRemove }) {
+  const { user } = useAuth();
   const { filters } = useFilters();
-  // Function to clean LPA names
+
+  // Function to clean L PA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
   };
@@ -33,6 +36,9 @@ export function OpportunityCard({ opportunity, onRemove }) {
       onRemove(opportunityId);
     }
   };
+
+  // Show status badge for sellers and admins
+  const showStatus = user?.role === "seller" || user?.role === "admin";
 
   return (
     <Card className="p-4 shadow-md">
@@ -56,9 +62,23 @@ export function OpportunityCard({ opportunity, onRemove }) {
                 />
                 {/* Overlay Content */}
                 <div className="absolute top-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-4">
-                  <h3 className="text-xl font-semibold mb-2 text-white transition-colors">
-                    {opportunity.site_name}
-                  </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white transition-colors">
+                      {opportunity.site_name}
+                    </h3>
+                    {showStatus && (
+                      <Badge
+                        variant={
+                          opportunity.status === "published"
+                            ? "default"
+                            : "secondary"
+                        }
+                        className="capitalize"
+                      >
+                        {opportunity.status}
+                      </Badge>
+                    )}
+                  </div>
                   <div className="flex items-center text-white/90">
                     <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="text-sm line-clamp-2">

@@ -6,6 +6,7 @@ import {
   updateLiveOpportunitySite,
   deleteLiveOpportunitySite,
   expressInterest,
+  publishSite,
 } from "../controllers/liveOpportunityController.js";
 import visdakSesamModule from "visdak-sesam";
 
@@ -25,5 +26,7 @@ router
   .delete(protect, deleteLiveOpportunitySite);
 
 router.post("/:id/interest", protect, expressInterest);
+
+router.patch("/:id/publish", protect, admin, publishSite);
 
 export default router;

@@ -158,3 +158,12 @@ export async function expressInterest(opportunityId) {
     );
   }
 }
+
+export async function publishSite(id) {
+  try {
+    const response = await api.patch(`/api/live-opportunities/${id}/publish`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to publish site");
+  }
+}
