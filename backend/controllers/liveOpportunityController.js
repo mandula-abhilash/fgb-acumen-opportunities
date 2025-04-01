@@ -894,6 +894,7 @@ export const publishSite = asyncHandler(async (req, res) => {
     UPDATE live_opportunities
     SET 
       status = 'published',
+      site_added_to_portal_date = CURRENT_DATE,
       updated_at = NOW()
     WHERE id = $1
     RETURNING *
