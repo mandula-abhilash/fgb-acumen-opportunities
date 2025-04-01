@@ -98,31 +98,31 @@ export function ProjectTimeline({ register, watch, setValue, disabled }) {
       <CardContent className="space-y-8">
         {/* Planning Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {renderDatePicker("startOnSiteDate", "Start on Site Date")}
+          <div className="hidden md:block">
+            {/* Empty space for alignment */}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderDatePicker(
             "planningSubmissionDate",
             "Planning Submission Date"
           )}
-          {renderDatePicker("startOnSiteDate", "Start on Site Date")}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderDatePicker(
             "planningDeterminationDate",
             "Planning Determination Date"
           )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderDatePicker("firstGoldenBrickDate", "First Golden Brick Date")}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderDatePicker("finalGoldenBrickDate", "Final Golden Brick Date")}
-          {renderDatePicker("firstHandoverDate", "First Handover Date")}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {renderDatePicker("firstHandoverDate", "First Handover Date")}
           {renderDatePicker("finalHandoverDate", "Final Handover Date")}
-          <div className="hidden md:block">
-            {/* Empty space for alignment */}
-          </div>
         </div>
 
         <div className="space-y-2">
