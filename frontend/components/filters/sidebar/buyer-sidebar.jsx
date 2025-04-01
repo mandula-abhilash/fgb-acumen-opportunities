@@ -35,7 +35,7 @@ export function BuyerSidebar() {
   return (
     <div className="w-72 h-full flex flex-col">
       {/* Header Section */}
-      <div className="p-4 border-b space-y-2">
+      <div className="p-4 border-b space-y-3">
         {/* View Mode Toggle */}
         <Toggle
           pressed={viewMode === "map" && isOpportunitiesPage}
@@ -61,7 +61,7 @@ export function BuyerSidebar() {
         </Toggle>
 
         {/* Filter Toggles */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* Shortlisted Toggle */}
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-2 px-3">
@@ -124,7 +124,7 @@ export function BuyerSidebar() {
                   }
                   className="text-sm cursor-pointer select-none"
                 >
-                  Show Draft Sites
+                  Show Draft Sites Only
                 </Label>
               </div>
             </div>
