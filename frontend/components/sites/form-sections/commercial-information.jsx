@@ -25,11 +25,7 @@ export function CommercialInformation({
   errors,
   disabled,
 }) {
-  const currentVatPosition = watch?.("vatPosition") | "";
-
-  const handleVatPositionChange = (value) => {
-    setValue("vatPosition", value);
-  };
+  const currentVatPosition = watch("vatPosition");
 
   return (
     <Card>
@@ -52,7 +48,7 @@ export function CommercialInformation({
           <Label htmlFor="vatPosition">VAT Position</Label>
           <Select
             value={currentVatPosition}
-            onValueChange={handleVatPositionChange}
+            onValueChange={(value) => setValue("vatPosition", value)}
             disabled={disabled}
           >
             <SelectTrigger
@@ -62,7 +58,7 @@ export function CommercialInformation({
             </SelectTrigger>
             <SelectContent>
               {vatPositions.map((position) => (
-                <SelectItem key={position.value} value={position.value}>
+                <SelectItem key={position.value} value={position.label}>
                   {position.label}
                 </SelectItem>
               ))}
