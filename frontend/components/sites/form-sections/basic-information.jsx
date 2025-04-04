@@ -34,12 +34,11 @@ export function BasicInformation({
   selectedLocation,
   parentId,
   onSitePlanUpload,
-  disabled,
 }) {
   const { toast } = useToast();
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
-  const opportunityType = watch?.("opportunityType") || "";
-  const sitePlanImage = watch?.("sitePlanImage") || "";
+  const opportunityType = watch("opportunityType");
+  const sitePlanImage = watch("sitePlanImage");
 
   const handleSitePlanUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
@@ -59,9 +58,8 @@ export function BasicInformation({
 
   const handleDeleteFile = async (fileUrl) => {
     try {
-      // Extract the key from the S3 URL
       const urlParts = fileUrl.split("/");
-      const key = urlParts.slice(3).join("/"); // Remove protocol and bucket name
+      const key = urlParts.slice(3).join("/");
 
       await deleteFileFromS3(key);
       setValue("sitePlanImage", "");
@@ -93,21 +91,18 @@ export function BasicInformation({
           <ExternalLink className="h-4 w-4" />
           View Site Plan
         </a>
-        {!disabled && (
-          <button
-            type="button"
-            onClick={() => handleDeleteFile(url)}
-            className="text-destructive hover:text-destructive/80 p-1 rounded-sm"
-            title="Delete site plan"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={() => handleDeleteFile(url)}
+          className="text-destructive hover:text-destructive/80 p-1 rounded-sm"
+          title="Delete site plan"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
       </div>
     );
   };
 
-  // Update Google Maps link when location changes
   useEffect(() => {
     if (selectedLocation) {
       const { lat, lng } = selectedLocation;
@@ -117,7 +112,6 @@ export function BasicInformation({
     }
   }, [selectedLocation, setValue]);
 
-  // Update site address when selected address changes
   useEffect(() => {
     if (selectedAddress) {
       setValue("siteAddress", selectedAddress);
@@ -125,16 +119,12 @@ export function BasicInformation({
     }
   }, [selectedAddress, setValue]);
 
-  const handleOpportunityTypeChange = (value) => {
-    setValue("opportunityType", value);
-  };
-
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Basic Information</CardTitle>
         <CardDescription>
-          Enter the fundamental details about the site
+          Enter the essential details about the site
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -171,7 +161,6 @@ export function BasicInformation({
               {...register("customSiteAddress")}
               className={errors.customSiteAddress ? "border-destructive" : ""}
               placeholder="Modify address if needed"
-              disabled={disabled}
             />
             {errors.customSiteAddress && (
               <p className="text-sm text-destructive">
@@ -201,7 +190,7 @@ export function BasicInformation({
               />
               {googleMapsUrl && (
                 <a
-                  href={googleMapsUrl}
+                  href={watch("googleMapsLink")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary hover:text-primary/80"
@@ -221,7 +210,6 @@ export function BasicInformation({
               id="siteName"
               {...register("siteName")}
               className={errors.siteName ? "border-destructive" : ""}
-              disabled={disabled}
             />
             {errors.siteName && (
               <p className="text-sm text-destructive">
@@ -239,14 +227,13 @@ export function BasicInformation({
                 onUploadComplete={handleSitePlanUpload}
                 onUploadError={handleUploadError}
                 acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
-                maxFileSize={10 * 1024 * 1024} // 10MB
+                maxFileSize={10 * 1024 * 1024}
                 folder="site-plans"
                 fileCategory="site-plan"
                 parentId={parentId}
                 label="Upload Site Plan"
                 description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
                 fileType="mixed"
-                disabled={disabled}
               />
             )}
           </div>
@@ -257,8 +244,7 @@ export function BasicInformation({
             </Label>
             <Select
               value={opportunityType}
-              onValueChange={handleOpportunityTypeChange}
-              disabled={disabled}
+              onValueChange={(value) => setValue("opportunityType", value)}
             >
               <SelectTrigger
                 className={errors.opportunityType ? "border-destructive" : ""}
@@ -320,7 +306,6 @@ export function BasicInformation({
                   value >= 1 || "Number of plots must be at least 1",
               })}
               className={errors.plots ? "border-destructive" : ""}
-              disabled={disabled}
             />
             {errors.plots && (
               <p className="text-sm text-destructive">{errors.plots.message}</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,6 +25,16 @@ import { PlanningInformation } from "./form-sections/planning-information";
 import { ProjectTimeline } from "./form-sections/project-timeline";
 import { SiteLocation } from "./form-sections/site-location";
 import { TenureInformation } from "./form-sections/tenure-information";
+
+// Debug logging configuration
+const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
+const log = {
+  form: (...args) => console.log("📝 [Form]:", ...args),
+  submit: (...args) => console.log("📤 [Submit]:", ...args),
+  error: (...args) => console.error("❌ [Error]:", ...args),
+  success: (...args) => console.log("✅ [Success]:", ...args),
+  validation: (...args) => console.log("🔍 [Validation]:", ...args),
+};
 
 export function SubmitSiteForm() {
   const { toast } = useToast();
@@ -53,12 +63,26 @@ export function SubmitSiteForm() {
       vatPosition: "",
       siteAddress: "",
       customSiteAddress: "",
+      opportunityType: "",
+      planningStatus: "",
+      landPurchaseStatus: "",
     },
   });
 
+  // Debug: Log form values and validity state
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      log.form("Field changed:", name, value);
+      log.validation("Current errors:", errors);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, errors]);
+
   const onSubmit = async (data) => {
+    log.submit("Form submission started");
     try {
       if (!selectedLocation) {
+        log.error("Location validation failed - no location selected");
         toast({
           variant: "destructive",
           title: "Location Required",
@@ -71,12 +95,13 @@ export function SubmitSiteForm() {
         ...data,
         coordinates: selectedLocation,
         boundary: polygonPath,
-        opportunityId, // Include the opportunity ID in the submission
+        opportunityId,
       };
 
-      console.log("Form data:", siteData);
+      log.submit("Submitting data:", siteData);
 
-      await createLiveOpportunitySite(siteData);
+      const response = await createLiveOpportunitySite(siteData);
+      log.success("API call success:", response);
 
       toast({
         title: "Success",
@@ -85,7 +110,7 @@ export function SubmitSiteForm() {
 
       router.push("/dashboard/opportunities");
     } catch (error) {
-      console.error("Form submission error:", error);
+      log.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -95,31 +120,40 @@ export function SubmitSiteForm() {
     }
   };
 
+  const handleFormSubmit = async (data) => {
+    console.log("🔥 Submit clicked, data:", data);
+    await onSubmit(data);
+  };
+
   const handleLocationSelect = (location, address) => {
+    log.form("Location selected:", { location, address });
     setSelectedLocation(location);
     setSelectedAddress(address);
   };
 
   const handlePolygonComplete = (path) => {
+    log.form("Polygon boundary updated:", { pointCount: path.length });
     setPolygonPath(path);
   };
 
-  // File upload handlers with opportunityId
   const handleSitePlanUpload = (fileUrl) => {
+    log.form("Site plan uploaded:", { fileUrl });
     setValue("sitePlanImage", fileUrl);
   };
 
   const handleSpecificationUpload = (fileUrl) => {
+    log.form("Specification uploaded:", { fileUrl });
     setValue("proposedSpecification", fileUrl);
   };
 
   const handleS106Upload = (fileUrl) => {
+    log.form("S106 agreement uploaded:", { fileUrl });
     setValue("s106Agreement", fileUrl);
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className="px-6 py-4 bg-background/95 backdrop-blur-md dark:bg-background/80"
     >
       <div className="flex flex-col space-y-6 mx-auto">
@@ -136,6 +170,7 @@ export function SubmitSiteForm() {
               selectedLocation={selectedLocation}
               parentId={opportunityId}
               onSitePlanUpload={handleSitePlanUpload}
+              watch={watch}
             />
           </div>
 
@@ -166,6 +201,7 @@ export function SubmitSiteForm() {
         <PlanningInformation
           register={register}
           setValue={setValue}
+          watch={watch}
           errors={errors}
           planningStatuses={planningStatuses}
           landPurchaseStatuses={landPurchaseStatuses}
@@ -185,6 +221,7 @@ export function SubmitSiteForm() {
         <CommercialInformation
           register={register}
           setValue={setValue}
+          watch={watch}
           errors={errors}
         />
 
