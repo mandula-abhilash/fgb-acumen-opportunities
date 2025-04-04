@@ -1,3 +1,5 @@
+"use client";
+
 import * as z from "zod";
 
 export const opportunityTypes = [
@@ -54,7 +56,14 @@ export const submitSiteSchema = z.object({
   customSiteAddress: z.string().min(1, "Custom site address is required"),
   opportunityType: z.string().min(1, "Opportunity type is required"),
   developerName: z.string().min(1, "Developer name is required"),
-  developerRegion: z.array(z.string()).optional(),
+  developerRegion: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .optional(),
   googleMapsLink: z.string().url("Please enter a valid Google Maps URL"),
   lpa: z.array(z.string()).min(1, "Please select at least one LPA"),
   region: z.array(z.string()).min(1, "Please select at least one region"),
