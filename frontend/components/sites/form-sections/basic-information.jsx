@@ -253,7 +253,7 @@ export function BasicInformation({
               </SelectTrigger>
               <SelectContent>
                 {opportunityTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
+                  <SelectItem key={type.value} value={type.label}>
                     {type.label}
                   </SelectItem>
                 ))}
