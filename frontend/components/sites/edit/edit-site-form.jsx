@@ -8,7 +8,13 @@ import { useForm } from "react-hook-form";
 import { updateLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { submitSiteSchema } from "@/components/sites/form-constants";
+import {
+  landPurchaseStatuses,
+  opportunityTypes,
+  planningStatuses,
+  submitSiteSchema,
+  tenureTypes,
+} from "@/components/sites/form-constants";
 
 import { BasicInformation } from "./sections/basic-information";
 import { CommercialInformation } from "./sections/commercial-information";
@@ -20,12 +26,13 @@ import { SiteLocation } from "./sections/site-location";
 import { TenureInformation } from "./sections/tenure-information";
 
 // Debug logging
+const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 const log = {
-  form: (...args) => console.log("📝 [Form]:", ...args),
-  submit: (...args) => console.log("📤 [Submit]:", ...args),
-  error: (...args) => console.error("❌ [Error]:", ...args),
-  success: (...args) => console.log("✅ [Success]:", ...args),
-  validation: (...args) => console.log("🔍 [Validation]:", ...args),
+  form: (...args) => DEBUG && console.log("📝 [Form]:", ...args),
+  submit: (...args) => DEBUG && console.log("📤 [Submit]:", ...args),
+  error: (...args) => DEBUG && console.error("❌ [Error]:", ...args),
+  success: (...args) => DEBUG && console.log("✅ [Success]:", ...args),
+  validation: (...args) => DEBUG && console.log("🔍 [Validation]:", ...args),
 };
 
 export function EditSiteForm({ site }) {
@@ -38,7 +45,6 @@ export function EditSiteForm({ site }) {
     site?.siteAddress || ""
   );
   const [polygonPath, setPolygonPath] = useState(site?.boundary || []);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const parseDate = (dateStr) => {
     if (!dateStr) return undefined;
@@ -52,7 +58,7 @@ export function EditSiteForm({ site }) {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(submitSiteSchema),
     mode: "onChange",
@@ -134,7 +140,6 @@ export function EditSiteForm({ site }) {
 
   const onSubmit = async (data) => {
     log.submit("Form submission started", { siteId: site.id });
-    setIsSubmitting(true);
     try {
       if (!selectedLocation) {
         log.error("Location validation failed - no location selected");
@@ -184,9 +189,6 @@ export function EditSiteForm({ site }) {
         description:
           error.message || "Failed to update site. Please try again.",
       });
-    } finally {
-      setIsSubmitting(false);
-      log.submit("Form submission finished");
     }
   };
 
@@ -196,28 +198,28 @@ export function EditSiteForm({ site }) {
   };
 
   const handleLocationSelect = (location, address) => {
-    log.form("Location selected", { location, address });
+    log.form("Location selected:", { location, address });
     setSelectedLocation(location);
     setSelectedAddress(address);
   };
 
   const handlePolygonComplete = (path) => {
-    log.form("Polygon boundary updated", { pointCount: path.length });
+    log.form("Polygon boundary updated:", { pointCount: path.length });
     setPolygonPath(path);
   };
 
   const handleSitePlanUpload = (fileUrl) => {
-    log.form("Site plan uploaded", { fileUrl });
+    log.form("Site plan uploaded:", { fileUrl });
     setValue("sitePlanImage", fileUrl);
   };
 
   const handleSpecificationUpload = (fileUrl) => {
-    log.form("Specification uploaded", { fileUrl });
+    log.form("Specification uploaded:", { fileUrl });
     setValue("proposedSpecification", fileUrl);
   };
 
   const handleS106Upload = (fileUrl) => {
-    log.form("S106 agreement uploaded", { fileUrl });
+    log.form("S106 agreement uploaded:", { fileUrl });
     setValue("s106Agreement", fileUrl);
   };
 
@@ -227,12 +229,15 @@ export function EditSiteForm({ site }) {
       className="px-6 py-4 bg-background/95 backdrop-blur-md dark:bg-background/80"
     >
       <div className="flex flex-col space-y-6 mx-auto">
+        {/* Map and Basic Information Section */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
+          {/* Basic Information - Takes 1 column on desktop */}
           <div className="order-2 lg:order-1 h-[400px] lg:h-full">
             <BasicInformation
               register={register}
               setValue={setValue}
               errors={errors}
+              opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
               selectedLocation={selectedLocation}
               parentId={site.id}
@@ -258,32 +263,40 @@ export function EditSiteForm({ site }) {
           watch={watch}
           errors={errors}
         />
+
         <LocationInformation
           watch={watch}
           setValue={setValue}
           errors={errors}
         />
+
         <PlanningInformation
           register={register}
           setValue={setValue}
           watch={watch}
           errors={errors}
+          planningStatuses={planningStatuses}
+          landPurchaseStatuses={landPurchaseStatuses}
           parentId={site.id}
           onSpecificationUpload={handleSpecificationUpload}
           onS106Upload={handleS106Upload}
         />
+
         <TenureInformation
-          register={register}
-          setValue={setValue}
           watch={watch}
+          setValue={setValue}
+          register={register}
           errors={errors}
+          tenureTypes={tenureTypes}
         />
+
         <CommercialInformation
           register={register}
           setValue={setValue}
           watch={watch}
           errors={errors}
         />
+
         <ProjectTimeline
           register={register}
           watch={watch}
