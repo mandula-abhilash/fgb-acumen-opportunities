@@ -29,11 +29,11 @@ import { TenureInformation } from "./form-sections/tenure-information";
 // Debug logging configuration
 const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 const log = {
-  form: (...args) => console.log("📝 [Form]:", ...args),
-  submit: (...args) => console.log("📤 [Submit]:", ...args),
-  error: (...args) => console.error("❌ [Error]:", ...args),
-  success: (...args) => console.log("✅ [Success]:", ...args),
-  validation: (...args) => console.log("🔍 [Validation]:", ...args),
+  form: (...args) => DEBUG && console.log("📝 [Form]:", ...args),
+  submit: (...args) => DEBUG && console.log("📤 [Submit]:", ...args),
+  error: (...args) => DEBUG && console.error("❌ [Error]:", ...args),
+  success: (...args) => DEBUG && console.log("✅ [Success]:", ...args),
+  validation: (...args) => DEBUG && console.log("🔍 [Validation]:", ...args),
 };
 
 export function SubmitSiteForm() {
