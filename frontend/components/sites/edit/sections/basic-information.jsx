@@ -22,13 +22,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { fileTypes, opportunityTypes } from "@/components/sites/form-constants";
+import { fileTypes } from "@/components/sites/form-constants";
 
 export function BasicInformation({
   register,
   setValue,
   watch,
   errors,
+  opportunityTypes,
   selectedAddress,
   selectedLocation,
   parentId,

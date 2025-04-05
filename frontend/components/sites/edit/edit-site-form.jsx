@@ -9,21 +9,12 @@ import { updateLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  landPurchaseStatuses,
   opportunityTypes,
-  planningStatuses,
   submitSiteSchema,
-  tenureTypes,
 } from "@/components/sites/form-constants";
 
 import { BasicInformation } from "./sections/basic-information";
-import { CommercialInformation } from "./sections/commercial-information";
-import { DeveloperInformation } from "./sections/developer-information";
-import { LocationInformation } from "./sections/location-information";
-import { PlanningInformation } from "./sections/planning-information";
-import { ProjectTimeline } from "./sections/project-timeline";
 import { SiteLocation } from "./sections/site-location";
-import { TenureInformation } from "./sections/tenure-information";
 
 // Debug logging
 const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
@@ -213,16 +204,6 @@ export function EditSiteForm({ site }) {
     setValue("sitePlanImage", fileUrl);
   };
 
-  const handleSpecificationUpload = (fileUrl) => {
-    log.form("Specification uploaded:", { fileUrl });
-    setValue("proposedSpecification", fileUrl);
-  };
-
-  const handleS106Upload = (fileUrl) => {
-    log.form("S106 agreement uploaded:", { fileUrl });
-    setValue("s106Agreement", fileUrl);
-  };
-
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
@@ -256,53 +237,6 @@ export function EditSiteForm({ site }) {
             />
           </div>
         </div>
-
-        <DeveloperInformation
-          register={register}
-          setValue={setValue}
-          watch={watch}
-          errors={errors}
-        />
-
-        <LocationInformation
-          watch={watch}
-          setValue={setValue}
-          errors={errors}
-        />
-
-        <PlanningInformation
-          register={register}
-          setValue={setValue}
-          watch={watch}
-          errors={errors}
-          planningStatuses={planningStatuses}
-          landPurchaseStatuses={landPurchaseStatuses}
-          parentId={site.id}
-          onSpecificationUpload={handleSpecificationUpload}
-          onS106Upload={handleS106Upload}
-        />
-
-        <TenureInformation
-          watch={watch}
-          setValue={setValue}
-          register={register}
-          errors={errors}
-          tenureTypes={tenureTypes}
-        />
-
-        <CommercialInformation
-          register={register}
-          setValue={setValue}
-          watch={watch}
-          errors={errors}
-        />
-
-        <ProjectTimeline
-          register={register}
-          watch={watch}
-          setValue={setValue}
-        />
-
         <div className="flex justify-end">
           <Button
             type="submit"
