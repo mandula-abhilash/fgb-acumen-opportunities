@@ -95,6 +95,44 @@ export const submitSiteSchema = z.object({
   s106Agreement: z.string().optional(),
 });
 
+export const editSiteSchema = z.object({
+  siteName: z.string().min(1, "Site name is required"),
+  siteAddress: z.string().min(1, "Site address is required"),
+  customSiteAddress: z.string().min(1, "Custom site address is required"),
+  opportunityType: z.string().min(1, "Opportunity type is required"),
+  developerName: z.string().min(1, "Developer name is required"),
+  developerRegion: z.array(z.any()).optional(),
+  googleMapsLink: z.string().url("Please enter a valid Google Maps URL"),
+  lpa: z.array(z.string()).min(1, "Please select at least one LPA"),
+  region: z.array(z.string()).min(1, "Please select at least one region"),
+  planningStatus: z.string().min(1, "Planning status is required"),
+  landPurchaseStatus: z.string().min(1, "Land purchase status is required"),
+  plots: z
+    .number()
+    .min(1, "Number of plots must be at least 1")
+    .int("Number of plots must be a whole number"),
+  tenures: z.array(z.string()).min(1, "Please select at least one tenure type"),
+  planningSubmissionDate: z.date().nullable().optional(),
+  planningDeterminationDate: z.date().nullable().optional(),
+  startOnSiteDate: z.date().nullable().optional(),
+  firstGoldenBrickDate: z.date().nullable().optional(),
+  finalGoldenBrickDate: z.date().nullable().optional(),
+  firstHandoverDate: z.date().nullable().optional(),
+  finalHandoverDate: z.date().nullable().optional(),
+  developerInfo: z.string().optional(),
+  siteContext: z.string().optional(),
+  planningOverview: z.string().optional(),
+  proposedDevelopment: z.string().optional(),
+  detailedTenureAccommodation: z.string().optional(),
+  paymentTerms: z.string().optional(),
+  vatPosition: z.string().optional(),
+  projectProgramme: z.string().optional(),
+  agentTerms: z.string().optional(),
+  sitePlanImage: z.string().optional(),
+  proposedSpecification: z.string().optional(),
+  s106Agreement: z.string().optional(),
+});
+
 export const fileTypes = {
   image: ["image/jpeg", "image/png", "image/jpg"],
   document: [

@@ -9,14 +9,23 @@ import { updateLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  editSiteSchema,
+  landPurchaseStatuses,
   opportunityTypes,
-  submitSiteSchema,
+  planningStatuses,
+  tenureTypes,
 } from "@/components/sites/form-constants";
 
 import { BasicInformation } from "./sections/basic-information";
+import { CommercialInformation } from "./sections/commercial-information";
+import { DeveloperInformation } from "./sections/developer-information";
+import { LocationInformation } from "./sections/location-information";
+import { PlanningInformation } from "./sections/planning-information";
+import { ProjectTimeline } from "./sections/project-timeline";
 import { SiteLocation } from "./sections/site-location";
+import { TenureInformation } from "./sections/tenure-information";
 
-// Debug logging
+// Debug logging configuration
 const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 const log = {
   form: (...args) => DEBUG && console.log("📝 [Form]:", ...args),
@@ -36,9 +45,10 @@ export function EditSiteForm({ site }) {
     site?.siteAddress || ""
   );
   const [polygonPath, setPolygonPath] = useState(site?.boundary || []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const parseDate = (dateStr) => {
-    if (!dateStr) return undefined;
+    if (!dateStr) return null;
     const date = new Date(dateStr);
     date.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
     return date;
@@ -49,10 +59,9 @@ export function EditSiteForm({ site }) {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
-    resolver: zodResolver(submitSiteSchema),
-    mode: "onChange",
+    resolver: zodResolver(editSiteSchema),
     defaultValues: {
       siteName: site?.siteName || "",
       siteAddress: site?.siteAddress || "",
@@ -89,6 +98,15 @@ export function EditSiteForm({ site }) {
     },
   });
 
+  // Debug: Log form values and validity state
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      log.form("Field changed:", name, value);
+      log.validation("Current errors:", errors);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, errors]);
+
   useEffect(() => {
     if (site) {
       log.form("Setting initial form values", { siteId: site.id });
@@ -120,17 +138,10 @@ export function EditSiteForm({ site }) {
     }
   }, [site, setValue]);
 
-  // Debug: Log form values and validity state
-  useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      log.form("Field changed:", name, value);
-      log.validation("Current errors:", errors);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, errors]);
-
   const onSubmit = async (data) => {
     log.submit("Form submission started", { siteId: site.id });
+    setIsSubmitting(true);
+
     try {
       if (!selectedLocation) {
         log.error("Location validation failed - no location selected");
@@ -180,12 +191,9 @@ export function EditSiteForm({ site }) {
         description:
           error.message || "Failed to update site. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleFormSubmit = async (data) => {
-    console.log("🔥 Submit clicked, data:", data);
-    await onSubmit(data);
   };
 
   const handleLocationSelect = (location, address) => {
@@ -206,7 +214,7 @@ export function EditSiteForm({ site }) {
 
   return (
     <form
-      onSubmit={handleSubmit(handleFormSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       className="px-6 py-4 bg-background/95 backdrop-blur-md dark:bg-background/80"
     >
       <div className="flex flex-col space-y-6 mx-auto">
@@ -237,6 +245,51 @@ export function EditSiteForm({ site }) {
             />
           </div>
         </div>
+
+        <DeveloperInformation
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+        />
+
+        <LocationInformation
+          watch={watch}
+          setValue={setValue}
+          errors={errors}
+        />
+
+        <PlanningInformation
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+          planningStatuses={planningStatuses}
+          landPurchaseStatuses={landPurchaseStatuses}
+          parentId={site.id}
+        />
+
+        <TenureInformation
+          watch={watch}
+          setValue={setValue}
+          register={register}
+          errors={errors}
+          tenureTypes={tenureTypes}
+        />
+
+        <CommercialInformation
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+        />
+
+        <ProjectTimeline
+          register={register}
+          watch={watch}
+          setValue={setValue}
+        />
+
         <div className="flex justify-end">
           <Button
             type="submit"
