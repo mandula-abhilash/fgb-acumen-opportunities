@@ -34,18 +34,7 @@ export default function EditSitePage() {
 
     const loadSiteData = async () => {
       try {
-        // Try to get site data from sessionStorage first
-        const storedSite = sessionStorage.getItem("editSiteData");
-        if (storedSite) {
-          const parsedSite = JSON.parse(storedSite);
-          setSite(parsedSite);
-          setLoading(false);
-          // Clear the stored data
-          sessionStorage.removeItem("editSiteData");
-          return;
-        }
-
-        // If no stored data, fetch from API
+        setLoading(true);
         const response = await getLiveOpportunitySite(params.id);
         setSite(response.data);
 

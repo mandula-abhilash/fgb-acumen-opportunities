@@ -25,29 +25,29 @@ export default function OpportunityDetailsPage() {
     }
   }, [authLoading, user, router]);
 
-  useEffect(() => {
-    const fetchOpportunity = async () => {
-      try {
-        setLoading(true);
-        const response = await getLiveOpportunitySite(params.id);
-        setSite(response.data);
-      } catch (error) {
-        console.error("Error fetching opportunity:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch opportunity details",
-        });
-        router.push("/dashboard/opportunities");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOpportunity = async () => {
+    try {
+      setLoading(true);
+      const response = await getLiveOpportunitySite(params.id);
+      setSite(response.data);
+    } catch (error) {
+      console.error("Error fetching opportunity:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to fetch opportunity details",
+      });
+      router.push("/dashboard/opportunities");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (params.id) {
       fetchOpportunity();
     }
-  }, [params.id, toast, router]);
+  }, [params.id]);
 
   if (loading || authLoading) {
     return (

@@ -9,8 +9,6 @@ export function HeaderSection({ site, canEdit }) {
   const router = useRouter();
 
   const handleEditClick = () => {
-    // Store site data in sessionStorage before navigating
-    sessionStorage.setItem("editSiteData", JSON.stringify(site));
     router.push(`/dashboard/opportunities/${site.id}/edit`);
   };
 
