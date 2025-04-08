@@ -132,7 +132,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     [
       siteName,
       siteAddress,
-      customSiteAddress,
+      customSiteAddress || siteAddress,
       opportunityType,
       developerName,
       developerRegionValues,
@@ -744,7 +744,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     [
       siteName,
       siteAddress,
-      customSiteAddress,
+      customSiteAddress || siteAddress,
       opportunityType.value || opportunityType,
       developerName,
       developerRegionValues,

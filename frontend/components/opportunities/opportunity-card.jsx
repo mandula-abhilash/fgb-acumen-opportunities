@@ -25,6 +25,8 @@ export function OpportunityCard({ opportunity, onRemove }) {
   const { user } = useAuth();
   const { filters } = useFilters();
 
+  console.log(JSON.stringify(opportunity, null, 2));
+
   // Function to clean LPA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
@@ -82,7 +84,8 @@ export function OpportunityCard({ opportunity, onRemove }) {
                   <div className="flex items-center text-white/90">
                     <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="text-sm line-clamp-2">
-                      {opportunity.site_address}
+                      {opportunity.custom_site_address ||
+                        opportunity.site_address}
                     </span>
                   </div>
                 </div>

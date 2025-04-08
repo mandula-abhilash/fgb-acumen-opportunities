@@ -43,7 +43,9 @@ export function OpportunityDetails({ opportunity }) {
         </h2>
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-          <span className="text-sm">{opportunity.site_address}</span>
+          <span className="text-sm">
+            {opportunity.custom_site_address || opportunity.site_address}
+          </span>
         </div>
       </div>
 
