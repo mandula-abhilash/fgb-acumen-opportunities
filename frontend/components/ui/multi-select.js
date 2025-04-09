@@ -22,7 +22,7 @@ import { Separator } from "@/components/ui/separator";
 
 export function MultiSelect({
   options,
-  selected,
+  selected = [], // Provide default empty array
   onChange,
   placeholder = "Select options",
   className,
@@ -31,6 +31,9 @@ export function MultiSelect({
 }) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
+
+  // Ensure selected is always an array
+  const selectedValues = Array.isArray(selected) ? selected : [];
 
   const filteredOptions = React.useMemo(
     () =>
@@ -42,15 +45,15 @@ export function MultiSelect({
 
   const handleUnselect = (item) => {
     if (disabled) return;
-    onChange(selected.filter((i) => i !== item));
+    onChange(selectedValues.filter((i) => i !== item));
   };
 
   const handleSelect = (currentValue) => {
     if (disabled) return;
-    if (selected.includes(currentValue)) {
-      onChange(selected.filter((item) => item !== currentValue));
+    if (selectedValues.includes(currentValue)) {
+      onChange(selectedValues.filter((item) => item !== currentValue));
     } else {
-      onChange([...selected, currentValue]);
+      onChange([...selectedValues, currentValue]);
     }
   };
 
@@ -62,7 +65,7 @@ export function MultiSelect({
 
   const toggleAll = () => {
     if (disabled) return;
-    if (selected.length === options.length) {
+    if (selectedValues.length === options.length) {
       onChange([]);
     } else {
       onChange(options.map((option) => option.value));
@@ -95,12 +98,12 @@ export function MultiSelect({
           >
             <div className="flex justify-between items-center w-full">
               <div className="flex flex-wrap items-center gap-1">
-                {selected.length === 0 && (
+                {selectedValues.length === 0 && (
                   <span className="text-sm text-muted-foreground placeholder:text-muted-foreground mx-3">
                     {placeholder}
                   </span>
                 )}
-                {selected.slice(0, maxCount).map((value) => (
+                {selectedValues.slice(0, maxCount).map((value) => (
                   <Badge variant="secondary" key={value} className="m-1 pr-1">
                     {getOptionLabel(value)}
                     {!disabled && (
@@ -128,14 +131,14 @@ export function MultiSelect({
                     )}
                   </Badge>
                 ))}
-                {selected.length > maxCount && (
+                {selectedValues.length > maxCount && (
                   <Badge variant="secondary" className="m-1">
-                    +{selected.length - maxCount} more
+                    +{selectedValues.length - maxCount} more
                   </Badge>
                 )}
               </div>
               <div className="flex items-center gap-2">
-                {selected.length > 0 && !disabled && (
+                {selectedValues.length > 0 && !disabled && (
                   <>
                     <span
                       role="button"
@@ -178,7 +181,7 @@ export function MultiSelect({
                   <div
                     className={cn(
                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selected.length === options.length
+                      selectedValues.length === options.length
                         ? "bg-primary text-primary-foreground"
                         : "opacity-50 [&_svg]:invisible"
                     )}
@@ -186,7 +189,7 @@ export function MultiSelect({
                     <Check className={cn("h-4 w-4")} />
                   </div>
                   <span>
-                    {selected.length === options.length
+                    {selectedValues.length === options.length
                       ? "Deselect All"
                       : "Select All"}
                   </span>
@@ -202,7 +205,7 @@ export function MultiSelect({
                     <div
                       className={cn(
                         "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        selected.includes(option.value)
+                        selectedValues.includes(option.value)
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible"
                       )}

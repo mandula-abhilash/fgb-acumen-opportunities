@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
 import { createLiveOpportunitySite } from "@/lib/api/liveOpportunities";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -42,6 +44,8 @@ export function SubmitSiteForm() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef(null);
   const [opportunityId] = useState(() => uuidv4());
 
   const {
@@ -49,48 +53,58 @@ export function SubmitSiteForm() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting: isFormSubmitting, isSubmitSuccessful },
+    clearErrors,
+    trigger,
   } = useForm({
     resolver: zodResolver(submitSiteSchema),
-    defaultValues: {
-      lpa: [],
-      region: [],
-      tenures: [],
-      sitePlanImage: "",
-      proposedSpecification: "",
-      s106Agreement: "",
-      googleMapsLink: "",
-      vatPosition: "",
-      siteAddress: "",
-      customSiteAddress: "",
-      opportunityType: "",
-      planningStatus: "",
-      landPurchaseStatus: "",
-    },
+    mode: "onChange",
   });
 
-  // Debug: Log form values and validity state
+  // Scroll to the first error when form submission fails
   useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      log.form("Field changed:", name, value);
-      log.validation("Current errors:", errors);
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0];
+      const errorElement = document.querySelector(
+        `[name="${firstErrorField}"], [id="${firstErrorField}"]`
+      );
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        errorElement.focus({ preventScroll: true });
+      }
+    }
+  }, [errors]);
+
+  // Clear errors when fields are corrected
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name && errors[name]) {
+        trigger(name);
+      }
     });
+
     return () => subscription.unsubscribe();
-  }, [watch, errors]);
+  }, [watch, errors, trigger]);
 
   const onSubmit = async (data) => {
     log.submit("Form submission started");
     try {
       if (!selectedLocation) {
-        log.error("Location validation failed - no location selected");
         toast({
           variant: "destructive",
           title: "Location Required",
           description: "Please select a site location using the map.",
         });
+        const mapElement = document.querySelector(
+          '[data-map-container="true"]'
+        );
+        if (mapElement) {
+          mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
         return;
       }
 
+      setIsSubmitting(true);
       const siteData = {
         ...data,
         coordinates: selectedLocation,
@@ -117,12 +131,9 @@ export function SubmitSiteForm() {
         description:
           error.message || "Failed to submit site. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleFormSubmit = async (data) => {
-    console.log("🔥 Submit clicked, data:", data);
-    await onSubmit(data);
   };
 
   const handleLocationSelect = (location, address) => {
@@ -151,12 +162,33 @@ export function SubmitSiteForm() {
     setValue("s106Agreement", fileUrl);
   };
 
+  // Show validation errors at the top if there are any
+  const hasErrors = Object.keys(errors).length > 0;
+
   return (
     <form
-      onSubmit={handleSubmit(handleFormSubmit)}
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit)}
       className="px-6 py-4 bg-background/95 backdrop-blur-md dark:bg-background/80"
+      noValidate
     >
       <div className="flex flex-col space-y-6 mx-auto">
+        {hasErrors && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Please correct the following errors before submitting:
+              <ul className="mt-2 list-disc list-inside">
+                {Object.entries(errors).map(([field, error]) => (
+                  <li key={field} className="text-sm">
+                    {error.message}
+                  </li>
+                ))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Map and Basic Information Section */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
           {/* Basic Information - Takes 1 column on desktop */}
@@ -171,11 +203,15 @@ export function SubmitSiteForm() {
               parentId={opportunityId}
               onSitePlanUpload={handleSitePlanUpload}
               watch={watch}
+              clearErrors={clearErrors}
             />
           </div>
 
           {/* Map - Takes 2 columns on desktop */}
-          <div className="order-1 lg:order-2 lg:col-span-2 h-[400px] lg:h-full">
+          <div
+            className="order-1 lg:order-2 lg:col-span-2 h-[400px] lg:h-full"
+            data-map-container="true"
+          >
             <SiteLocation
               onLocationSelect={handleLocationSelect}
               onPolygonComplete={handlePolygonComplete}
@@ -190,12 +226,14 @@ export function SubmitSiteForm() {
           setValue={setValue}
           watch={watch}
           errors={errors}
+          clearErrors={clearErrors}
         />
 
         <LocationInformation
           watch={watch}
           setValue={setValue}
           errors={errors}
+          clearErrors={clearErrors}
         />
 
         <PlanningInformation
@@ -208,6 +246,7 @@ export function SubmitSiteForm() {
           parentId={opportunityId}
           onSpecificationUpload={handleSpecificationUpload}
           onS106Upload={handleS106Upload}
+          clearErrors={clearErrors}
         />
 
         <TenureInformation
@@ -216,6 +255,7 @@ export function SubmitSiteForm() {
           register={register}
           errors={errors}
           tenureTypes={tenureTypes}
+          clearErrors={clearErrors}
         />
 
         <CommercialInformation
@@ -223,21 +263,23 @@ export function SubmitSiteForm() {
           setValue={setValue}
           watch={watch}
           errors={errors}
+          clearErrors={clearErrors}
         />
 
         <ProjectTimeline
           register={register}
           watch={watch}
           setValue={setValue}
+          clearErrors={clearErrors}
         />
 
         <div className="flex justify-end">
           <Button
             type="submit"
             className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isFormSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit Site"}
+            {isSubmitting || isFormSubmitting ? "Submitting..." : "Submit Site"}
           </Button>
         </div>
       </div>
