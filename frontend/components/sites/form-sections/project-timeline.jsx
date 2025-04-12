@@ -1,11 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { CalendarIcon, X } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -13,58 +11,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ProjectTimeline({ register, watch, setValue, disabled }) {
   const renderDatePicker = (fieldName, label) => {
     const selectedDate = watch(fieldName);
 
-    const handleClear = (e) => {
-      e.stopPropagation();
-      setValue(fieldName, null);
+    const handleDateChange = (date) => {
+      setValue(fieldName, date);
     };
 
     return (
       <div className="space-y-2">
         <Label>{label}</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-left font-normal",
-                !selectedDate && "text-muted-foreground"
-              )}
-              disabled={disabled}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              <span className="flex-1">
-                {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
-              </span>
-              {selectedDate && !disabled && (
-                <X
-                  className="h-4 w-4 opacity-50 hover:opacity-100"
-                  onClick={handleClear}
-                />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => setValue(fieldName, date)}
-              initialFocus
-              disabled={disabled}
-            />
-          </PopoverContent>
-        </Popover>
+        <DatePicker
+          value={selectedDate}
+          onChange={handleDateChange}
+          className={cn(disabled && "opacity-50 cursor-not-allowed")}
+        />
       </div>
     );
   };
