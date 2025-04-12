@@ -80,6 +80,7 @@ export function SiteDetailsView({ site: initialSite }) {
               opportunities={[site]}
               initialCenter={site.coordinates}
               initialZoom={15}
+              enableSidebar={false}
             />
           </div>
         </Card>

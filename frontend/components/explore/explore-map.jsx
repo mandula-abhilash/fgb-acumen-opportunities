@@ -110,11 +110,16 @@ function CustomMarker({ position, plots, onClick }) {
   return null;
 }
 
-export function ExploreMap({ opportunities }) {
+export function ExploreMap({
+  opportunities,
+  enableSidebar = true,
+  initialCenter = defaultCenter,
+  initialZoom = 7,
+}) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState(null);
   const [mapType, setMapType] = useState("hybrid");
-  const [zoomLevel, setZoomLevel] = useState(7);
+  const [zoomLevel, setZoomLevel] = useState(initialZoom);
   const [selectedOpportunityDetails, setSelectedOpportunityDetails] =
     useState(null);
   const [selectedCoordinates, setSelectedCoordinates] = useState(null);
@@ -126,11 +131,22 @@ export function ExploreMap({ opportunities }) {
     setMap(map);
     window.map = map;
 
-    // Fit bounds only on initial load if there are opportunities
-    if (opportunities?.length > 0) {
-      fitBoundsToMarkers(map, opportunities);
-      setInitialBoundsFitted(true);
+    // If we have a single opportunity and initialZoom is provided, use those
+    if (opportunities?.length === 1 && initialZoom) {
+      map.setZoom(initialZoom);
+      map.setCenter(opportunities[0].coordinates);
     }
+    // Otherwise fit bounds if we have multiple opportunities
+    else if (opportunities?.length > 0) {
+      fitBoundsToMarkers(map, opportunities);
+    }
+    // If no opportunities, center on initialCenter
+    else {
+      map.setCenter(initialCenter);
+      map.setZoom(initialZoom);
+    }
+
+    setInitialBoundsFitted(true);
   };
 
   // Function to fit map bounds to all markers
@@ -206,7 +222,7 @@ export function ExploreMap({ opportunities }) {
       offset = -sidebarWidth / 2;
     }
 
-    if (offset !== 0) {
+    if (offset !== 0 && enableSidebar) {
       // Get current bounds to calculate lng per pixel
       const bounds = map.getBounds();
       if (bounds) {
@@ -233,6 +249,8 @@ export function ExploreMap({ opportunities }) {
   };
 
   const handleMarkerClick = async (opportunity) => {
+    if (!enableSidebar) return;
+
     setIsLoading(true);
     setSelectedCoordinates(opportunity.coordinates);
 
@@ -271,7 +289,7 @@ export function ExploreMap({ opportunities }) {
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={zoomLevel}
-        center={defaultCenter}
+        center={initialCenter}
         onLoad={handleMapLoad}
         options={defaultMapOptions}
       >
@@ -292,12 +310,14 @@ export function ExploreMap({ opportunities }) {
         />
       </GoogleMap>
 
-      <OpportunitySidebar
-        opportunity={selectedOpportunityDetails}
-        isOpen={isSidebarOpen}
-        onClose={handleSidebarClose}
-        isLoading={isLoading}
-      />
+      {enableSidebar && (
+        <OpportunitySidebar
+          opportunity={selectedOpportunityDetails}
+          isOpen={isSidebarOpen}
+          onClose={handleSidebarClose}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 }
