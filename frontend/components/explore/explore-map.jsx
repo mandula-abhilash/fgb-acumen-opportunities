@@ -29,6 +29,7 @@ const defaultMapOptions = {
   gestureHandling: "greedy",
   minZoom: 6,
   mapTypeId: "satellite",
+  disableDefaultUI: true,
 };
 
 function CustomMarker({ position, plots, onClick }) {
