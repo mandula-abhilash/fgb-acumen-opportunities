@@ -25,18 +25,9 @@ import { DeveloperInformation } from "./form-sections/developer-information";
 import { LocationInformation } from "./form-sections/location-information";
 import { PlanningInformation } from "./form-sections/planning-information";
 import { ProjectTimeline } from "./form-sections/project-timeline";
+import { SiteDetails } from "./form-sections/site-details";
 import { SiteLocation } from "./form-sections/site-location";
 import { TenureInformation } from "./form-sections/tenure-information";
-
-// Debug logging configuration
-const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
-const log = {
-  form: (...args) => DEBUG && console.log("📝 [Form]:", ...args),
-  submit: (...args) => DEBUG && console.log("📤 [Submit]:", ...args),
-  error: (...args) => DEBUG && console.error("❌ [Error]:", ...args),
-  success: (...args) => DEBUG && console.log("✅ [Success]:", ...args),
-  validation: (...args) => DEBUG && console.log("🔍 [Validation]:", ...args),
-};
 
 export function SubmitSiteForm() {
   const { toast } = useToast();
@@ -53,7 +44,7 @@ export function SubmitSiteForm() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting: isFormSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting: isFormSubmitting },
     clearErrors,
     trigger,
   } = useForm({
@@ -87,7 +78,6 @@ export function SubmitSiteForm() {
   }, [watch, errors, trigger]);
 
   const onSubmit = async (data) => {
-    log.submit("Form submission started");
     try {
       if (!selectedLocation) {
         toast({
@@ -112,10 +102,7 @@ export function SubmitSiteForm() {
         opportunityId,
       };
 
-      log.submit("Submitting data:", siteData);
-
       const response = await createLiveOpportunitySite(siteData);
-      log.success("API call success:", response);
 
       toast({
         title: "Success",
@@ -124,7 +111,6 @@ export function SubmitSiteForm() {
 
       router.push("/dashboard/opportunities");
     } catch (error) {
-      log.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -137,28 +123,23 @@ export function SubmitSiteForm() {
   };
 
   const handleLocationSelect = (location, address) => {
-    log.form("Location selected:", { location, address });
     setSelectedLocation(location);
     setSelectedAddress(address);
   };
 
   const handlePolygonComplete = (path) => {
-    log.form("Polygon boundary updated:", { pointCount: path.length });
     setPolygonPath(path);
   };
 
   const handleSitePlanUpload = (fileUrl) => {
-    log.form("Site plan uploaded:", { fileUrl });
     setValue("sitePlanImage", fileUrl);
   };
 
   const handleSpecificationUpload = (fileUrl) => {
-    log.form("Specification uploaded:", { fileUrl });
     setValue("proposedSpecification", fileUrl);
   };
 
   const handleS106Upload = (fileUrl) => {
-    log.form("S106 agreement uploaded:", { fileUrl });
     setValue("s106Agreement", fileUrl);
   };
 
@@ -190,26 +171,21 @@ export function SubmitSiteForm() {
         )}
 
         {/* Map and Basic Information Section */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[500px]">
           {/* Basic Information - Takes 1 column on desktop */}
-          <div className="order-2 lg:order-1 h-[400px] lg:h-full">
+          <div className="order-2 lg:order-1 h-[460px] lg:h-full">
             <BasicInformation
               register={register}
               setValue={setValue}
               errors={errors}
-              opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
               selectedLocation={selectedLocation}
-              parentId={opportunityId}
-              onSitePlanUpload={handleSitePlanUpload}
-              watch={watch}
-              clearErrors={clearErrors}
             />
           </div>
 
           {/* Map - Takes 2 columns on desktop */}
           <div
-            className="order-1 lg:order-2 lg:col-span-2 h-[400px] lg:h-full"
+            className="order-1 lg:order-2 lg:col-span-2 h-[460px] lg:h-full"
             data-map-container="true"
           >
             <SiteLocation
@@ -220,6 +196,16 @@ export function SubmitSiteForm() {
             />
           </div>
         </div>
+
+        <SiteDetails
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+          opportunityTypes={opportunityTypes}
+          parentId={opportunityId}
+          onSitePlanUpload={handleSitePlanUpload}
+        />
 
         <DeveloperInformation
           register={register}
