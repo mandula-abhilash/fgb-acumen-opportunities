@@ -65,6 +65,10 @@ export function DateFilter({
     setIsOpen(false);
   };
 
+  const handleCloseFilter = () => {
+    setIsOpen(false);
+  };
+
   const handleClearFilter = (e) => {
     e.stopPropagation();
     setLocalValue({});
@@ -186,11 +190,11 @@ export function DateFilter({
 
             {localValue.mode && (
               <Button
-                onClick={handleApplyFilter}
-                disabled={!isValid() || !isDirty}
+                onClick={isDirty ? handleApplyFilter : handleCloseFilter}
+                disabled={isDirty && !isValid()}
                 className="w-full mt-2 bg-web-orange hover:bg-web-orange/90 text-white"
               >
-                Apply Filter
+                {isDirty ? "Apply Filter" : "Close"}
               </Button>
             )}
           </div>
