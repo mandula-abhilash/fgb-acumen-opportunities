@@ -79,7 +79,7 @@ export function SiteDetailsView({ site: initialSite }) {
             <ExploreMap
               opportunities={[site]}
               initialCenter={site.coordinates}
-              initialZoom={15}
+              initialZoom={20}
               enableSidebar={false}
             />
           </div>

@@ -127,7 +127,7 @@ export function ExploreMap({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initialBoundsFitted, setInitialBoundsFitted] = useState(false);
-  const [isTilted, setIsTilted] = useState(false);
+  const [isTilted, setIsTilted] = useState(true);
 
   const handleMapLoad = (map) => {
     setMap(map);
