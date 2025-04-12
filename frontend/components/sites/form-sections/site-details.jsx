@@ -107,9 +107,89 @@ export function SiteDetails({
           Enter key details about the development site
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="space-y-2">
+      <CardContent>
+        <div className="lg:grid lg:grid-cols-2 gap-6">
+          {/* Left Column - Form Fields */}
+          <div className="space-y-6 order-2 lg:order-1">
+            <div className="space-y-2">
+              <Label htmlFor="opportunityType">
+                Opportunity Type <span className="text-destructive">*</span>
+              </Label>
+              <Select
+                value={opportunityType}
+                onValueChange={(value) => setValue("opportunityType", value)}
+              >
+                <SelectTrigger
+                  className={errors.opportunityType ? "border-destructive" : ""}
+                >
+                  <SelectValue placeholder="Select opportunity type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {opportunityTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.label}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.opportunityType && (
+                <p className="text-sm text-destructive">
+                  {errors.opportunityType.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="plots">
+                Number of Plots <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="plots"
+                type="number"
+                min="1"
+                step="1"
+                onKeyDown={(e) => {
+                  if (
+                    !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Tab/.test(
+                      e.key
+                    )
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "" || /^[0-9]+$/.test(value)) {
+                    setValue("plots", value === "" ? "" : parseInt(value, 10));
+                  }
+                }}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (isNaN(value) || value < 1) {
+                    e.target.value = "1";
+                    setValue("plots", 1);
+                  } else {
+                    e.target.value = Math.floor(value).toString();
+                    setValue("plots", Math.floor(value));
+                  }
+                }}
+                {...register("plots", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value >= 1 || "Number of plots must be at least 1",
+                })}
+                className={errors.plots ? "border-destructive" : ""}
+              />
+              {errors.plots && (
+                <p className="text-sm text-destructive">
+                  {errors.plots.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Site Plan */}
+          <div className="space-y-2 order-1 lg:order-2 mb-6 lg:mb-0">
             <Label htmlFor="sitePlanImage">Site Plan</Label>
             {sitePlanImage ? (
               renderSitePlanLink(sitePlanImage)
@@ -126,80 +206,6 @@ export function SiteDetails({
                 description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
                 fileType="mixed"
               />
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="opportunityType">
-              Opportunity Type <span className="text-destructive">*</span>
-            </Label>
-            <Select
-              value={opportunityType}
-              onValueChange={(value) => setValue("opportunityType", value)}
-            >
-              <SelectTrigger
-                className={errors.opportunityType ? "border-destructive" : ""}
-              >
-                <SelectValue placeholder="Select opportunity type" />
-              </SelectTrigger>
-              <SelectContent>
-                {opportunityTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.label}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.opportunityType && (
-              <p className="text-sm text-destructive">
-                {errors.opportunityType.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="plots">
-              Number of Plots <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="plots"
-              type="number"
-              min="1"
-              step="1"
-              onKeyDown={(e) => {
-                if (
-                  !/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Tab/.test(
-                    e.key
-                  )
-                ) {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || /^[0-9]+$/.test(value)) {
-                  setValue("plots", value === "" ? "" : parseInt(value, 10));
-                }
-              }}
-              onBlur={(e) => {
-                const value = parseInt(e.target.value);
-                if (isNaN(value) || value < 1) {
-                  e.target.value = "1";
-                  setValue("plots", 1);
-                } else {
-                  e.target.value = Math.floor(value).toString();
-                  setValue("plots", Math.floor(value));
-                }
-              }}
-              {...register("plots", {
-                valueAsNumber: true,
-                validate: (value) =>
-                  value >= 1 || "Number of plots must be at least 1",
-              })}
-              className={errors.plots ? "border-destructive" : ""}
-            />
-            {errors.plots && (
-              <p className="text-sm text-destructive">{errors.plots.message}</p>
             )}
           </div>
         </div>
