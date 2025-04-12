@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -60,7 +60,7 @@ function Calendar({
     setCurrentMonth(nextMonth);
   };
 
-  // Custom Caption component that combines navigation arrows with the month and year select
+  // Custom Caption that includes navigation arrows plus a styled year dropdown.
   const CustomCaption = ({ displayMonth }) => {
     return (
       <div className="flex items-center justify-between w-full">
@@ -78,17 +78,24 @@ function Calendar({
           <span className="text-sm font-medium">
             {displayMonth.toLocaleString("default", { month: "long" })}
           </span>
-          <select
-            value={displayMonth.getFullYear()}
-            onChange={handleYearChange}
-            className="cursor-pointer rounded-md bg-transparent py-1 px-2 text-sm font-medium border border-input hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none min-w-[80px] text-center"
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={displayMonth.getFullYear()}
+              onChange={handleYearChange}
+              className={cn(
+                "appearance-none cursor-pointer rounded-md bg-transparent py-1 pl-3 pr-8 text-sm font-medium border border-input",
+                "hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring",
+                "min-w-[80px] text-center"
+              )}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none text-muted-foreground" />
+          </div>
         </div>
         <button
           onClick={handleNextMonth}
