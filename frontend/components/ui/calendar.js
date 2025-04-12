@@ -7,23 +7,65 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  fromYear = 1900,
+  toYear = 2100,
+  ...props
+}) {
+  const [currentMonth, setCurrentMonth] = React.useState(
+    props.selected ? new Date(props.selected) : new Date()
+  );
+
+  // Update current month when selected date changes
+  React.useEffect(() => {
+    if (props.selected) {
+      setCurrentMonth(new Date(props.selected));
+    }
+  }, [props.selected]);
+
+  const handleMonthChange = (month) => {
+    setCurrentMonth(month);
+  };
+
+  const handleYearChange = (e) => {
+    const year = parseInt(e.target.value, 10);
+    const newDate = new Date(currentMonth);
+    newDate.setFullYear(year);
+    setCurrentMonth(newDate);
+    // If there's a selected date, update its year
+    if (props.selected) {
+      const updatedSelection = new Date(props.selected);
+      updatedSelection.setFullYear(year);
+      props.onSelect?.(updatedSelection);
+    }
+  };
+
+  const years = Array.from(
+    { length: toYear - fromYear + 1 },
+    (_, i) => fromYear + i
+  );
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
+      month={currentMonth}
+      onMonthChange={handleMonthChange}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center h-10",
         caption_label: "text-sm font-medium",
-        nav: "space-x-1 flex items-center",
+        nav: "space-x-1 flex items-center w-full absolute justify-between left-1 right-1",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
+        nav_button_previous: "!relative",
+        nav_button_next: "!relative",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
@@ -59,6 +101,26 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
         IconRight: ({ className, ...props }) => (
           <ChevronRight className={cn("h-4 w-4", className)} {...props} />
         ),
+        Caption: ({ displayMonth }) => {
+          return (
+            <div className="flex justify-center items-center gap-2">
+              <span className="text-sm font-medium">
+                {displayMonth.toLocaleString("default", { month: "long" })}
+              </span>
+              <select
+                value={displayMonth.getFullYear()}
+                onChange={handleYearChange}
+                className="cursor-pointer rounded-md bg-transparent py-1 px-2 text-sm font-medium border border-input hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none min-w-[80px] text-center"
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        },
       }}
       {...props}
       numberOfMonths={1}
