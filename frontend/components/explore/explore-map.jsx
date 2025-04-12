@@ -127,6 +127,7 @@ export function ExploreMap({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initialBoundsFitted, setInitialBoundsFitted] = useState(false);
+  const [isTilted, setIsTilted] = useState(false);
 
   const handleMapLoad = (map) => {
     setMap(map);
@@ -205,6 +206,14 @@ export function ExploreMap({
         map.setZoom(newZoom);
         setZoomLevel(newZoom);
       }
+    }
+  };
+
+  const handleTiltToggle = () => {
+    if (map) {
+      const newTilt = isTilted ? 0 : 45;
+      map.setTilt(newTilt);
+      setIsTilted(!isTilted);
     }
   };
 
@@ -308,6 +317,8 @@ export function ExploreMap({
           zoomLevel={zoomLevel}
           onMapTypeChange={handleMapTypeChange}
           onZoomChange={handleZoomChange}
+          isTilted={isTilted}
+          onTiltToggle={handleTiltToggle}
         />
       </GoogleMap>
 

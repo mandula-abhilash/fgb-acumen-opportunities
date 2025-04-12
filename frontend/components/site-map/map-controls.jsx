@@ -8,6 +8,7 @@ import {
   Mountain,
   Pencil,
   Pentagon,
+  Rotate3D,
   Satellite,
   Trash2,
   ZoomIn,
@@ -28,11 +29,13 @@ export function MapControls({
   drawingMode,
   hasPolygon,
   isEditing,
+  isTilted = false,
   onMapTypeChange,
   onZoomChange,
   onDrawingModeToggle,
   onClearPolygon,
   onToggleEdit,
+  onTiltToggle,
 }) {
   const mapTypes = [
     {
@@ -56,6 +59,17 @@ export function MapControls({
     "bg-havelock-blue/20 text-havelock-blue hover:bg-havelock-blue/80";
   const defaultStyle = "text-gray-600 hover:text-gray-900 hover:bg-gray-100";
 
+  const handleButtonClick = (e, callback) => {
+    if (e) {
+      e.preventDefault(); // Prevent form submission
+      e.stopPropagation(); // Stop event bubbling
+    }
+
+    if (typeof callback === "function") {
+      callback();
+    }
+  };
+
   return (
     <div className="absolute right-4 bottom-4 flex flex-col gap-2 sm:right-6">
       <TooltipProvider>
@@ -65,10 +79,13 @@ export function MapControls({
             <Tooltip key={id}>
               <TooltipTrigger asChild>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
                   className={`w-8 h-8 ${mapType === id ? selectedStyle : defaultStyle}`}
-                  onClick={() => onMapTypeChange(id)}
+                  onClick={(e) =>
+                    handleButtonClick(e, () => onMapTypeChange?.(id))
+                  }
                 >
                   <Icon className="h-4 w-4" />
                   <span className="sr-only">{label}</span>
@@ -87,6 +104,7 @@ export function MapControls({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
                   className={`w-8 h-8 ${
@@ -94,7 +112,7 @@ export function MapControls({
                       ? selectedStyle
                       : defaultStyle
                   }`}
-                  onClick={onDrawingModeToggle}
+                  onClick={(e) => handleButtonClick(e, onDrawingModeToggle)}
                 >
                   <Pentagon className="h-4 w-4" />
                   <span className="sr-only">Draw boundary</span>
@@ -112,10 +130,11 @@ export function MapControls({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
                       className={`w-8 h-8 ${isEditing ? selectedStyle : defaultStyle}`}
-                      onClick={onToggleEdit}
+                      onClick={(e) => handleButtonClick(e, onToggleEdit)}
                     >
                       <Pencil className="h-4 w-4" />
                       <span className="sr-only">
@@ -131,10 +150,11 @@ export function MapControls({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
                       className={`w-8 h-8 ${defaultStyle}`}
-                      onClick={onClearPolygon}
+                      onClick={(e) => handleButtonClick(e, onClearPolygon)}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Clear boundary</span>
@@ -148,15 +168,41 @@ export function MapControls({
             )}
         </div>
 
+        {/* Tilt Control */}
+        <div className="bg-white rounded-lg border shadow-lg p-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className={`w-8 h-8 ${isTilted ? selectedStyle : defaultStyle}`}
+                onClick={(e) => handleButtonClick(e, onTiltToggle)}
+              >
+                <Rotate3D className="h-4 w-4" />
+                <span className="sr-only">
+                  {isTilted ? "Straighten view" : "Tilt view"}
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>{isTilted ? "Straighten view" : "Tilt view"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
         {/* Zoom Controls */}
         <div className="bg-white rounded-lg border shadow-lg p-1 flex flex-col gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className={`w-8 h-8 ${defaultStyle}`}
-                onClick={() => onZoomChange("in")}
+                onClick={(e) =>
+                  handleButtonClick(e, () => onZoomChange?.("in"))
+                }
               >
                 <ZoomIn className="h-4 w-4" />
                 <span className="sr-only">Zoom in</span>
@@ -174,10 +220,13 @@ export function MapControls({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className={`w-8 h-8 ${defaultStyle}`}
-                onClick={() => onZoomChange("out")}
+                onClick={(e) =>
+                  handleButtonClick(e, () => onZoomChange?.("out"))
+                }
               >
                 <ZoomOut className="h-4 w-4" />
                 <span className="sr-only">Zoom out</span>
