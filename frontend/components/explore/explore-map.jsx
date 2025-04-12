@@ -133,6 +133,11 @@ export function ExploreMap({
     setMap(map);
     window.map = map;
 
+    // Add zoom change listener
+    map.addListener("zoom_changed", () => {
+      setZoomLevel(map.getZoom());
+    });
+
     // If we have a single opportunity and initialZoom is provided, use those
     if (opportunities?.length === 1 && initialZoom) {
       map.setZoom(initialZoom);
