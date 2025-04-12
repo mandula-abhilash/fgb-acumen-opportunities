@@ -1,11 +1,75 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import * as Select from "@radix-ui/react-select";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+
+function YearSelect({ currentYear, years, onYearSelect }) {
+  return (
+    <Select.Root
+      value={String(currentYear)}
+      onValueChange={(val) => onYearSelect(parseInt(val, 10))}
+    >
+      <Select.Trigger
+        className={cn(
+          "inline-flex items-center justify-between rounded-md border px-2 py-1",
+          "bg-transparent text-sm font-medium text-center",
+          "hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+        )}
+      >
+        <Select.Value />
+        <Select.Icon>
+          <ChevronDown className="h-4 w-4" />
+        </Select.Icon>
+      </Select.Trigger>
+
+      {/* The Portal ensures the dropdown is placed outside normal DOM flow */}
+      <Select.Portal>
+        <Select.Content
+          // Enable Radix’s popper-based positioning and offset it a bit from the trigger
+          position="popper"
+          sideOffset={6}
+          // A high z-index ensures it’s above the calendar, plus a max height + scrolling
+          className={cn(
+            "z-50 rounded-md border bg-white shadow-md",
+            "max-h-48 overflow-y-auto" // Limit height & add scroll
+          )}
+        >
+          <Select.Viewport className="p-1">
+            {/* Optional scroll buttons for long lists */}
+            <Select.ScrollUpButton className="flex items-center justify-center p-1">
+              <ChevronUp className="h-4 w-4" />
+            </Select.ScrollUpButton>
+            {years.map((year) => (
+              <Select.Item
+                key={year}
+                value={String(year)}
+                className={cn(
+                  "px-2 py-1 text-sm cursor-pointer rounded-sm outline-none",
+                  "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                )}
+              >
+                <Select.ItemText>{year}</Select.ItemText>
+              </Select.Item>
+            ))}
+            <Select.ScrollDownButton className="flex items-center justify-center p-1">
+              <ChevronDown className="h-4 w-4" />
+            </Select.ScrollDownButton>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
 
 function Calendar({
   className,
@@ -30,8 +94,7 @@ function Calendar({
     setCurrentMonth(month);
   };
 
-  const handleYearChange = (e) => {
-    const year = parseInt(e.target.value, 10);
+  const handleYearChange = (year) => {
     const newDate = new Date(currentMonth);
     newDate.setFullYear(year);
     setCurrentMonth(newDate);
@@ -60,7 +123,7 @@ function Calendar({
     setCurrentMonth(nextMonth);
   };
 
-  // Custom Caption that includes navigation arrows plus a styled year dropdown.
+  // Custom Caption that integrates the custom YearSelect (Radix UI) plus navigation arrows.
   const CustomCaption = ({ displayMonth }) => {
     return (
       <div className="flex items-center justify-between w-full">
@@ -78,24 +141,11 @@ function Calendar({
           <span className="text-sm font-medium">
             {displayMonth.toLocaleString("default", { month: "long" })}
           </span>
-          <div className="relative">
-            <select
-              value={displayMonth.getFullYear()}
-              onChange={handleYearChange}
-              className={cn(
-                "appearance-none cursor-pointer rounded-md bg-transparent py-1 pl-3 pr-8 text-sm font-medium border border-input",
-                "hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring",
-                "min-w-[80px] text-center"
-              )}
-            >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none text-muted-foreground" />
-          </div>
+          <YearSelect
+            currentYear={displayMonth.getFullYear()}
+            years={years}
+            onYearSelect={handleYearChange}
+          />
         </div>
         <button
           onClick={handleNextMonth}
