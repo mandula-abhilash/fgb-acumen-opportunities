@@ -32,20 +32,16 @@ function YearSelect({ currentYear, years, onYearSelect }) {
         </Select.Icon>
       </Select.Trigger>
 
-      {/* The Portal ensures the dropdown is placed outside normal DOM flow */}
       <Select.Portal>
         <Select.Content
-          // Enable Radix’s popper-based positioning and offset it a bit from the trigger
           position="popper"
           sideOffset={6}
-          // A high z-index ensures it’s above the calendar, plus a max height + scrolling
           className={cn(
             "z-50 rounded-md border bg-white shadow-md",
-            "max-h-48 overflow-y-auto" // Limit height & add scroll
+            "max-h-48 overflow-y-auto"
           )}
         >
           <Select.Viewport className="p-1">
-            {/* Optional scroll buttons for long lists */}
             <Select.ScrollUpButton className="flex items-center justify-center p-1">
               <ChevronUp className="h-4 w-4" />
             </Select.ScrollUpButton>
@@ -77,18 +73,20 @@ function Calendar({
   showOutsideDays = true,
   fromYear = 1900,
   toYear = 2100,
+  onSelect,
+  selected,
+  mode,
   ...props
 }) {
   const [currentMonth, setCurrentMonth] = React.useState(
-    props.selected ? new Date(props.selected) : new Date()
+    selected ? new Date(selected) : new Date()
   );
 
-  // Update current month if the selected date changes
   React.useEffect(() => {
-    if (props.selected) {
-      setCurrentMonth(new Date(props.selected));
+    if (selected) {
+      setCurrentMonth(new Date(selected));
     }
-  }, [props.selected]);
+  }, [selected]);
 
   const handleMonthChange = (month) => {
     setCurrentMonth(month);
@@ -98,10 +96,10 @@ function Calendar({
     const newDate = new Date(currentMonth);
     newDate.setFullYear(year);
     setCurrentMonth(newDate);
-    if (props.selected) {
-      const updatedSelection = new Date(props.selected);
+    if (selected) {
+      const updatedSelection = new Date(selected);
       updatedSelection.setFullYear(year);
-      props.onSelect?.(updatedSelection);
+      onSelect?.(updatedSelection);
     }
   };
 
@@ -110,7 +108,6 @@ function Calendar({
     (_, i) => fromYear + i
   );
 
-  // Navigation functions for the arrows
   const handlePreviousMonth = () => {
     const prevMonth = new Date(currentMonth);
     prevMonth.setMonth(currentMonth.getMonth() - 1);
@@ -123,7 +120,24 @@ function Calendar({
     setCurrentMonth(nextMonth);
   };
 
-  // Custom Caption that integrates the custom YearSelect (Radix UI) plus navigation arrows.
+  const handleDateSelect = (date) => {
+    if (date) {
+      // Create date at noon UTC
+      const newDate = new Date(
+        Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          12,
+          0,
+          0,
+          0
+        )
+      );
+      onSelect?.(newDate);
+    }
+  };
+
   const CustomCaption = ({ displayMonth }) => {
     return (
       <div className="flex items-center justify-between w-full">
@@ -167,6 +181,9 @@ function Calendar({
       className={cn("p-3", className)}
       month={currentMonth}
       onMonthChange={handleMonthChange}
+      onSelect={handleDateSelect}
+      selected={selected}
+      mode={mode}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -177,7 +194,7 @@ function Calendar({
         row: "flex w-full mt-2",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
-          props.mode === "range"
+          mode === "range"
             ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
             : "[&:has([aria-selected])]:rounded-md"
         ),

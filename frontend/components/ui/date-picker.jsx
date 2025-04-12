@@ -17,6 +17,7 @@ export function DatePicker({ className, value, onChange, disabled }) {
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (date) => {
+    // Date is already handled in Calendar component to be UTC noon
     onChange?.(date);
     setOpen(false);
   };
