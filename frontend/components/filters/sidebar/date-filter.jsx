@@ -111,17 +111,16 @@ export function DateFilter({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="space-y-2 px-2">
-        <CollapsibleTrigger asChild>
-          <div className="flex items-center gap-2 cursor-pointer">
-            <div className="flex items-center gap-2 flex-1">
-              <Icon className="h-4 w-4" />
-              <Label className="text-sm font-medium flex-1">{label}</Label>
-              {isFilterActive() && (
-                <div className="h-2 w-2 rounded-full bg-havelock-blue" />
-              )}
-            </div>
+        {/* Remove CollapsibleTrigger and make the label section non-interactive */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
+            <Icon className="h-4 w-4" />
+            <Label className="text-sm font-medium flex-1">{label}</Label>
+            {isFilterActive() && (
+              <div className="h-2 w-2 rounded-full bg-havelock-blue" />
+            )}
           </div>
-        </CollapsibleTrigger>
+        </div>
 
         {isFilterActive() && !isOpen && (
           <div className="flex items-center gap-2 px-6 py-1 bg-muted/100 rounded-md group transition-colors hover:bg-muted">
