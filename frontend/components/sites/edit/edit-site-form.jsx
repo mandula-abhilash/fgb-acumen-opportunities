@@ -24,18 +24,9 @@ import { DeveloperInformation } from "./sections/developer-information";
 import { LocationInformation } from "./sections/location-information";
 import { PlanningInformation } from "./sections/planning-information";
 import { ProjectTimeline } from "./sections/project-timeline";
+import { SiteDetails } from "./sections/site-details";
 import { SiteLocation } from "./sections/site-location";
 import { TenureInformation } from "./sections/tenure-information";
-
-// Debug logging configuration
-const DEBUG = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
-const log = {
-  form: (...args) => DEBUG && console.log("📝 [Form]:", ...args),
-  submit: (...args) => DEBUG && console.log("📤 [Submit]:", ...args),
-  error: (...args) => DEBUG && console.error("❌ [Error]:", ...args),
-  success: (...args) => DEBUG && console.log("✅ [Success]:", ...args),
-  validation: (...args) => DEBUG && console.log("🔍 [Validation]:", ...args),
-};
 
 export function EditSiteForm({ site }) {
   const { toast } = useToast();
@@ -109,7 +100,6 @@ export function EditSiteForm({ site }) {
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       setErrorFields(Object.keys(errors));
-      log.error("Current errors:", errors);
     } else {
       setErrorFields([]);
     }
@@ -119,75 +109,26 @@ export function EditSiteForm({ site }) {
   const scrollToError = () => {
     if (errorFields.length === 0) return;
 
-    // Try different selector strategies
-    let errorElement = null;
-    const fieldId = errorFields[0];
-
-    // First try by name attribute
-    errorElement = document.querySelector(`[name="${fieldId}"]`);
-
-    // Then try by id
-    if (!errorElement) {
-      errorElement = document.getElementById(fieldId);
-    }
-
-    // Try with a more general approach for custom components
-    if (!errorElement) {
-      // Look for labels or containers with data attributes
-      errorElement = document.querySelector(
-        `[data-field="${fieldId}"], [data-error="${fieldId}"]`
-      );
-    }
-
-    // Try parent containers that might wrap the field
-    if (!errorElement) {
-      const possibleContainers = document.querySelectorAll(".field-container");
-      possibleContainers.forEach((container) => {
-        if (container.querySelector(`[name="${fieldId}"]`)) {
-          errorElement = container;
-        }
-      });
-    }
-
-    // If all else fails, try to find any element with the field name in it
-    if (!errorElement) {
-      document.querySelectorAll("*").forEach((el) => {
-        if (el.textContent && el.textContent.includes(fieldId)) {
-          const closestInput = el
-            .closest("div")
-            ?.querySelector("input, select, textarea");
-          if (closestInput) {
-            errorElement = closestInput;
-          }
-        }
-      });
-    }
+    const firstErrorField = errorFields[0];
+    const errorElement = document.querySelector(
+      `[name="${firstErrorField}"], [id="${firstErrorField}"]`
+    );
 
     if (errorElement) {
-      // Use a small delay to ensure the DOM is fully ready
-      setTimeout(() => {
-        log.form(`Scrolling to error field: ${fieldId}`);
-        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        try {
-          errorElement.focus({ preventScroll: true });
-        } catch (e) {
-          log.error("Could not focus element:", e);
-        }
-      }, 100);
-    } else {
-      log.error(`Could not find element for error field: ${fieldId}`);
-      // Fallback: scroll to the form top
-      if (formRef.current) {
-        formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      try {
+        errorElement.focus({ preventScroll: true });
+      } catch (e) {
+        console.error("Could not focus element:", e);
       }
+    } else if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   // Scroll to the first error when form submission fails
   useEffect(() => {
-    // Only scroll if there are errors and we're not actively submitting
     if (errorFields.length > 0 && !isSubmitting) {
-      // Add a slight delay to ensure the DOM is fully updated
       const timer = setTimeout(scrollToError, 150);
       return () => clearTimeout(timer);
     }
@@ -195,7 +136,7 @@ export function EditSiteForm({ site }) {
 
   // Clear errors when fields are corrected
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value, { name }) => {
       if (name && errors[name]) {
         trigger(name);
       }
@@ -204,18 +145,8 @@ export function EditSiteForm({ site }) {
     return () => subscription.unsubscribe();
   }, [watch, errors, trigger]);
 
-  // Debug: Log form values and validity state
-  useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      log.form("Field changed:", name, value);
-      log.validation("Current errors:", errors);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, errors]);
-
   useEffect(() => {
     if (site) {
-      log.form("Setting initial form values", { siteId: site.id });
       setValue("opportunityType", site.opportunityType);
       setValue("planningStatus", site.planningStatus);
       setValue("landPurchaseStatus", site.landPurchaseStatus);
@@ -239,16 +170,10 @@ export function EditSiteForm({ site }) {
       setDateField("planningDeterminationDate", site.planningDeterminationDate);
       setDateField("firstGoldenBrickDate", site.firstGoldenBrickDate);
       setDateField("finalGoldenBrickDate", site.finalGoldenBrickDate);
-
-      log.form("Initial form values set successfully");
     }
   }, [site, setValue]);
 
-  // Modified to better handle errors
   const onSubmit = async (data) => {
-    log.submit("Form submission started", { siteId: site.id });
-    setIsSubmitting(true);
-
     try {
       if (!selectedLocation) {
         toast({
@@ -262,9 +187,10 @@ export function EditSiteForm({ site }) {
         if (mapElement) {
           mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-        setIsSubmitting(false);
         return;
       }
+
+      setIsSubmitting(true);
 
       // Format dates to YYYY-MM-DD
       const formatDate = (date) => {
@@ -285,10 +211,7 @@ export function EditSiteForm({ site }) {
         finalGoldenBrickDate: formatDate(data.finalGoldenBrickDate),
       };
 
-      log.submit("Submitting to API", siteData);
-
-      const response = await updateLiveOpportunitySite(site.id, siteData);
-      log.success("API call success", response);
+      await updateLiveOpportunitySite(site.id, siteData);
 
       toast({
         title: "Success",
@@ -297,7 +220,6 @@ export function EditSiteForm({ site }) {
 
       router.push(`/dashboard/opportunities/${site.id}`);
     } catch (error) {
-      log.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -305,39 +227,39 @@ export function EditSiteForm({ site }) {
           error.message || "Failed to update site. Please try again.",
       });
 
-      // Trigger error scroll after submission error
       setTimeout(scrollToError, 100);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Special error handler for form submission to ensure we scroll after validation errors
   const handleFormSubmit = (e) => {
     handleSubmit(onSubmit)(e).catch((error) => {
-      log.error("Form validation error:", error);
-      // Additional delay to allow React Hook Form to process errors
       setTimeout(scrollToError, 150);
     });
   };
 
   const handleLocationSelect = (location, address) => {
-    log.form("Location selected:", { location, address });
     setSelectedLocation(location);
     setSelectedAddress(address);
   };
 
   const handlePolygonComplete = (path) => {
-    log.form("Polygon boundary updated:", { pointCount: path.length });
     setPolygonPath(path);
   };
 
   const handleSitePlanUpload = (fileUrl) => {
-    log.form("Site plan uploaded:", { fileUrl });
     setValue("sitePlanImage", fileUrl);
   };
 
-  // Show validation errors at the top if there are any
+  const handleSpecificationUpload = (fileUrl) => {
+    setValue("proposedSpecification", fileUrl);
+  };
+
+  const handleS106Upload = (fileUrl) => {
+    setValue("s106Agreement", fileUrl);
+  };
+
   const hasErrors = Object.keys(errors).length > 0;
 
   return (
@@ -359,7 +281,6 @@ export function EditSiteForm({ site }) {
                     key={field}
                     className="text-sm"
                     onClick={() => {
-                      // Make error items clickable to navigate to the field
                       const errorField = document.querySelector(
                         `[name="${field}"], #${field}`
                       );
@@ -384,18 +305,15 @@ export function EditSiteForm({ site }) {
         )}
 
         {/* Map and Basic Information Section */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[600px]">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[500px]">
           {/* Basic Information - Takes 1 column on desktop */}
-          <div className="order-2 lg:order-1 h-[400px] lg:h-full">
+          <div className="order-2 lg:order-1 h-[460px] lg:h-full">
             <BasicInformation
               register={register}
               setValue={setValue}
               errors={errors}
-              opportunityTypes={opportunityTypes}
               selectedAddress={selectedAddress}
               selectedLocation={selectedLocation}
-              parentId={site.id}
-              onSitePlanUpload={handleSitePlanUpload}
               watch={watch}
               clearErrors={clearErrors}
             />
@@ -403,7 +321,7 @@ export function EditSiteForm({ site }) {
 
           {/* Map - Takes 2 columns on desktop */}
           <div
-            className="order-1 lg:order-2 lg:col-span-2 h-[400px] lg:h-full"
+            className="order-1 lg:order-2 lg:col-span-2 h-[460px] lg:h-full"
             data-map-container="true"
           >
             <SiteLocation
@@ -414,6 +332,16 @@ export function EditSiteForm({ site }) {
             />
           </div>
         </div>
+
+        <SiteDetails
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+          opportunityTypes={opportunityTypes}
+          parentId={site.id}
+          onSitePlanUpload={handleSitePlanUpload}
+        />
 
         <DeveloperInformation
           register={register}
@@ -438,6 +366,8 @@ export function EditSiteForm({ site }) {
           planningStatuses={planningStatuses}
           landPurchaseStatuses={landPurchaseStatuses}
           parentId={site.id}
+          onSpecificationUpload={handleSpecificationUpload}
+          onS106Upload={handleS106Upload}
           clearErrors={clearErrors}
         />
 
@@ -471,7 +401,6 @@ export function EditSiteForm({ site }) {
             className="bg-web-orange hover:bg-web-orange/90 text-white"
             disabled={isSubmitting || isFormSubmitting}
             onClick={() => {
-              // If there are already errors, scroll to them on button click
               if (Object.keys(errors).length > 0) {
                 setTimeout(scrollToError, 100);
               }
