@@ -1,9 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
-import { Calendar } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -29,7 +25,7 @@ export function ProjectTimeline({ register, watch, setValue, disabled }) {
         <DatePicker
           value={selectedDate}
           onChange={handleDateChange}
-          className={cn(disabled && "opacity-50 cursor-not-allowed")}
+          disabled={disabled}
         />
       </div>
     );

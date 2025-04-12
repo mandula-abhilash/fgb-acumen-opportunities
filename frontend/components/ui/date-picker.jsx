@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePicker({ className, value, onChange }) {
+export function DatePicker({ className, value, onChange, disabled }) {
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (date) => {
     onChange?.(date);
     setOpen(false);
+  };
+
+  const handleClear = (e) => {
+    e.stopPropagation();
+    onChange?.(null);
   };
 
   return (
@@ -31,9 +36,20 @@ export function DatePicker({ className, value, onChange }) {
             !value && "text-muted-foreground",
             className
           )}
+          disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, "PPP") : <span>Pick a date</span>}
+          {value ? (
+            <span className="flex-1">{format(value, "PPP")}</span>
+          ) : (
+            <span>Pick a date</span>
+          )}
+          {value && !disabled && (
+            <X
+              className="h-4 w-4 opacity-50 hover:opacity-100"
+              onClick={handleClear}
+            />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
