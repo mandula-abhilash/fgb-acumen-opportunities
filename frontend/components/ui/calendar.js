@@ -19,7 +19,7 @@ function Calendar({
     props.selected ? new Date(props.selected) : new Date()
   );
 
-  // Update current month when selected date changes
+  // Update current month if the selected date changes
   React.useEffect(() => {
     if (props.selected) {
       setCurrentMonth(new Date(props.selected));
@@ -35,7 +35,6 @@ function Calendar({
     const newDate = new Date(currentMonth);
     newDate.setFullYear(year);
     setCurrentMonth(newDate);
-    // If there's a selected date, update its year
     if (props.selected) {
       const updatedSelection = new Date(props.selected);
       updatedSelection.setFullYear(year);
@@ -48,6 +47,63 @@ function Calendar({
     (_, i) => fromYear + i
   );
 
+  // Navigation functions for the arrows
+  const handlePreviousMonth = () => {
+    const prevMonth = new Date(currentMonth);
+    prevMonth.setMonth(currentMonth.getMonth() - 1);
+    setCurrentMonth(prevMonth);
+  };
+
+  const handleNextMonth = () => {
+    const nextMonth = new Date(currentMonth);
+    nextMonth.setMonth(currentMonth.getMonth() + 1);
+    setCurrentMonth(nextMonth);
+  };
+
+  // Custom Caption component that combines navigation arrows with the month and year select
+  const CustomCaption = ({ displayMonth }) => {
+    return (
+      <div className="flex items-center justify-between w-full">
+        <button
+          onClick={handlePreviousMonth}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-7 w-7 bg-transparent p-0"
+          )}
+          type="button"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">
+            {displayMonth.toLocaleString("default", { month: "long" })}
+          </span>
+          <select
+            value={displayMonth.getFullYear()}
+            onChange={handleYearChange}
+            className="cursor-pointer rounded-md bg-transparent py-1 px-2 text-sm font-medium border border-input hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none min-w-[80px] text-center"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={handleNextMonth}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-7 w-7 bg-transparent p-0"
+          )}
+          type="button"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -57,15 +113,6 @@ function Calendar({
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
-        caption: "flex justify-center pt-1 relative items-center h-10",
-        caption_label: "text-sm font-medium",
-        nav: "space-x-1 flex items-center w-full absolute justify-between px-2",
-        nav_button: cn(
-          buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-100 hover:opacity-100"
-        ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
@@ -95,28 +142,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-        IconRight: () => <ChevronRight className="h-4 w-4" />,
-        Caption: ({ displayMonth }) => {
-          return (
-            <div className="flex justify-center items-center gap-2">
-              <span className="text-sm font-medium">
-                {displayMonth.toLocaleString("default", { month: "long" })}
-              </span>
-              <select
-                value={displayMonth.getFullYear()}
-                onChange={handleYearChange}
-                className="cursor-pointer rounded-md bg-transparent py-1 px-2 text-sm font-medium border border-input hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none min-w-[80px] text-center"
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-          );
-        },
+        Caption: CustomCaption,
       }}
       {...props}
       numberOfMonths={1}
@@ -137,6 +163,7 @@ function Calendar({
     />
   );
 }
+
 Calendar.displayName = "Calendar";
 
 export { Calendar };
