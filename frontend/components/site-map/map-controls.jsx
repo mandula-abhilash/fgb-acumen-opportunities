@@ -34,6 +34,8 @@ export function MapControls({
   onDrawingModeToggle,
   onClearPolygon,
   onToggleEdit,
+  isTilted = false,
+  onTiltToggle,
 }) {
   const mapTypes = [
     {
@@ -164,6 +166,27 @@ export function MapControls({
                 </Tooltip>
               </>
             )}
+        </div>
+
+        {/* Tilt Control */}
+        <div className="bg-white rounded-lg border shadow-lg p-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className={`w-8 h-8 ${isTilted ? selectedStyle : defaultStyle}`}
+                onClick={(e) => handleButtonClick(e, onTiltToggle)}
+              >
+                <Rotate3D className="h-4 w-4" />
+                <span className="sr-only">Toggle tilt view</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>{isTilted ? "Top-down view" : "Tilt view"}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Zoom Controls */}

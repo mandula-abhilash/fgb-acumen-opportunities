@@ -41,6 +41,7 @@ const defaultMapOptions = {
   gestureHandling: "greedy",
   minZoom: 6,
   mapTypeId: "hybrid",
+  disableDefaultUI: true,
 };
 
 export function SiteMap({
@@ -56,6 +57,7 @@ export function SiteMap({
   const [mapType, setMapType] = useState("hybrid");
   const [zoomLevel, setZoomLevel] = useState(12);
   const [isEditing, setIsEditing] = useState(false);
+  const [isTilted, setIsTilted] = useState(false);
   const osMapLayer = useRef(null);
   const polygonRef = useRef(null);
   const geocoder = useRef(null);
@@ -181,6 +183,14 @@ export function SiteMap({
         map.setZoom(newZoom);
         setZoomLevel(newZoom);
       }
+    }
+  };
+
+  const handleTiltToggle = () => {
+    if (map) {
+      const newTilt = !isTilted;
+      setIsTilted(newTilt);
+      map.setTilt(newTilt ? 45 : 0);
     }
   };
 
@@ -356,6 +366,8 @@ export function SiteMap({
             onDrawingModeToggle={toggleDrawingMode}
             onClearPolygon={clearPolygon}
             onToggleEdit={toggleEdit}
+            isTilted={isTilted}
+            onTiltToggle={handleTiltToggle}
           />
         </GoogleMap>
       </div>
