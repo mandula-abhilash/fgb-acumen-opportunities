@@ -1,23 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon, Pencil, X } from "lucide-react";
+import { Calendar as CalendarIcon, Edit2, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -106,11 +100,11 @@ export function DateFilter({
     if (!isFilterActive()) return null;
 
     if (value.mode === "between") {
-      return `Between ${format(value.startDate, "PP")} and ${format(value.endDate, "PP")}`;
+      return `Between ${value.startDate.toLocaleDateString()} and ${value.endDate.toLocaleDateString()}`;
     } else if (value.mode === "before") {
-      return `Before ${format(value.single, "PP")}`;
+      return `Before ${value.single.toLocaleDateString()}`;
     } else if (value.mode === "after") {
-      return `After ${format(value.single, "PP")}`;
+      return `After ${value.single.toLocaleDateString()}`;
     }
   };
 
@@ -140,7 +134,7 @@ export function DateFilter({
               className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
               onClick={handleEdit}
             >
-              <Pencil className="h-3 w-3" />
+              <Edit2 className="h-3 w-3" />
               <span className="sr-only">Edit filter</span>
             </Button>
             <Button
@@ -172,89 +166,23 @@ export function DateFilter({
 
             {localValue.mode === "between" && (
               <div className="space-y-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !localValue.startDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {localValue.startDate ? (
-                        format(localValue.startDate, "PPP")
-                      ) : (
-                        <span>Start date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={localValue.startDate}
-                      onSelect={(date) => handleDateChange("startDate", date)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !localValue.endDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {localValue.endDate ? (
-                        format(localValue.endDate, "PPP")
-                      ) : (
-                        <span>End date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={localValue.endDate}
-                      onSelect={(date) => handleDateChange("endDate", date)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DatePicker
+                  value={localValue.startDate}
+                  onChange={(date) => handleDateChange("startDate", date)}
+                  className="mb-2"
+                />
+                <DatePicker
+                  value={localValue.endDate}
+                  onChange={(date) => handleDateChange("endDate", date)}
+                />
               </div>
             )}
 
             {(localValue.mode === "before" || localValue.mode === "after") && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !localValue.single && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {localValue.single ? (
-                      format(localValue.single, "PPP")
-                    ) : (
-                      <span>Select date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={localValue.single}
-                    onSelect={(date) => handleDateChange("single", date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                value={localValue.single}
+                onChange={(date) => handleDateChange("single", date)}
+              />
             )}
 
             {localValue.mode && (
