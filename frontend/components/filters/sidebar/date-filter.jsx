@@ -153,7 +153,7 @@ export function DateFilter({
         )}
 
         <CollapsibleContent>
-          <div className="space-y-2 pt-2">
+          <div className="space-y-2">
             <Select value={localValue.mode} onValueChange={handleModeChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select filter type" />
@@ -172,7 +172,6 @@ export function DateFilter({
                 <DatePicker
                   value={localValue.startDate}
                   onChange={(date) => handleDateChange("startDate", date)}
-                  className="mb-2"
                 />
                 <DatePicker
                   value={localValue.endDate}
