@@ -27,7 +27,7 @@ export function DateFilter({
   value = {},
   onChange,
 }) {
-  // A helper to decide if the filter is "active" (i.e. complete).
+  // Helper: returns true if the passed filter object is complete.
   const isFilterActive = (val) => {
     return (
       val &&
@@ -37,31 +37,17 @@ export function DateFilter({
     );
   };
 
-  // Local state: localValue holds current selections.
+  // Local state for the filter.
   const [localValue, setLocalValue] = useState(value);
-  // Control whether the filter panel (select and date pickers) is visible.
+  // Controls the visibility of the filter panel.
   const [isOpen, setIsOpen] = useState(!isFilterActive(value));
-  // isEditing indicates if we are editing an already applied filter.
+  // Indicates if we are in edit mode.
   const [isEditing, setIsEditing] = useState(false);
 
-  // Sync the local state with the parent component's value.
+  // Sync local state with parent's value when it changes.
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
-
-  // Compare two filters for equality.
-  const isSameFilter = (a, b) => {
-    if (a.mode !== b.mode) return false;
-    if (a.mode === "between") {
-      return (
-        a.startDate?.getTime() === b.startDate?.getTime() &&
-        a.endDate?.getTime() === b.endDate?.getTime()
-      );
-    } else if (a.mode === "before" || a.mode === "after") {
-      return a.single?.getTime() === b.single?.getTime();
-    }
-    return true;
-  };
 
   // When the user selects a filter type.
   const handleModeChange = (mode) => {
@@ -73,7 +59,7 @@ export function DateFilter({
     setLocalValue((prev) => ({ ...prev, [field]: date }));
   };
 
-  // Check that the necessary dates have been entered.
+  // Validate that the filter is complete.
   const isValid = () => {
     if (!localValue.mode) return false;
     if (localValue.mode === "between") {
@@ -89,7 +75,7 @@ export function DateFilter({
     return false;
   };
 
-  // If the user clicks "Apply" and the data is valid, update the parent.
+  // Apply the filter: update the parent state and collapse the panel.
   const handleApplyFilter = () => {
     if (isValid()) {
       onChange(localValue);
@@ -98,40 +84,35 @@ export function DateFilter({
     }
   };
 
-  // Clicking "Edit" puts us in edit mode.
+  // When the user clicks Edit, open the panel (edit mode).
   const handleEdit = (e) => {
     e.stopPropagation();
     setIsEditing(true);
     setIsOpen(true);
   };
 
-  // The Cancel behavior:
-  // • In creation mode (nothing applied yet – parent's value is empty), clear everything.
-  // • In edit mode (a filter exists) and if nothing is changed, collapse the panel.
-  // • In edit mode with changes, clear the filter entirely.
+  // Cancel behavior:
+  // • In creation mode (no filter applied yet – parent's value is empty), clear everything.
+  // • In edit mode (a filter exists), revert the local state to the parent's filter,
+  //   whether or not modifications were made.
   const handleCancel = () => {
-    if (Object.keys(value).length === 0) {
-      // Creation mode: clear ALL local state including filter type.
+    const isCreation = Object.keys(value).length === 0;
+    if (isCreation) {
+      // Creation mode: clear all selections.
       setLocalValue({});
       onChange({});
-      // Optionally, keep the panel open so user can reselect.
+      // Optionally, keep the panel open for a fresh selection.
       setIsOpen(true);
       setIsEditing(false);
     } else {
-      // Edit mode.
-      if (isSameFilter(localValue, value)) {
-        setIsOpen(false);
-        setIsEditing(false);
-      } else {
-        setLocalValue({});
-        onChange({});
-        setIsOpen(false);
-        setIsEditing(false);
-      }
+      // Edit mode: revert any changes by resetting to the parent's value.
+      setLocalValue(value);
+      setIsOpen(false);
+      setIsEditing(false);
     }
   };
 
-  // A Clear button handler that fully removes an applied filter.
+  // Clear filter completely.
   const handleClearFilter = (e) => {
     e.stopPropagation();
     setLocalValue({});
@@ -140,7 +121,7 @@ export function DateFilter({
     setIsEditing(false);
   };
 
-  // Generate a human-readable summary of the applied filter.
+  // Return a human-readable summary of the applied filter.
   const getFilterLabel = () => {
     if (!isFilterActive(value)) return null;
     if (value.mode === "between") {
@@ -154,7 +135,7 @@ export function DateFilter({
 
   return (
     <div className="space-y-2 px-2">
-      {/* Always visible header */}
+      {/* Header section */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 flex-1">
           <Icon className="h-4 w-4" />
@@ -192,7 +173,7 @@ export function DateFilter({
         </div>
       )}
 
-      {/* Filter panel (always visible when isOpen is true) */}
+      {/* Filter panel with select and date pickers */}
       {isOpen && (
         <div className="space-y-2">
           <Select
