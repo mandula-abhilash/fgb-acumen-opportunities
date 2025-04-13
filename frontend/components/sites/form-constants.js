@@ -91,6 +91,7 @@ export const submitSiteSchema = z.object({
   projectProgramme: z.string().optional(),
   agentTerms: z.string().optional(),
   sitePlanImage: z.string().optional(),
+  sitePlanDocument: z.string().optional(),
   proposedSpecification: z.string().optional(),
   s106Agreement: z.string().optional(),
 });
@@ -129,6 +130,7 @@ export const editSiteSchema = z.object({
   projectProgramme: z.string().optional(),
   agentTerms: z.string().optional(),
   sitePlanImage: z.string().optional(),
+  sitePlanDocument: z.string().optional(),
   proposedSpecification: z.string().optional(),
   s106Agreement: z.string().optional(),
 });

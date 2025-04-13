@@ -34,10 +34,10 @@ export function SiteDetails({
 }) {
   const { toast } = useToast();
   const opportunityType = watch("opportunityType");
-  const sitePlanImage = watch("sitePlanImage");
+  const sitePlanDocument = watch("sitePlanDocument");
 
   const handleSitePlanUpload = (fileUrl) => {
-    setValue("sitePlanImage", fileUrl);
+    setValue("sitePlanDocument", fileUrl);
     if (onSitePlanUpload) {
       onSitePlanUpload(fileUrl);
     }
@@ -58,18 +58,18 @@ export function SiteDetails({
       const key = urlParts.slice(3).join("/");
 
       await deleteFileFromS3(key);
-      setValue("sitePlanImage", "");
+      setValue("sitePlanDocument", "");
 
       toast({
         title: "Success",
-        description: "Site plan deleted successfully",
+        description: "Site plan document deleted successfully",
       });
     } catch (error) {
       console.error("Error deleting file:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete site plan. Please try again.",
+        description: "Failed to delete site plan document. Please try again.",
       });
     }
   };
@@ -85,13 +85,13 @@ export function SiteDetails({
           className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
         >
           <ExternalLink className="h-4 w-4" />
-          View Site Plan
+          View Site Plan Document
         </a>
         <button
           type="button"
           onClick={() => handleDeleteFile(url)}
           className="text-destructive hover:text-destructive/80 p-1 rounded-sm"
-          title="Delete site plan"
+          title="Delete site plan document"
         >
           <Trash2 className="h-4 w-4" />
         </button>
@@ -190,9 +190,9 @@ export function SiteDetails({
 
           {/* Right Column - Site Plan */}
           <div className="space-y-2 order-1 lg:order-2 mb-6 lg:mb-0">
-            <Label htmlFor="sitePlanImage">Site Plan</Label>
-            {sitePlanImage ? (
-              renderSitePlanLink(sitePlanImage)
+            <Label htmlFor="sitePlanDocument">Site Plan Document</Label>
+            {sitePlanDocument ? (
+              renderSitePlanLink(sitePlanDocument)
             ) : (
               <FileUpload
                 onUploadComplete={handleSitePlanUpload}
@@ -202,7 +202,7 @@ export function SiteDetails({
                 folder="site-plans"
                 fileCategory="site-plan"
                 parentId={parentId}
-                label="Upload Site Plan"
+                label="Upload Site Plan Document"
                 description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
                 fileType="mixed"
               />
