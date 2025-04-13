@@ -37,6 +37,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     projectProgramme,
     agentTerms,
     sitePlanImage,
+    sitePlanDocument,
     proposedSpecification,
     s106Agreement,
     vatPosition,
@@ -102,6 +103,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       project_programme,
       agent_terms,
       site_plan_image,
+      site_plan_document,
       proposed_specification,
       s106_agreement,
       vat_position,
@@ -112,11 +114,11 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       site_added_to_portal_date
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 
-      $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33,
-      ST_SetSRID(ST_MakePoint($34, $35), 4326),
+      $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34,
+      ST_SetSRID(ST_MakePoint($35, $36), 4326),
       CASE 
-        WHEN $36::jsonb IS NOT NULL AND jsonb_array_length($36::jsonb) > 0 
-        THEN ST_SetSRID(ST_GeomFromGeoJSON($36), 4326)
+        WHEN $37::jsonb IS NOT NULL AND jsonb_array_length($37::jsonb) > 0 
+        THEN ST_SetSRID(ST_GeomFromGeoJSON($37), 4326)
         ELSE NULL
       END,
       'draft',
@@ -152,6 +154,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       projectProgramme,
       agentTerms,
       sitePlanImage,
+      sitePlanDocument,
       proposedSpecification,
       s106Agreement,
       vatPosition,

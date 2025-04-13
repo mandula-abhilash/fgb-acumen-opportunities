@@ -35,6 +35,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     projectProgramme,
     agentTerms,
     sitePlanImage,
+    sitePlanDocument,
     proposedSpecification,
     s106Agreement,
     vatPosition,
@@ -100,12 +101,13 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         project_programme = $27,
         agent_terms = $28,
         site_plan_image = $29,
-        proposed_specification = $30,
-        s106_agreement = $31,
-        vat_position = $32,
-        geom = ST_SetSRID(ST_MakePoint($35, $36), 4326),
+        site_plan_document = $30,
+        proposed_specification = $31,
+        s106_agreement = $32,
+        vat_position = $33,
+        geom = ST_SetSRID(ST_MakePoint($36, $37), 4326),
         updated_at = NOW()
-      WHERE id = $33 AND user_id = $34
+      WHERE id = $34 AND user_id = $35
       RETURNING *, ST_X(geom) as longitude, ST_Y(geom) as latitude`,
     [
       siteName,
@@ -137,6 +139,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       projectProgramme,
       agentTerms,
       sitePlanImage,
+      sitePlanDocument,
       proposedSpecification,
       s106Agreement,
       vatPosition,
