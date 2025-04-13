@@ -10,13 +10,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
+import { tenureTypes } from "@/components/sites/form-constants";
 
 export function TenureInformation({
   watch,
   setValue,
   register,
   errors,
-  tenureTypes,
   disabled,
 }) {
   const handleTenureChange = (selectedValues) => {
@@ -26,6 +26,15 @@ export function TenureInformation({
       return tenure ? tenure.label : value;
     });
     setValue("tenures", selectedLabels);
+  };
+
+  // Convert stored labels back to values for the MultiSelect
+  const convertLabelsToValues = (labels) => {
+    if (!Array.isArray(labels)) return [];
+    return labels.map((label) => {
+      const tenure = tenureTypes.find((t) => t.label === label);
+      return tenure ? tenure.value : label;
+    });
   };
 
   return (
@@ -43,7 +52,7 @@ export function TenureInformation({
           </Label>
           <MultiSelect
             options={tenureTypes}
-            selected={watch("tenures")}
+            selected={convertLabelsToValues(watch("tenures"))}
             onChange={handleTenureChange}
             placeholder="Select tenure types..."
             disabled={disabled}
