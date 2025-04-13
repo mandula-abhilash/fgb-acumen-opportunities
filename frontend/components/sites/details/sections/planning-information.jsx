@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, ScrollText, Store } from "lucide-react";
+import { ExternalLink, FileText, ScrollText, Store } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -35,6 +35,34 @@ export function PlanningInformation({ site }) {
           </Badge>
         </div>
 
+        {(site.planningApplicationReference || site.planningApplicationUrl) && (
+          <div>
+            <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
+              <FileText className="h-4 w-4" />
+              Planning Application
+            </h3>
+            <div className="space-y-2">
+              {site.planningApplicationReference && (
+                <p className="text-sm">
+                  <span className="font-medium">Reference:</span>{" "}
+                  {site.planningApplicationReference}
+                </p>
+              )}
+              {site.planningApplicationUrl && (
+                <a
+                  href={site.planningApplicationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Planning Application
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
         {site.planningOverview && (
           <div>
             <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
@@ -55,18 +83,6 @@ export function PlanningInformation({ site }) {
             </h3>
             <p className="text-foreground whitespace-pre-wrap">
               {site.proposedDevelopment}
-            </p>
-          </div>
-        )}
-
-        {site.siteContext && (
-          <div>
-            <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
-              <FileText className="h-4 w-4" />
-              Site Context
-            </h3>
-            <p className="text-foreground whitespace-pre-wrap">
-              {site.siteContext}
             </p>
           </div>
         )}

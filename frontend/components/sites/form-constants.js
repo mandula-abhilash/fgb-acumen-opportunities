@@ -94,6 +94,12 @@ export const submitSiteSchema = z.object({
   sitePlanDocument: z.string().optional(),
   proposedSpecification: z.string().optional(),
   s106Agreement: z.string().optional(),
+  planningApplicationReference: z.string().optional(),
+  planningApplicationUrl: z
+    .string()
+    .url("Please enter a valid planning application URL")
+    .optional()
+    .or(z.literal("")),
 });
 
 export const editSiteSchema = z.object({
@@ -133,6 +139,12 @@ export const editSiteSchema = z.object({
   sitePlanDocument: z.string().optional(),
   proposedSpecification: z.string().optional(),
   s106Agreement: z.string().optional(),
+  planningApplicationReference: z.string().optional(),
+  planningApplicationUrl: z
+    .string()
+    .url("Please enter a valid planning application URL")
+    .optional()
+    .or(z.literal("")),
 });
 
 export const fileTypes = {
