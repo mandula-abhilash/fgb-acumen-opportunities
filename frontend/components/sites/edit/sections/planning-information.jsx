@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FileUpload } from "@/components/ui/file-upload";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -177,6 +178,47 @@ export function PlanningInformation({
             {errors.landPurchaseStatus && (
               <p className="text-sm text-destructive">
                 {errors.landPurchaseStatus.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="planningApplicationReference">
+              Planning Application Reference
+            </Label>
+            <Input
+              id="planningApplicationReference"
+              {...register("planningApplicationReference")}
+              placeholder="e.g., PA/2024/0123"
+              className={
+                errors.planningApplicationReference ? "border-destructive" : ""
+              }
+            />
+            {errors.planningApplicationReference && (
+              <p className="text-sm text-destructive">
+                {errors.planningApplicationReference.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="planningApplicationUrl">
+              Planning Application URL
+            </Label>
+            <Input
+              id="planningApplicationUrl"
+              type="url"
+              {...register("planningApplicationUrl")}
+              placeholder="https://planning.example.gov.uk/app/123"
+              className={
+                errors.planningApplicationUrl ? "border-destructive" : ""
+              }
+            />
+            {errors.planningApplicationUrl && (
+              <p className="text-sm text-destructive">
+                {errors.planningApplicationUrl.message}
               </p>
             )}
           </div>

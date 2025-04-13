@@ -43,6 +43,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     vatPosition,
     coordinates,
     boundary,
+    planningApplicationReference,
+    planningApplicationUrl,
   } = req.body;
 
   // Get the authenticated user's ID from the session
@@ -111,7 +113,9 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       geom,
       boundary,
       status,
-      site_added_to_portal_date
+      site_added_to_portal_date,
+      planning_application_reference,
+      planning_application_url
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 
       $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34,
@@ -122,7 +126,9 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
         ELSE NULL
       END,
       'draft',
-      CURRENT_DATE
+      CURRENT_DATE,
+      $38,
+      $39
     ) RETURNING *`,
     [
       siteName,
@@ -162,6 +168,8 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       coordinates?.lng || null,
       coordinates?.lat || null,
       JSON.stringify(boundary),
+      planningApplicationReference,
+      planningApplicationUrl,
     ]
   );
 
