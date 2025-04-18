@@ -91,8 +91,12 @@ export function EditSiteForm({ site }) {
       projectProgramme: site?.projectProgramme || "",
       agentTerms: site?.agentTerms || "",
       sitePlanImage: site?.sitePlanImage || "",
+      sitePlanDocument:
+        site?.site_plan_document || site?.sitePlanDocument || "",
       proposedSpecification: site?.proposedSpecification || "",
       s106Agreement: site?.s106Agreement || "",
+      planningApplicationReference: site?.planningApplicationReference || "",
+      planningApplicationUrl: site?.planningApplicationUrl || "",
     },
   });
 
@@ -155,6 +159,12 @@ export function EditSiteForm({ site }) {
       setValue("region", site.region);
       setValue("lpa", site.lpa);
       setValue("developerRegion", site.developerRegion);
+
+      // Make sure to set both sitePlanDocument and site_plan_document
+      setValue(
+        "sitePlanDocument",
+        site.site_plan_document || site.sitePlanDocument || ""
+      );
 
       // Set dates
       const setDateField = (field, dateStr) => {
