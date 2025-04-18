@@ -19,6 +19,7 @@ import {
   submitSiteSchema,
   tenureTypes,
 } from "./form-constants";
+import { AdditionalDocuments } from "./form-sections/additional-documents";
 import { BasicInformation } from "./form-sections/basic-information";
 import { CommercialInformation } from "./form-sections/commercial-information";
 import { DeveloperInformation } from "./form-sections/developer-information";
@@ -38,6 +39,7 @@ export function SubmitSiteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef(null);
   const [opportunityId] = useState(() => uuidv4());
+  const [additionalDocuments, setAdditionalDocuments] = useState([]);
 
   const {
     register,
@@ -52,7 +54,6 @@ export function SubmitSiteForm() {
     mode: "onChange",
   });
 
-  // Scroll to the first error when form submission fails
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       const firstErrorField = Object.keys(errors)[0];
@@ -66,7 +67,6 @@ export function SubmitSiteForm() {
     }
   }, [errors]);
 
-  // Clear errors when fields are corrected
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
       if (name && errors[name]) {
@@ -100,6 +100,7 @@ export function SubmitSiteForm() {
         coordinates: selectedLocation,
         boundary: polygonPath,
         opportunityId,
+        additionalDocuments,
       };
 
       const response = await createLiveOpportunitySite(siteData);
@@ -143,7 +144,6 @@ export function SubmitSiteForm() {
     setValue("s106Agreement", fileUrl);
   };
 
-  // Show validation errors at the top if there are any
   const hasErrors = Object.keys(errors).length > 0;
 
   return (
@@ -170,9 +170,7 @@ export function SubmitSiteForm() {
           </Alert>
         )}
 
-        {/* Map and Basic Information Section */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 min-h-[500px]">
-          {/* Basic Information - Takes 1 column on desktop */}
           <div className="order-2 lg:order-1 h-[460px] lg:h-full">
             <BasicInformation
               register={register}
@@ -183,7 +181,6 @@ export function SubmitSiteForm() {
             />
           </div>
 
-          {/* Map - Takes 2 columns on desktop */}
           <div
             className="order-1 lg:order-2 lg:col-span-2 h-[460px] lg:h-full"
             data-map-container="true"
@@ -258,6 +255,15 @@ export function SubmitSiteForm() {
           setValue={setValue}
           clearErrors={clearErrors}
         />
+
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Additional Documents</h2>
+          <AdditionalDocuments
+            documents={additionalDocuments}
+            onDocumentsChange={setAdditionalDocuments}
+            parentId={opportunityId}
+          />
+        </div>
 
         <div className="flex justify-end">
           <Button
