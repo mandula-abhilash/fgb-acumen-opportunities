@@ -42,6 +42,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     coordinates,
     planningApplicationReference,
     planningApplicationUrl,
+    additionalDocuments = [],
   } = req.body;
 
   const isAdmin = req.user.role === "admin";
@@ -110,6 +111,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         geom = ST_SetSRID(ST_MakePoint($36, $37), 4326),
         planning_application_reference = $38,
         planning_application_url = $39,
+        additional_documents = $40::jsonb,
         updated_at = NOW()
       WHERE id = $34 AND user_id = $35
       RETURNING *, ST_X(geom) as longitude, ST_Y(geom) as latitude`,
@@ -153,6 +155,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
       coordinates?.lat || null,
       planningApplicationReference,
       planningApplicationUrl,
+      JSON.stringify(additionalDocuments),
     ]
   );
 
