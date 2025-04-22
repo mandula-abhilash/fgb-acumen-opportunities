@@ -75,6 +75,22 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     return new Date(dateString).toISOString().split("T")[0];
   };
 
+  // Validate and format boundary data
+  let boundaryGeometry = null;
+  if (
+    boundary &&
+    typeof boundary === "object" &&
+    boundary.type === "Polygon" &&
+    Array.isArray(boundary.coordinates)
+  ) {
+    try {
+      boundaryGeometry = JSON.stringify(boundary);
+    } catch (error) {
+      console.error("Error stringifying boundary:", error);
+      boundaryGeometry = null;
+    }
+  }
+
   const site = await db.one(
     `INSERT INTO live_opportunities (
       site_name, 
@@ -123,7 +139,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34,
       ST_SetSRID(ST_MakePoint($35, $36), 4326),
       CASE 
-        WHEN $37::jsonb IS NOT NULL AND jsonb_array_length($37::jsonb) > 0 
+        WHEN $37::jsonb IS NOT NULL 
         THEN ST_SetSRID(ST_GeomFromGeoJSON($37), 4326)
         ELSE NULL
       END,
@@ -170,7 +186,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       userId,
       coordinates?.lng || null,
       coordinates?.lat || null,
-      JSON.stringify(boundary),
+      boundaryGeometry,
       planningApplicationReference,
       planningApplicationUrl,
       JSON.stringify(additionalDocuments),
