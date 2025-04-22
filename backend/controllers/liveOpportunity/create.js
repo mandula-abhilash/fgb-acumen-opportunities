@@ -91,6 +91,11 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
     }
   }
 
+  // Format additional documents as JSONB
+  const formattedAdditionalDocuments = Array.isArray(additionalDocuments)
+    ? JSON.stringify(additionalDocuments)
+    : "[]";
+
   const site = await db.one(
     `INSERT INTO live_opportunities (
       site_name, 
@@ -189,7 +194,7 @@ export const createLiveOpportunitySite = asyncHandler(async (req, res) => {
       boundaryGeometry,
       planningApplicationReference,
       planningApplicationUrl,
-      JSON.stringify(additionalDocuments),
+      formattedAdditionalDocuments,
     ]
   );
 
