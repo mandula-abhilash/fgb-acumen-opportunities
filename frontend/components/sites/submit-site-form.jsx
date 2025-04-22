@@ -95,10 +95,25 @@ export function SubmitSiteForm() {
       }
 
       setIsSubmitting(true);
+
+      // Convert polygon path to GeoJSON format
+      const boundaryGeoJSON =
+        polygonPath.length > 0
+          ? {
+              type: "Polygon",
+              coordinates: [
+                [
+                  ...polygonPath.map((point) => [point.lng, point.lat]),
+                  [polygonPath[0].lng, polygonPath[0].lat],
+                ],
+              ],
+            }
+          : null;
+
       const siteData = {
         ...data,
         coordinates: selectedLocation,
-        boundary: polygonPath,
+        boundary: boundaryGeoJSON,
         opportunityId,
         additionalDocuments,
       };
@@ -161,7 +176,25 @@ export function SubmitSiteForm() {
               Please correct the following errors before submitting:
               <ul className="mt-2 list-disc list-inside">
                 {Object.entries(errors).map(([field, error]) => (
-                  <li key={field} className="text-sm">
+                  <li
+                    key={field}
+                    className="text-sm"
+                    onClick={() => {
+                      const errorField = document.querySelector(
+                        `[name="${field}"], #${field}`
+                      );
+                      if (errorField) {
+                        errorField.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center",
+                        });
+                        try {
+                          errorField.focus({ preventScroll: true });
+                        } catch (e) {}
+                      }
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
                     {error.message}
                   </li>
                 ))}
