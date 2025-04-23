@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGoogleMaps } from "@/contexts/google-maps-context";
 import { GoogleMap, Polygon } from "@react-google-maps/api";
 
@@ -144,7 +144,7 @@ export function ExploreMap({
       map.setCenter(opportunities[0].coordinates);
 
       // If the opportunity has a boundary, fit to it
-      if (opportunities[0].boundary) {
+      if (opportunities[0].boundary && opportunities[0].boundary.coordinates) {
         const bounds = new google.maps.LatLngBounds();
         opportunities[0].boundary.coordinates[0].forEach((coord) => {
           bounds.extend(new google.maps.LatLng(coord[1], coord[0]));
@@ -325,16 +325,14 @@ export function ExploreMap({
         options={defaultMapOptions}
       >
         {opportunities?.map((opportunity) => (
-          <>
+          <React.Fragment key={opportunity.id}>
             <CustomMarker
-              key={`marker-${opportunity.id}`}
               position={opportunity.coordinates}
               plots={opportunity.plots}
               onClick={() => handleMarkerClick(opportunity)}
             />
             {opportunity.boundary && opportunity.boundary.coordinates && (
               <Polygon
-                key={`polygon-${opportunity.id}`}
                 paths={opportunity.boundary.coordinates[0].map((coord) => ({
                   lat: coord[1],
                   lng: coord[0],
@@ -348,7 +346,7 @@ export function ExploreMap({
                 }}
               />
             )}
-          </>
+          </React.Fragment>
         ))}
 
         <MapControls

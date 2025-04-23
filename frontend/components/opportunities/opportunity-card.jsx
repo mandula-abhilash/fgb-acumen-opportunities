@@ -25,8 +25,6 @@ export function OpportunityCard({ opportunity, onRemove }) {
   const { user } = useAuth();
   const { filters } = useFilters();
 
-  console.log(JSON.stringify(opportunity, null, 2));
-
   // Function to clean LPA names
   const cleanLpaName = (lpa) => {
     return lpa.replace(/ LPA$/, "");
