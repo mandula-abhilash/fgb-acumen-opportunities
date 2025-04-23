@@ -104,8 +104,8 @@ export function EditSiteForm({ site }) {
         site?.site_plan_document || site?.sitePlanDocument || "",
       proposedSpecification: site?.proposedSpecification || "",
       s106Agreement: site?.s106Agreement || "",
-      planningApplicationReference: site?.planningApplicationReference || "",
-      planningApplicationUrl: site?.planningApplicationUrl || "",
+      planningApplicationReference: site?.planning_application_reference || "",
+      planningApplicationUrl: site?.planning_application_url || "",
     },
   });
 
