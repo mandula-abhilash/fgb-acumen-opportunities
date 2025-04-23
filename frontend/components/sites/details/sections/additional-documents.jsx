@@ -7,6 +7,13 @@ import { Card } from "@/components/ui/card";
 export function AdditionalDocuments({ site }) {
   if (!site.additional_documents?.length) return null;
 
+  const formatFileSize = (bytes) => {
+    if (!bytes || bytes === 0) return "Unknown size";
+    // Always show in KB if under 1MB for consistency with browser
+    const kb = (bytes / 1000).toFixed(2);
+    return `${kb} KB`;
+  };
+
   return (
     <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
       <h2 className="text-xl font-semibold text-havelock-blue mb-4">
@@ -23,7 +30,7 @@ export function AdditionalDocuments({ site }) {
               <div>
                 <p className="font-medium truncate max-w-[200px]">{doc.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {(doc.size / 1024 / 1024).toFixed(2)} MB
+                  {formatFileSize(doc.size)}
                 </p>
               </div>
             </div>
