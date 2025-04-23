@@ -17,6 +17,7 @@ import {
   planningStatuses,
   tenureTypes,
 } from "@/components/sites/form-constants";
+import { AdditionalDocuments } from "@/components/sites/form-sections/additional-documents";
 
 import { BasicInformation } from "./sections/basic-information";
 import { CommercialInformation } from "./sections/commercial-information";
@@ -46,6 +47,9 @@ export function EditSiteForm({ site }) {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorFields, setErrorFields] = useState([]);
+  const [additionalDocuments, setAdditionalDocuments] = useState(
+    site?.additional_documents || []
+  );
 
   const parseDate = (dateStr) => {
     if (!dateStr) return null;
@@ -238,6 +242,7 @@ export function EditSiteForm({ site }) {
         planningDeterminationDate: formatDate(data.planningDeterminationDate),
         firstGoldenBrickDate: formatDate(data.firstGoldenBrickDate),
         finalGoldenBrickDate: formatDate(data.finalGoldenBrickDate),
+        additional_documents: additionalDocuments,
       };
 
       await updateLiveOpportunitySite(site.id, siteData);
@@ -424,6 +429,15 @@ export function EditSiteForm({ site }) {
           setValue={setValue}
           clearErrors={clearErrors}
         />
+
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Additional Documents</h2>
+          <AdditionalDocuments
+            documents={additionalDocuments}
+            onDocumentsChange={setAdditionalDocuments}
+            parentId={site.id}
+          />
+        </div>
 
         <div className="flex justify-end">
           <Button
