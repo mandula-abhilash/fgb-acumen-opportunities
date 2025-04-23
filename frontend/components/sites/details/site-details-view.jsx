@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ExploreMap } from "@/components/explore/explore-map";
 
 import { ActionButtons } from "./sections/action-buttons";
+import { AdditionalDocuments } from "./sections/additional-documents";
 import { AdminControls } from "./sections/admin-controls";
 import { CommercialInformation } from "./sections/commercial-information";
 import { DeveloperInformation } from "./sections/developer-information";
@@ -99,6 +100,11 @@ export function SiteDetailsView({ site: initialSite }) {
       {/* Documents Section */}
       {(site.proposedSpecification || site.s106Agreement) && (
         <DocumentsSection site={site} />
+      )}
+
+      {/* Additional Documents Section */}
+      {site.additional_documents?.length > 0 && (
+        <AdditionalDocuments site={site} />
       )}
     </div>
   );

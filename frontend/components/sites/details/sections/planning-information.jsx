@@ -17,12 +17,14 @@ export function PlanningInformation({ site }) {
             <ScrollText className="h-4 w-4" />
             Planning Status
           </h3>
-          <Badge
-            variant="outline"
-            className="border-havelock-blue text-havelock-blue"
-          >
-            {site.planningStatus}
-          </Badge>
+          <div className="mt-1">
+            <Badge
+              variant="outline"
+              className="border-havelock-blue text-havelock-blue"
+            >
+              {site.planningStatus}
+            </Badge>
+          </div>
         </div>
 
         <div>
@@ -30,34 +32,40 @@ export function PlanningInformation({ site }) {
             <Store className="h-4 w-4" />
             Land Purchase Status
           </h3>
-          <Badge variant="outline" className="text-foreground">
-            {site.landPurchaseStatus}
-          </Badge>
+          <div className="mt-1">
+            <Badge variant="outline">{site.landPurchaseStatus}</Badge>
+          </div>
         </div>
 
-        {(site.planningApplicationReference || site.planningApplicationUrl) && (
+        {(site.planning_application_reference ||
+          site.planning_application_url) && (
           <div>
             <h3 className="flex items-center gap-2 font-medium text-muted-foreground mb-2">
               <FileText className="h-4 w-4" />
               Planning Application
             </h3>
             <div className="space-y-2">
-              {site.planningApplicationReference && (
-                <p className="text-sm">
-                  <span className="font-medium">Reference:</span>{" "}
-                  {site.planningApplicationReference}
-                </p>
+              {site.planning_application_reference && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Reference:</span>
+                  <span className="text-sm">
+                    {site.planning_application_reference}
+                  </span>
+                </div>
               )}
-              {site.planningApplicationUrl && (
-                <a
-                  href={site.planningApplicationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  View Planning Application
-                </a>
+              {site.planning_application_url && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Application URL:</span>
+                  <a
+                    href={site.planning_application_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    View Application
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
               )}
             </div>
           </div>
@@ -69,7 +77,7 @@ export function PlanningInformation({ site }) {
               <FileText className="h-4 w-4" />
               Planning Overview
             </h3>
-            <p className="text-foreground whitespace-pre-wrap">
+            <p className="text-sm whitespace-pre-wrap">
               {site.planningOverview}
             </p>
           </div>
@@ -81,7 +89,7 @@ export function PlanningInformation({ site }) {
               <FileText className="h-4 w-4" />
               Proposed Development
             </h3>
-            <p className="text-foreground whitespace-pre-wrap">
+            <p className="text-sm whitespace-pre-wrap">
               {site.proposedDevelopment}
             </p>
           </div>
