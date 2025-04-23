@@ -180,7 +180,7 @@ export function ExploreMap({
       }
 
       // If the marker has a boundary, include it in the bounds
-      if (marker.boundary) {
+      if (marker.boundary && marker.boundary.coordinates) {
         marker.boundary.coordinates[0].forEach((coord) => {
           bounds.extend(new google.maps.LatLng(coord[1], coord[0]));
         });
@@ -332,7 +332,7 @@ export function ExploreMap({
               plots={opportunity.plots}
               onClick={() => handleMarkerClick(opportunity)}
             />
-            {opportunity.boundary && (
+            {opportunity.boundary && opportunity.boundary.coordinates && (
               <Polygon
                 key={`polygon-${opportunity.id}`}
                 paths={opportunity.boundary.coordinates[0].map((coord) => ({
