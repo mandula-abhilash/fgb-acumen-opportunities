@@ -242,7 +242,7 @@ export function EditSiteForm({ site }) {
         planningDeterminationDate: formatDate(data.planningDeterminationDate),
         firstGoldenBrickDate: formatDate(data.firstGoldenBrickDate),
         finalGoldenBrickDate: formatDate(data.finalGoldenBrickDate),
-        additional_documents: additionalDocuments,
+        additionalDocuments: additionalDocuments,
       };
 
       await updateLiveOpportunitySite(site.id, siteData);

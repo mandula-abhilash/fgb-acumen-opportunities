@@ -110,12 +110,12 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         proposed_specification = $31,
         s106_agreement = $32,
         vat_position = $33,
-        geom = ST_SetSRID(ST_MakePoint($36, $37), 4326),
-        planning_application_reference = $38,
-        planning_application_url = $39,
-        additional_documents = $40::jsonb,
+        geom = ST_SetSRID(ST_MakePoint($34, $35), 4326),
+        planning_application_reference = $36,
+        planning_application_url = $37,
+        additional_documents = $38::jsonb,
         updated_at = NOW()
-      WHERE id = $34
+      WHERE id = $39
       RETURNING *, ST_X(geom) as longitude, ST_Y(geom) as latitude`,
       [
         siteName,
@@ -151,13 +151,12 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         proposedSpecification,
         s106Agreement,
         vatPosition,
-        req.params.id,
-        site.user_id,
         coordinates?.lng || null,
         coordinates?.lat || null,
         planningApplicationReference,
         planningApplicationUrl,
         JSON.stringify(additionalDocuments),
+        req.params.id,
       ]
     );
 
