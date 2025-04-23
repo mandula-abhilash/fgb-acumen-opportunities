@@ -14,6 +14,7 @@ export function SiteLocation({
   onPolygonComplete,
   selectedLocation,
   polygonPath,
+  initialZoom = 12,
 }) {
   return (
     <Card className="h-full">
@@ -25,6 +26,7 @@ export function SiteLocation({
             selectedLocation={selectedLocation}
             polygonPath={polygonPath}
             placeholder="Search for and mark the site location on the map"
+            initialZoom={initialZoom}
           />
         </div>
       </CardContent>

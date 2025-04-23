@@ -50,12 +50,13 @@ export function SiteMap({
   selectedLocation,
   polygonPath,
   placeholder = "Search for a location...",
+  initialZoom = 12,
 }) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState(null);
   const [drawingMode, setDrawingMode] = useState(null);
   const [mapType, setMapType] = useState("hybrid");
-  const [zoomLevel, setZoomLevel] = useState(12);
+  const [zoomLevel, setZoomLevel] = useState(initialZoom);
   const [isEditing, setIsEditing] = useState(false);
   const [isTilted, setIsTilted] = useState(false);
   const osMapLayer = useRef(null);

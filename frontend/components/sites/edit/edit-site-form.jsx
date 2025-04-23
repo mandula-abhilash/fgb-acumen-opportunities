@@ -38,7 +38,12 @@ export function EditSiteForm({ site }) {
   const [selectedAddress, setSelectedAddress] = useState(
     site?.siteAddress || ""
   );
-  const [polygonPath, setPolygonPath] = useState(site?.boundary || []);
+  const [polygonPath, setPolygonPath] = useState(
+    site?.boundary?.coordinates?.[0]?.map((coord) => ({
+      lat: coord[1],
+      lng: coord[0],
+    })) || []
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorFields, setErrorFields] = useState([]);
 
@@ -208,10 +213,24 @@ export function EditSiteForm({ site }) {
         return date.toISOString().split("T")[0];
       };
 
+      // Convert polygon path to GeoJSON format
+      const boundaryGeoJSON =
+        polygonPath.length > 0
+          ? {
+              type: "Polygon",
+              coordinates: [
+                [
+                  ...polygonPath.map((point) => [point.lng, point.lat]),
+                  [polygonPath[0].lng, polygonPath[0].lat],
+                ],
+              ],
+            }
+          : null;
+
       const siteData = {
         ...data,
         coordinates: selectedLocation,
-        boundary: polygonPath,
+        boundary: boundaryGeoJSON,
         startOnSiteDate: formatDate(data.startOnSiteDate),
         firstHandoverDate: formatDate(data.firstHandoverDate),
         finalHandoverDate: formatDate(data.finalHandoverDate),
@@ -339,6 +358,7 @@ export function EditSiteForm({ site }) {
               onPolygonComplete={handlePolygonComplete}
               selectedLocation={selectedLocation}
               polygonPath={polygonPath}
+              initialZoom={17}
             />
           </div>
         </div>
