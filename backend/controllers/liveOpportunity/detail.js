@@ -28,6 +28,7 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
       o.*,
       ST_X(o.geom) as longitude,
       ST_Y(o.geom) as latitude,
+      ST_AsGeoJSON(ST_Transform(o.boundary, 4326))::json as boundary,
       ARRAY_AGG(DISTINCT l.lpa22nm) as lpa_names,
       ARRAY_AGG(DISTINCT r.name) as region_names,
       ARRAY_AGG(DISTINCT l.lpa22cd) as lpa_codes,
@@ -80,6 +81,7 @@ export const getLiveOpportunitySite = asyncHandler(async (req, res) => {
       lat: parseFloat(site.latitude),
       lng: parseFloat(site.longitude),
     },
+    boundary: site.boundary,
 
     // Planning Information
     planningStatus: site.planning_status,

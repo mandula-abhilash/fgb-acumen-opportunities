@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useGoogleMaps } from "@/contexts/google-maps-context";
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, Polygon } from "@react-google-maps/api";
 
 import { getLiveOpportunitySite } from "@/lib/api/liveOpportunities";
 import { OpportunitySidebar } from "@/components/explore/opportunity-sidebar";
@@ -142,6 +142,15 @@ export function ExploreMap({
     if (opportunities?.length === 1 && initialZoom) {
       map.setZoom(initialZoom);
       map.setCenter(opportunities[0].coordinates);
+
+      // If the opportunity has a boundary, fit to it
+      if (opportunities[0].boundary) {
+        const bounds = new google.maps.LatLngBounds();
+        opportunities[0].boundary.coordinates[0].forEach((coord) => {
+          bounds.extend(new google.maps.LatLng(coord[1], coord[0]));
+        });
+        map.fitBounds(bounds);
+      }
     }
     // Otherwise fit bounds if we have multiple opportunities
     else if (opportunities?.length > 0) {
@@ -168,6 +177,13 @@ export function ExploreMap({
         bounds.extend(
           new google.maps.LatLng(marker.coordinates.lat, marker.coordinates.lng)
         );
+      }
+
+      // If the marker has a boundary, include it in the bounds
+      if (marker.boundary) {
+        marker.boundary.coordinates[0].forEach((coord) => {
+          bounds.extend(new google.maps.LatLng(coord[1], coord[0]));
+        });
       }
     });
 
@@ -309,12 +325,30 @@ export function ExploreMap({
         options={defaultMapOptions}
       >
         {opportunities?.map((opportunity) => (
-          <CustomMarker
-            key={opportunity.id}
-            position={opportunity.coordinates}
-            plots={opportunity.plots}
-            onClick={() => handleMarkerClick(opportunity)}
-          />
+          <>
+            <CustomMarker
+              key={`marker-${opportunity.id}`}
+              position={opportunity.coordinates}
+              plots={opportunity.plots}
+              onClick={() => handleMarkerClick(opportunity)}
+            />
+            {opportunity.boundary && (
+              <Polygon
+                key={`polygon-${opportunity.id}`}
+                paths={opportunity.boundary.coordinates[0].map((coord) => ({
+                  lat: coord[1],
+                  lng: coord[0],
+                }))}
+                options={{
+                  fillColor: "#F09C00",
+                  fillOpacity: 0.3,
+                  strokeColor: "#F09C00",
+                  strokeWeight: 2,
+                  clickable: false,
+                }}
+              />
+            )}
+          </>
         ))}
 
         <MapControls
