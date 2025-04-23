@@ -54,7 +54,7 @@ export function OpportunityDetails({ opportunity }) {
         {/* Image Section */}
         <div className="relative w-full h-[200px] border-b">
           <img
-            src={opportunity.site_plan_image || "https://placehold.in/400"}
+            src={opportunity.site_plan_image || "/assets/application.png"}
             alt={opportunity.site_name}
             className="w-full h-full object-cover"
           />

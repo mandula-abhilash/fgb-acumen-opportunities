@@ -52,11 +52,7 @@ export function OpportunityCard({ opportunity, onRemove }) {
             >
               <div className="h-[250px] lg:h-[350px] relative rounded-lg overflow-hidden bg-muted">
                 <img
-                  src={
-                    "https://planning-applications-bucket.s3.eu-west-2.amazonaws.com/65ae31514a033c25afd3487b.jpeg?etag=59248ab241972cc690f857dff37b5c71" ||
-                    opportunity.site_plan_image ||
-                    "https://placehold.in/400"
-                  }
+                  src={opportunity.site_plan_image || "/assets/application.png"}
                   alt={opportunity.site_name}
                   className="object-cover w-full h-full"
                 />
