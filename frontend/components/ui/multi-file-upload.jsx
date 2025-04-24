@@ -22,8 +22,9 @@ import { useToast } from "@/components/ui/use-toast";
 export function MultiFileUpload({
   files = [],
   onFilesChange,
+  onFileDelete,
   acceptedFileTypes = [],
-  maxFileSize = 10 * 1024 * 1024, // 10MB default
+  maxFileSize = 10 * 1024 * 1024,
   folder = "documents",
   fileCategory = "document",
   parentId,
@@ -179,28 +180,15 @@ export function MultiFileUpload({
     }
   };
 
-  const handleDeleteFile = async (index) => {
-    try {
-      const file = files[index];
-      if (file.key) {
-        await deleteFileFromS3(file.key);
-      }
+  const handleDeleteFile = async (index, e) => {
+    // Prevent the event from bubbling up to any parent forms
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-      const updatedFiles = [...files];
-      updatedFiles.splice(index, 1);
-      onFilesChange(updatedFiles);
-
-      toast({
-        title: "Success",
-        description: "File deleted successfully",
-      });
-    } catch (error) {
-      console.error("Error deleting file:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete file. Please try again.",
-      });
+    if (onFileDelete) {
+      await onFileDelete(index);
     }
   };
 
@@ -242,10 +230,11 @@ export function MultiFileUpload({
                   View
                 </a>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0 text-destructive hover:text-destructive/90"
-                  onClick={() => handleDeleteFile(index)}
+                  onClick={(e) => handleDeleteFile(index, e)}
                 >
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Delete file</span>

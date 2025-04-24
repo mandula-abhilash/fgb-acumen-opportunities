@@ -50,6 +50,14 @@ export const vatPositions = [
   { value: "not-applicable", label: "Not Applicable" },
 ];
 
+const additionalDocumentSchema = z.object({
+  name: z.string().min(1, "Document name is required"),
+  size: z.number().optional(),
+  type: z.string().optional(),
+  url: z.string().url("Document URL must be valid"),
+  key: z.string(),
+});
+
 export const submitSiteSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteAddress: z.string().min(1, "Site address is required"),
@@ -100,6 +108,7 @@ export const submitSiteSchema = z.object({
     .url("Please enter a valid planning application URL")
     .optional()
     .or(z.literal("")),
+  additionalDocuments: z.array(additionalDocumentSchema).optional(),
 });
 
 export const editSiteSchema = z.object({
@@ -145,6 +154,7 @@ export const editSiteSchema = z.object({
     .url("Please enter a valid planning application URL")
     .optional()
     .or(z.literal("")),
+  additionalDocuments: z.array(additionalDocumentSchema).optional(),
 });
 
 export const fileTypes = {
