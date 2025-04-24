@@ -32,7 +32,6 @@ export function BasicInformation({
   useEffect(() => {
     if (selectedAddress) {
       setValue("siteAddress", selectedAddress);
-      setValue("customSiteAddress", selectedAddress);
     }
   }, [selectedAddress, setValue]);
 
