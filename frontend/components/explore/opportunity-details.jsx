@@ -43,10 +43,10 @@ export function OpportunityDetails({ opportunity }) {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 bg-muted/50 p-2 rounded-md"
+        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
       >
-        <ExternalLink className="h-4 w-4" />
         {label}
+        <ExternalLink className="h-4 w-4" />
       </a>
     );
   };
@@ -120,13 +120,9 @@ export function OpportunityDetails({ opportunity }) {
                     </span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {opportunity.developer_region_names.map((region) => (
-                        <Badge
-                          key={region}
-                          variant="secondary"
-                          className="text-xs"
-                        >
+                        <p className="text-sm" key={region}>
                           {region}
-                        </Badge>
+                        </p>
                       ))}
                     </div>
                   </div>
@@ -158,9 +154,9 @@ export function OpportunityDetails({ opportunity }) {
                 <span className="text-sm text-muted-foreground">Regions</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.region_names?.map((region) => (
-                    <Badge key={region} variant="secondary" className="text-xs">
+                    <p className="text-sm" key={region}>
                       {region}
-                    </Badge>
+                    </p>
                   ))}
                 </div>
               </div>
@@ -171,9 +167,9 @@ export function OpportunityDetails({ opportunity }) {
                 </span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {opportunity.lpa_names?.map((lpa) => (
-                    <Badge key={lpa} variant="secondary" className="text-xs">
+                    <p className="text-sm" key={lpa}>
                       {lpa}
-                    </Badge>
+                    </p>
                   ))}
                 </div>
               </div>
@@ -194,13 +190,8 @@ export function OpportunityDetails({ opportunity }) {
                 <span className="text-sm text-muted-foreground">
                   Planning Status
                 </span>
-                <div className="mt-1">
-                  <Badge
-                    variant="outline"
-                    className="text-xs border-havelock-blue text-havelock-blue"
-                  >
-                    {opportunity.planning_status}
-                  </Badge>
+                <div className="">
+                  <p className="text-sm">{opportunity.planning_status}</p>
                 </div>
               </div>
 
@@ -208,10 +199,8 @@ export function OpportunityDetails({ opportunity }) {
                 <span className="text-sm text-muted-foreground">
                   Land Purchase Status
                 </span>
-                <div className="mt-1">
-                  <Badge variant="outline" className="text-xs">
-                    {opportunity.land_purchase_status}
-                  </Badge>
+                <div className="">
+                  <p className="text-sm">{opportunity.land_purchase_status}</p>
                 </div>
               </div>
 
@@ -320,9 +309,9 @@ export function OpportunityDetails({ opportunity }) {
                 <div className="flex flex-wrap gap-1 mt-1">
                   {Array.isArray(opportunity.tenures) &&
                     opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="outline" className="text-xs">
+                      <p className="text-sm" key={tenure}>
                         {tenure}
-                      </Badge>
+                      </p>
                     ))}
                 </div>
               </div>
@@ -390,7 +379,7 @@ export function OpportunityDetails({ opportunity }) {
               <span className="text-sm font-semibold">Documents</span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-4">
               {opportunity.proposedSpecification && (
                 <div>
                   <span className="text-sm text-muted-foreground">
