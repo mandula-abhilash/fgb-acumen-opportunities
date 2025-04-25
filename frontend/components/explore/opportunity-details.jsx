@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import {
   Building2,
   Calendar,
+  ExternalLink,
+  FileText,
   Globe2,
   Home,
   MapPin,
@@ -31,6 +33,21 @@ export function OpportunityDetails({ opportunity }) {
         <span className="text-sm text-muted-foreground">{label}</span>
         <span className="text-sm font-medium">{formatDate(date)}</span>
       </div>
+    );
+  };
+
+  const renderDocumentLink = (url, label) => {
+    if (!url) return null;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 bg-muted/50 p-2 rounded-md"
+      >
+        <ExternalLink className="h-4 w-4" />
+        {label}
+      </a>
     );
   };
 
@@ -72,7 +89,9 @@ export function OpportunityDetails({ opportunity }) {
                 </p>
               </div>
               <div className="p-2 space-y-0.5 bg-havelock-blue/5">
-                <span className="text-sm text-muted-foreground">Type</span>
+                <span className="text-sm text-muted-foreground">
+                  Opportunity Type
+                </span>
                 <p className="text-sm font-medium">
                   {opportunity.opportunity_type}
                 </p>
@@ -93,16 +112,6 @@ export function OpportunityDetails({ opportunity }) {
                 <span className="text-sm text-muted-foreground">Name</span>
                 <p className="text-sm">{opportunity.developer_name}</p>
               </div>
-              {opportunity.developer_info && (
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Additional Info
-                  </span>
-                  <p className="text-sm whitespace-pre-wrap">
-                    {opportunity.developer_info}
-                  </p>
-                </div>
-              )}
               {opportunity.developer_region_names &&
                 opportunity.developer_region_names.length > 0 && (
                   <div>
@@ -122,6 +131,16 @@ export function OpportunityDetails({ opportunity }) {
                     </div>
                   </div>
                 )}
+              {opportunity.developer_info && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Additional Info
+                  </span>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {opportunity.developer_info}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -196,6 +215,33 @@ export function OpportunityDetails({ opportunity }) {
                 </div>
               </div>
 
+              {(opportunity.planning_application_reference ||
+                opportunity.planning_application_url) && (
+                <div className="space-y-2">
+                  {opportunity.planning_application_reference && (
+                    <div>
+                      <span className="text-sm text-muted-foreground">
+                        Planning Reference
+                      </span>
+                      <p className="text-sm">
+                        {opportunity.planning_application_reference}
+                      </p>
+                    </div>
+                  )}
+                  {opportunity.planning_application_url && (
+                    <div>
+                      <span className="text-sm text-muted-foreground">
+                        Planning Application
+                      </span>
+                      {renderDocumentLink(
+                        opportunity.planning_application_url,
+                        "View Planning Application"
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {opportunity.planning_overview && (
                 <div>
                   <span className="text-sm text-muted-foreground">
@@ -214,82 +260,6 @@ export function OpportunityDetails({ opportunity }) {
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
                     {opportunity.proposed_development}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Tenure Info */}
-          <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-havelock-blue">
-              <Home className="h-4 w-4" />
-              <span className="text-sm font-semibold">Tenure Information</span>
-            </div>
-
-            <div className="space-y-2">
-              <div>
-                <span className="text-sm text-muted-foreground">Tenures</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {Array.isArray(opportunity.tenures) &&
-                    opportunity.tenures.map((tenure) => (
-                      <Badge key={tenure} variant="outline" className="text-xs">
-                        {tenure}
-                      </Badge>
-                    ))}
-                </div>
-              </div>
-
-              {opportunity.detailed_tenure_accommodation && (
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Detailed Accommodation
-                  </span>
-                  <p className="text-sm whitespace-pre-wrap">
-                    {opportunity.detailed_tenure_accommodation}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Commercial Info */}
-          <div className="space-y-3 p-3 rounded-md border bg-card">
-            <div className="flex items-center gap-1.5 text-havelock-blue">
-              <Store className="h-4 w-4" />
-              <span className="text-sm font-semibold">
-                Commercial Information
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              {opportunity.payment_terms && (
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Payment Terms
-                  </span>
-                  <p className="text-sm whitespace-pre-wrap">
-                    {opportunity.payment_terms}
-                  </p>
-                </div>
-              )}
-
-              {opportunity.vat_position && (
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    VAT Position
-                  </span>
-                  <p className="text-sm">{opportunity.vat_position}</p>
-                </div>
-              )}
-
-              {opportunity.agent_terms && (
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Agent Terms
-                  </span>
-                  <p className="text-sm whitespace-pre-wrap">
-                    {opportunity.agent_terms}
                   </p>
                 </div>
               )}
@@ -332,6 +302,131 @@ export function OpportunityDetails({ opportunity }) {
                   <p className="text-sm whitespace-pre-wrap">
                     {opportunity.projectProgramme}
                   </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Tenure Info */}
+          <div className="space-y-3 p-3 rounded-md border bg-card">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
+              <Home className="h-4 w-4" />
+              <span className="text-sm font-semibold">Tenure Information</span>
+            </div>
+
+            <div className="space-y-2">
+              <div>
+                <span className="text-sm text-muted-foreground">Tenures</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {Array.isArray(opportunity.tenures) &&
+                    opportunity.tenures.map((tenure) => (
+                      <Badge key={tenure} variant="outline" className="text-xs">
+                        {tenure}
+                      </Badge>
+                    ))}
+                </div>
+              </div>
+
+              {opportunity.detailedTenureAccommodation && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Detailed Accommodation
+                  </span>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {opportunity.detailedTenureAccommodation}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Commercial Info */}
+          <div className="space-y-3 p-3 rounded-md border bg-card">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
+              <Store className="h-4 w-4" />
+              <span className="text-sm font-semibold">
+                Commercial Information
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              {opportunity.paymentTerms && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Payment Terms
+                  </span>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {opportunity.paymentTerms}
+                  </p>
+                </div>
+              )}
+
+              {opportunity.vatPosition && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    VAT Position
+                  </span>
+                  <p className="text-sm">{opportunity.vatPosition}</p>
+                </div>
+              )}
+
+              {opportunity.agentTerms && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Agent Terms
+                  </span>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {opportunity.agentTerms}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Documents Section */}
+          <div className="space-y-3 p-3 rounded-md border bg-card">
+            <div className="flex items-center gap-1.5 text-havelock-blue">
+              <FileText className="h-4 w-4" />
+              <span className="text-sm font-semibold">Documents</span>
+            </div>
+
+            <div className="space-y-2">
+              {opportunity.proposedSpecification && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Proposed Specification
+                  </span>
+                  {renderDocumentLink(
+                    opportunity.proposedSpecification,
+                    "View Specification"
+                  )}
+                </div>
+              )}
+
+              {opportunity.s106Agreement && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Section 106 Agreement
+                  </span>
+                  {renderDocumentLink(
+                    opportunity.s106Agreement,
+                    "View Section 106 Agreement"
+                  )}
+                </div>
+              )}
+
+              {opportunity.additional_documents?.length > 0 && (
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    Additional Documents
+                  </span>
+                  <div className="space-y-2 mt-1">
+                    {opportunity.additional_documents.map((doc, index) => (
+                      <div key={index}>
+                        {renderDocumentLink(doc.url, doc.name)}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
