@@ -40,6 +40,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     s106Agreement,
     vatPosition,
     coordinates,
+    boundary,
     planningApplicationReference,
     planningApplicationUrl,
     additionalDocuments = [],
@@ -73,8 +74,23 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
     return new Date(dateString).toISOString().split("T")[0];
   };
 
+  // Format and validate boundary
+  let boundaryGeometry = null;
+  if (
+    boundary &&
+    typeof boundary === "object" &&
+    boundary.type === "Polygon" &&
+    Array.isArray(boundary.coordinates)
+  ) {
+    try {
+      boundaryGeometry = JSON.stringify(boundary);
+    } catch (error) {
+      console.error("Error stringifying boundary:", error);
+      boundaryGeometry = null;
+    }
+  }
+
   try {
-    // Use the site's original user_id for the update
     const updatedSite = await db.one(
       `UPDATE live_opportunities SET
         site_name = $1,
@@ -111,11 +127,16 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         s106_agreement = $32,
         vat_position = $33,
         geom = ST_SetSRID(ST_MakePoint($34, $35), 4326),
-        planning_application_reference = $36,
-        planning_application_url = $37,
-        additional_documents = $38::jsonb,
+        boundary = CASE 
+          WHEN $36::jsonb IS NOT NULL 
+          THEN ST_SetSRID(ST_GeomFromGeoJSON($36), 4326)
+          ELSE NULL
+        END,
+        planning_application_reference = $37,
+        planning_application_url = $38,
+        additional_documents = $39::jsonb,
         updated_at = NOW()
-      WHERE id = $39
+      WHERE id = $40
       RETURNING *, ST_X(geom) as longitude, ST_Y(geom) as latitude`,
       [
         siteName,
@@ -153,6 +174,7 @@ export const updateLiveOpportunitySite = asyncHandler(async (req, res) => {
         vatPosition,
         coordinates?.lng || null,
         coordinates?.lat || null,
+        boundaryGeometry,
         planningApplicationReference,
         planningApplicationUrl,
         JSON.stringify(additionalDocuments),
