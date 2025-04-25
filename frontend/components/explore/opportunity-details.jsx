@@ -118,13 +118,9 @@ export function OpportunityDetails({ opportunity }) {
                     <span className="text-sm text-muted-foreground">
                       Developer Regions
                     </span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {opportunity.developer_region_names.map((region) => (
-                        <p className="text-sm" key={region}>
-                          {region}
-                        </p>
-                      ))}
-                    </div>
+                    <p className="text-sm">
+                      {opportunity.developer_region_names.join(", ")}
+                    </p>
                   </div>
                 )}
               {opportunity.developer_info && (
@@ -152,26 +148,18 @@ export function OpportunityDetails({ opportunity }) {
             <div className="space-y-2">
               <div>
                 <span className="text-sm text-muted-foreground">Regions</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {opportunity.region_names?.map((region) => (
-                    <p className="text-sm" key={region}>
-                      {region}
-                    </p>
-                  ))}
-                </div>
+                <p className="text-sm">
+                  {opportunity.region_names?.join(", ") || "Not specified"}
+                </p>
               </div>
 
               <div>
                 <span className="text-sm text-muted-foreground">
                   Local Planning Authorities
                 </span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {opportunity.lpa_names?.map((lpa) => (
-                    <p className="text-sm" key={lpa}>
-                      {lpa}
-                    </p>
-                  ))}
-                </div>
+                <p className="text-sm">
+                  {opportunity.lpa_names?.join(", ") || "Not specified"}
+                </p>
               </div>
             </div>
           </div>
@@ -306,20 +294,17 @@ export function OpportunityDetails({ opportunity }) {
             <div className="space-y-2">
               <div>
                 <span className="text-sm text-muted-foreground">Tenures</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {Array.isArray(opportunity.tenures) &&
-                    opportunity.tenures.map((tenure) => (
-                      <p className="text-sm" key={tenure}>
-                        {tenure}
-                      </p>
-                    ))}
-                </div>
+                <p className="text-sm">
+                  {Array.isArray(opportunity.tenures)
+                    ? opportunity.tenures.join(", ")
+                    : "Not specified"}
+                </p>
               </div>
 
               {opportunity.detailedTenureAccommodation && (
                 <div>
                   <span className="text-sm text-muted-foreground">
-                    Detailed Accommodation
+                    Detailed Tenure & Accommodation
                   </span>
                   <p className="text-sm whitespace-pre-wrap">
                     {opportunity.detailedTenureAccommodation}
