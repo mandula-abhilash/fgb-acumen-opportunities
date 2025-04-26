@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 
 import { createAssistedSite } from "@/lib/api/assistedSites";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { opportunityTypes } from "@/components/sites/form-constants";
 
@@ -153,7 +152,7 @@ export function AssistedSiteForm() {
         variant: "destructive",
         title: "Submission Failed",
         description:
-          "There was an error processing your request. Please try again.",
+          error.message || "Failed to submit site. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -259,16 +258,6 @@ export function AssistedSiteForm() {
             isSubmitting={isSubmitting || isFormSubmitting}
             setValue={setValue}
           />
-        </div>
-
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="bg-white hover:bg-gray-50 text-web-orange font-semibold shadow-lg border border-web-orange"
-            disabled={isSubmitting || isFormSubmitting}
-          >
-            {isSubmitting || isFormSubmitting ? "Submitting..." : "Submit Site"}
-          </Button>
         </div>
       </div>
     </form>
