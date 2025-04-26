@@ -33,6 +33,23 @@ export function ContactInformation({ register, errors, setValue }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
+          <Label htmlFor="queriesContactName">
+            Contact Name <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="queriesContactName"
+            {...register("queriesContactName")}
+            placeholder="Who should queries be sent to?"
+            className={errors.queriesContactName ? "border-destructive" : ""}
+          />
+          {errors.queriesContactName && (
+            <p className="text-sm text-destructive">
+              {errors.queriesContactName.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="contactEmail">
             Email <span className="text-destructive">*</span>
           </Label>
@@ -63,16 +80,6 @@ export function ContactInformation({ register, errors, setValue }) {
               {errors.contactPhone.message}
             </p>
           )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="additionalInfo">Additional Information</Label>
-          <Textarea
-            id="additionalInfo"
-            {...register("additionalInfo")}
-            placeholder="Any additional information you'd like to provide..."
-            className="min-h-[100px]"
-          />
         </div>
       </CardContent>
     </Card>
