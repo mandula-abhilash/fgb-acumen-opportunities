@@ -53,10 +53,6 @@ export const getLiveOpportunitySites = asyncHandler(async (req, res) => {
     status,
   } = req.query;
 
-  console.log("showShortlisted : " + showShortlisted);
-
-  console.log("showDrafts : " + showDrafts);
-  console.log("status : " + status);
   // Build the base query
   let query = `
       WITH shortlisted AS (

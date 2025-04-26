@@ -5,7 +5,6 @@ export async function up(knex) {
   await knex.raw('CREATE EXTENSION IF NOT EXISTS "postgis"');
 
   const result = await knex.raw("SELECT current_user;");
-  console.log("Knex is using user:", result.rows[0]);
 
   return knex.schema.createTable("live_opportunities", (table) => {
     table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));

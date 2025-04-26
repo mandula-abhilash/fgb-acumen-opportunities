@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { createAssistedSite } from "@/lib/api/assistedSites";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { opportunityTypes } from "@/components/sites/form-constants";
 
 import { assistedSiteSchema } from "./schema";
 import { BasicInformation } from "./sections/basic-information";
@@ -15,6 +16,7 @@ import { ContactInformation } from "./sections/contact-information";
 import { HowItWorks } from "./sections/how-it-works";
 import { PaymentInformation } from "./sections/payment-information";
 import { ResponseSection } from "./sections/response-section";
+import { SiteDetails } from "./sections/site-details";
 import { SiteLocation } from "./sections/site-location";
 
 export function AssistedSiteForm() {
@@ -24,6 +26,7 @@ export function AssistedSiteForm() {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [opportunityId] = useState(() => crypto.randomUUID());
 
   const {
     register,
@@ -44,6 +47,7 @@ export function AssistedSiteForm() {
       contactPhone: "",
       additionalInfo: "",
       sitePlanImage: "",
+      sitePlanDocument: "",
       manageBidsProcess: false,
     },
   });
@@ -84,7 +88,18 @@ export function AssistedSiteForm() {
       const siteData = {
         ...data,
         coordinates: selectedLocation,
-        boundary: polygonPath,
+        boundary:
+          polygonPath.length > 0
+            ? {
+                type: "Polygon",
+                coordinates: [
+                  [
+                    ...polygonPath.map((point) => [point.lng, point.lat]),
+                    [polygonPath[0].lng, polygonPath[0].lat], // Close the polygon
+                  ],
+                ],
+              }
+            : null,
       };
 
       await createAssistedSite(siteData);
@@ -125,6 +140,8 @@ export function AssistedSiteForm() {
               register={register}
               errors={errors}
               selectedAddress={selectedAddress}
+              setValue={setValue}
+              watch={watch}
             />
           </div>
 
@@ -138,6 +155,17 @@ export function AssistedSiteForm() {
             />
           </div>
         </div>
+
+        {/* Site Details Section */}
+        <SiteDetails
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+          opportunityTypes={opportunityTypes}
+          parentId={opportunityId}
+          onSitePlanUpload={handleSitePlanUpload}
+        />
 
         {/* Response Section */}
         <ResponseSection
