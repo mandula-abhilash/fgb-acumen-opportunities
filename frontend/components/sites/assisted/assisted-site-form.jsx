@@ -46,7 +46,6 @@ export function AssistedSiteForm() {
       siteAddress: "",
       customSiteAddress: "",
       opportunityType: "",
-      developerName: "",
       plots: "",
       contactEmail: "",
       contactPhone: "",
@@ -54,7 +53,11 @@ export function AssistedSiteForm() {
       sitePlanImage: "",
       sitePlanDocument: "",
       manageBidsProcess: false,
+      initialEOIDate: null,
+      bidSubmissionDate: null,
+      queriesContactName: "",
     },
+
     mode: "onChange",
   });
 
