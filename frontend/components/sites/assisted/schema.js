@@ -8,8 +8,7 @@ export const assistedSiteSchema = z.object({
   siteAddress: z.string().min(1, "Site address is required"),
   customSiteAddress: z.string().min(1, "Custom site address is required"),
   opportunityType: z.string().min(1, "Opportunity type is required"),
-  developerName: z.string().min(1, "Developer name is required"),
-  plots: z.number().min(1, "Number of plots must be at least 1"),
+  plots: z.coerce.number().min(1, "Number of plots must be at least 1"),
   contactEmail: z.string().email("Please enter a valid email address"),
   contactPhone: z
     .string()
@@ -19,6 +18,7 @@ export const assistedSiteSchema = z.object({
     }),
   additionalInfo: z.string().optional(),
   sitePlanImage: z.string().optional(),
+  sitePlanDocument: z.string().optional(),
   manageBidsProcess: z.boolean().optional(),
   initialEOIDate: z.date().optional(),
   bidSubmissionDate: z.date().optional(),
