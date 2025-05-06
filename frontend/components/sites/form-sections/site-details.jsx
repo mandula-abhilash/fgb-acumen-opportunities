@@ -35,9 +35,17 @@ export function SiteDetails({
   const { toast } = useToast();
   const opportunityType = watch("opportunityType");
   const sitePlanDocument = watch("sitePlanDocument");
+  const sitePlanImage = watch("sitePlanImage");
 
-  const handleSitePlanUpload = (fileUrl) => {
+  const handleSitePlanDocUpload = (fileUrl) => {
     setValue("sitePlanDocument", fileUrl);
+    if (onSitePlanUpload) {
+      onSitePlanUpload(fileUrl);
+    }
+  };
+
+  const handleSitePlanImageUpload = (fileUrl) => {
+    setValue("sitePlanImage", fileUrl);
     if (onSitePlanUpload) {
       onSitePlanUpload(fileUrl);
     }
@@ -52,29 +60,29 @@ export function SiteDetails({
     });
   };
 
-  const handleDeleteFile = async (fileUrl) => {
+  const handleDeleteFile = async (fileUrl, fieldName) => {
     try {
       const urlParts = fileUrl.split("/");
       const key = urlParts.slice(3).join("/");
 
       await deleteFileFromS3(key);
-      setValue("sitePlanDocument", "");
+      setValue(fieldName, "");
 
       toast({
         title: "Success",
-        description: "Site plan document deleted successfully",
+        description: "File deleted successfully",
       });
     } catch (error) {
       console.error("Error deleting file:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete site plan document. Please try again.",
+        description: "Failed to delete file. Please try again.",
       });
     }
   };
 
-  const renderSitePlanLink = (url) => {
+  const renderFileLink = (url, label, fieldName) => {
     if (!url) return null;
     return (
       <div className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
@@ -85,13 +93,13 @@ export function SiteDetails({
           className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
         >
           <ExternalLink className="h-4 w-4" />
-          View Site Plan Document
+          {label}
         </a>
         <button
           type="button"
-          onClick={() => handleDeleteFile(url)}
+          onClick={() => handleDeleteFile(url, fieldName)}
           className="text-destructive hover:text-destructive/80 p-1 rounded-sm"
-          title="Delete site plan document"
+          title="Delete file"
         >
           <Trash2 className="h-4 w-4" />
         </button>
@@ -140,6 +148,33 @@ export function SiteDetails({
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="sitePlanDocument">Site Plan Document</Label>
+              {sitePlanDocument ? (
+                renderFileLink(
+                  sitePlanDocument,
+                  "View Site Plan Document",
+                  "sitePlanDocument"
+                )
+              ) : (
+                <FileUpload
+                  onUploadComplete={handleSitePlanDocUpload}
+                  onUploadError={handleUploadError}
+                  acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
+                  maxFileSize={10 * 1024 * 1024}
+                  folder="site-plans"
+                  fileCategory="site-plan"
+                  parentId={parentId}
+                  label="Upload Site Plan Document"
+                  description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
+                  fileType="mixed"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Site Plan */}
+          <div className="space-y-4 order-1 lg:order-2 mb-6 lg:mb-0">
+            <div className="space-y-2">
               <Label htmlFor="plots">
                 Number of Plots <span className="text-destructive">*</span>
               </Label>
@@ -186,27 +221,30 @@ export function SiteDetails({
                 </p>
               )}
             </div>
-          </div>
 
-          {/* Right Column - Site Plan */}
-          <div className="space-y-2 order-1 lg:order-2 mb-6 lg:mb-0">
-            <Label htmlFor="sitePlanDocument">Site Plan Document</Label>
-            {sitePlanDocument ? (
-              renderSitePlanLink(sitePlanDocument)
-            ) : (
-              <FileUpload
-                onUploadComplete={handleSitePlanUpload}
-                onUploadError={handleUploadError}
-                acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
-                maxFileSize={10 * 1024 * 1024}
-                folder="site-plans"
-                fileCategory="site-plan"
-                parentId={parentId}
-                label="Upload Site Plan Document"
-                description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
-                fileType="mixed"
-              />
-            )}
+            <div className="space-y-2 pt-2">
+              <Label htmlFor="sitePlanImage">Site Plan Image</Label>
+              {sitePlanImage ? (
+                renderFileLink(
+                  sitePlanImage,
+                  "View Site Plan Image",
+                  "sitePlanImage"
+                )
+              ) : (
+                <FileUpload
+                  onUploadComplete={handleSitePlanImageUpload}
+                  onUploadError={handleUploadError}
+                  acceptedFileTypes={fileTypes.image}
+                  maxFileSize={5 * 1024 * 1024}
+                  folder="site-images"
+                  fileCategory="site-image"
+                  parentId={parentId}
+                  label="Upload Site Image"
+                  description="Upload a site image (JPEG, PNG, max 5MB)"
+                  fileType="image"
+                />
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
