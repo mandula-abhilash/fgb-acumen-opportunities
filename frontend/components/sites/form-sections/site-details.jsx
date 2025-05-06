@@ -39,9 +39,6 @@ export function SiteDetails({
 
   const handleSitePlanDocUpload = (fileUrl) => {
     setValue("sitePlanDocument", fileUrl);
-    if (onSitePlanUpload) {
-      onSitePlanUpload(fileUrl);
-    }
   };
 
   const handleSitePlanImageUpload = (fileUrl) => {
@@ -162,7 +159,7 @@ export function SiteDetails({
                   acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
                   maxFileSize={10 * 1024 * 1024}
                   folder="site-plans"
-                  fileCategory="site-plan"
+                  fileCategory="site-plan-doc"
                   parentId={parentId}
                   label="Upload Site Plan Document"
                   description="Upload a site plan (PDF, JPEG, PNG, max 10MB)"
@@ -237,7 +234,7 @@ export function SiteDetails({
                   acceptedFileTypes={fileTypes.image}
                   maxFileSize={5 * 1024 * 1024}
                   folder="site-images"
-                  fileCategory="site-image"
+                  fileCategory="site-plan-image"
                   parentId={parentId}
                   label="Upload Site Image"
                   description="Upload a site image (JPEG, PNG, max 5MB)"
