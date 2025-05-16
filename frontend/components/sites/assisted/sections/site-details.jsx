@@ -30,25 +30,18 @@ export function SiteDetails({
   errors,
   opportunityTypes,
   parentId,
-  onSitePlanUpload,
 }) {
   const { toast } = useToast();
   const opportunityType = watch("opportunityType");
   const sitePlanDocument = watch("sitePlanDocument");
   const sitePlanImage = watch("sitePlanImage");
 
-  const handleSitePlanDocUpload = (fileUrl) => {
+  const handleSitePlanDocumentUpload = (fileUrl) => {
     setValue("sitePlanDocument", fileUrl);
-    if (onSitePlanUpload) {
-      onSitePlanUpload(fileUrl);
-    }
   };
 
   const handleSitePlanImageUpload = (fileUrl) => {
     setValue("sitePlanImage", fileUrl);
-    if (onSitePlanUpload) {
-      onSitePlanUpload(fileUrl);
-    }
   };
 
   const handleUploadError = (error) => {
@@ -117,7 +110,6 @@ export function SiteDetails({
       </CardHeader>
       <CardContent>
         <div className="lg:grid lg:grid-cols-2 gap-6">
-          {/* Left Column - Form Fields */}
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-2">
               <Label htmlFor="opportunityType">
@@ -164,7 +156,7 @@ export function SiteDetails({
                   folder="site-images"
                   fileCategory="site-image"
                   parentId={parentId}
-                  label="Upload Site Image"
+                  label="Upload Site Plan Image"
                   description="Upload a site image (JPEG, PNG, max 5MB)"
                   fileType="image"
                 />
@@ -172,8 +164,7 @@ export function SiteDetails({
             </div>
           </div>
 
-          {/* Right Column - Site Plan */}
-          <div className="space-y-4 order-1 lg:order-2 mb-6 lg:mb-0">
+          <div className="space-y-6 order-1 lg:order-2 mb-6 lg:mb-0">
             <div className="space-y-2">
               <Label htmlFor="plots">
                 Number of Plots <span className="text-destructive">*</span>
@@ -232,7 +223,7 @@ export function SiteDetails({
                 )
               ) : (
                 <FileUpload
-                  onUploadComplete={handleSitePlanDocUpload}
+                  onUploadComplete={handleSitePlanDocumentUpload}
                   onUploadError={handleUploadError}
                   acceptedFileTypes={[...fileTypes.image, "application/pdf"]}
                   maxFileSize={10 * 1024 * 1024}
