@@ -143,7 +143,6 @@ export function AssistedSiteForm() {
         coordinates: selectedLocation,
         boundary: boundaryGeoJSON,
         opportunityId,
-        additionalDocuments,
       };
 
       // Create Stripe checkout session
