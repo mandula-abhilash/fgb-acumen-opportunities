@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createCheckoutSession } from "@/visdak-auth/src/api/stripe";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loadStripe } from "@stripe/stripe-js";
 import { AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -20,9 +22,12 @@ import { ResponseSection } from "./sections/response-section";
 import { SiteDetails } from "./sections/site-details";
 import { SiteLocation } from "./sections/site-location";
 
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
 export function AssistedSiteForm() {
   const { toast } = useToast();
-  const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [polygonPath, setPolygonPath] = useState([]);
@@ -36,7 +41,6 @@ export function AssistedSiteForm() {
     setValue,
     watch,
     formState: { errors, isSubmitting: isFormSubmitting },
-    clearErrors,
     trigger,
   } = useForm({
     resolver: zodResolver(assistedSiteSchema),
@@ -120,39 +124,57 @@ export function AssistedSiteForm() {
 
       setIsSubmitting(true);
 
+      // Convert polygon path to GeoJSON format
+      const boundaryGeoJSON =
+        polygonPath.length > 0
+          ? {
+              type: "Polygon",
+              coordinates: [
+                [
+                  ...polygonPath.map((point) => [point.lng, point.lat]),
+                  [polygonPath[0].lng, polygonPath[0].lat],
+                ],
+              ],
+            }
+          : null;
+
       const siteData = {
         ...data,
         coordinates: selectedLocation,
-        boundary:
-          polygonPath.length > 0
-            ? {
-                type: "Polygon",
-                coordinates: [
-                  [
-                    ...polygonPath.map((point) => [point.lng, point.lat]),
-                    [polygonPath[0].lng, polygonPath[0].lat],
-                  ],
-                ],
-              }
-            : null,
+        boundary: boundaryGeoJSON,
+        opportunityId,
+        additionalDocuments,
       };
 
-      await createAssistedSite(siteData);
+      // Create Stripe checkout session
+      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+        throw new Error("Stripe is not properly configured");
+      }
 
-      toast({
-        title: "Request Submitted",
-        description:
-          "Your assisted submission request has been received. We'll contact you shortly.",
+      const { sessionId } = await createCheckoutSession({
+        planId: "674de95d1948d7d51a9c16a7",
+        paymentGateway: "stripe",
+        quantity: 1,
+        metadata: {
+          siteData: JSON.stringify(siteData),
+          type: "assisted-submission",
+        },
       });
 
-      router.push("/dashboard/opportunities");
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error("Failed to load Stripe");
+      }
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) throw error;
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
         variant: "destructive",
-        title: "Submission Failed",
+        title: "Error",
         description:
-          error.message || "Failed to submit site. Please try again.",
+          error.message || "Failed to process payment. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
