@@ -78,7 +78,6 @@ const startServer = async () => {
     app.use("/api/wallet", walletRoutes);
     app.use("/api/subscriptions", subscriptionRoutes);
     app.use("/api/transactions", transactionRoutes);
-    app.use("/api/checkout", checkoutRoutes);
 
     // Mount the sites routes with updated path
     app.use("/api/live-opportunities", liveOpportunityRoutes);
