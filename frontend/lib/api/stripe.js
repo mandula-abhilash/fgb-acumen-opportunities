@@ -1,11 +1,9 @@
 import api from "@/visdak-auth/src/api/axiosInstance";
 
-export async function createCheckoutSession() {
+export async function createCheckoutSession(siteData = null) {
   try {
     const response = await api.post("/api/checkout/session", {
-      planId: "674de95d1948d7d51a9c16a7",
-      paymentGateway: "stripe",
-      quantity: 1,
+      siteId: siteData?.siteId,
     });
     return response.data;
   } catch (error) {

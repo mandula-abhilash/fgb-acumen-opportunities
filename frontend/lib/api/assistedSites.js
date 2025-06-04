@@ -2,9 +2,11 @@ import api from "@/visdak-auth/src/api/axiosInstance";
 
 export async function createAssistedSite(siteData) {
   try {
+    console.log("Creating assisted site with data:", siteData);
     const response = await api.post("/api/assisted-sites", siteData);
     return response.data;
   } catch (error) {
+    console.error("Error creating assisted site:", error);
     throw new Error(
       error.response?.data?.message || "Failed to create assisted site request"
     );

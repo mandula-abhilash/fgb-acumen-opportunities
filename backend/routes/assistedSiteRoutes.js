@@ -6,6 +6,7 @@ import {
   getAssistedSite,
   updateAssistedSiteStatus,
   deleteAssistedSite,
+  updatePaymentStatus,
 } from "../controllers/assistedSiteController.js";
 import visdakSesamModule from "visdak-sesam";
 
@@ -22,5 +23,6 @@ router.delete("/:id", protect, deleteAssistedSite);
 // Admin routes
 router.get("/", protect, admin, getAssistedSites);
 router.patch("/:id/status", protect, admin, updateAssistedSiteStatus);
+router.patch("/:id/payment", protect, admin, updatePaymentStatus);
 
 export default router;

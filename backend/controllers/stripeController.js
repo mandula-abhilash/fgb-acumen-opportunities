@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Stripe from "stripe";
 import { UserModel } from "../models/User.js";
+import db from "../config/db.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const ASSISTED_SITE_PRICE = 25000; // £250.00 in pence
@@ -10,7 +11,7 @@ const ASSISTED_SITE_PRICE = 25000; // £250.00 in pence
 // @access  Private
 export const createCheckoutSession = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
-  const { planId } = req.body;
+  const { siteId } = req.body;
 
   try {
     // Get user details
@@ -18,6 +19,17 @@ export const createCheckoutSession = asyncHandler(async (req, res) => {
     if (!user) {
       res.status(404);
       throw new Error("User not found");
+    }
+
+    // Store the form data in the metadata
+    const metadata = {
+      userId: userId,
+      service: "assisted-site-submission",
+    };
+
+    // If siteId is provided, store it in metadata
+    if (siteId) {
+      metadata.siteId = siteId;
     }
 
     // Create checkout session
@@ -37,11 +49,7 @@ export const createCheckoutSession = asyncHandler(async (req, res) => {
           quantity: 1,
         },
       ],
-      metadata: {
-        userId: userId,
-        service: "assisted-site-submission",
-        planId: planId,
-      },
+      metadata: metadata,
       customer_email: user.email,
       success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/cancel`,
@@ -72,6 +80,44 @@ export const verifySession = asyncHandler(async (req, res) => {
     if (session.metadata.userId !== userId) {
       res.status(403);
       throw new Error("Unauthorized access to this session");
+    }
+
+    // If the session has a siteId, update the site's payment status
+    if (session.payment_status === "paid" && session.metadata.siteId) {
+      try {
+        await db.none(
+          `
+          UPDATE assisted_sites
+          SET 
+            is_paid = true,
+            payment_session_id = $1,
+            status = 'processing',
+            updated_at = NOW()
+          WHERE id = $2 AND user_id = $3
+        `,
+          [sessionId, session.metadata.siteId, userId]
+        );
+
+        // Get the site details to send notification
+        const site = await db.one(
+          `
+          SELECT * FROM assisted_sites
+          WHERE id = $1
+        `,
+          [session.metadata.siteId]
+        );
+
+        // Get user details
+        const user = await UserModel.findById(userId);
+
+        // Send notification to admin
+        if (site && user) {
+          const { sendAdminNotifications } = await import("../utils/email.js");
+          await sendAdminNotifications(site, user);
+        }
+      } catch (dbError) {
+        console.error("Error updating site payment status:", dbError);
+      }
     }
 
     res.status(200).json({
@@ -114,15 +160,50 @@ export const handleStripeWebhook = asyncHandler(async (req, res) => {
       if (session.payment_status === "paid") {
         const userId = session.metadata.userId;
         const service = session.metadata.service;
+        const siteId = session.metadata.siteId;
 
-        if (service === "assisted-site-submission") {
-          // Here you would update your database to mark the submission as paid
-          // This could involve updating a submissions table or user record
-          console.log(
-            `Payment successful for assisted site submission by user ${userId}`
-          );
+        if (service === "assisted-site-submission" && siteId) {
+          try {
+            // Update the site's payment status
+            await db.none(
+              `
+              UPDATE assisted_sites
+              SET 
+                is_paid = true,
+                payment_session_id = $1,
+                status = 'processing',
+                updated_at = NOW()
+              WHERE id = $2 AND user_id = $3
+            `,
+              [session.id, siteId, userId]
+            );
 
-          // You could also trigger an email notification to the admin team
+            console.log(
+              `Payment successful for assisted site submission by user ${userId} for site ${siteId}`
+            );
+
+            // Get the site details to send notification
+            const site = await db.one(
+              `
+              SELECT * FROM assisted_sites
+              WHERE id = $1
+            `,
+              [siteId]
+            );
+
+            // Get user details
+            const user = await UserModel.findById(userId);
+
+            // Send notification to admin
+            if (site && user) {
+              const { sendAdminNotifications } = await import(
+                "../utils/email.js"
+              );
+              await sendAdminNotifications(site, user);
+            }
+          } catch (error) {
+            console.error("Error updating site payment status:", error);
+          }
         }
       }
       break;

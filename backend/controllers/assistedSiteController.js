@@ -24,6 +24,8 @@ export const createAssistedSite = asyncHandler(async (req, res) => {
     initialEOIDate,
     bidSubmissionDate,
     manageBidsProcess,
+    paymentSessionId,
+    isPaid = false,
   } = req.body;
 
   // Get the authenticated user's ID from the session
@@ -87,6 +89,37 @@ export const createAssistedSite = asyncHandler(async (req, res) => {
   };
 
   try {
+    // Validate required fields
+    if (!siteName) {
+      res.status(400);
+      throw new Error("Site name is required");
+    }
+
+    if (!siteAddress) {
+      res.status(400);
+      throw new Error("Site address is required");
+    }
+
+    if (!opportunityType) {
+      res.status(400);
+      throw new Error("Opportunity type is required");
+    }
+
+    if (!plots || isNaN(parseInt(plots)) || parseInt(plots) < 1) {
+      res.status(400);
+      throw new Error("Number of plots must be at least 1");
+    }
+
+    if (!contactEmail) {
+      res.status(400);
+      throw new Error("Contact email is required");
+    }
+
+    if (!queriesContactName) {
+      res.status(400);
+      throw new Error("Queries contact name is required");
+    }
+
     const site = await db.one(
       `INSERT INTO assisted_sites (
         site_name,
@@ -105,7 +138,9 @@ export const createAssistedSite = asyncHandler(async (req, res) => {
         queries_contact_name,
         initial_eoi_date,
         bid_submission_date,
-        manage_bids_process
+        manage_bids_process,
+        payment_session_id,
+        is_paid
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,
         ST_SetSRID(ST_MakePoint($12, $13), 4326),
@@ -114,7 +149,7 @@ export const createAssistedSite = asyncHandler(async (req, res) => {
           THEN ST_SetSRID(ST_GeomFromGeoJSON($14), 4326)
           ELSE NULL
         END,
-        $15, $16, $17, $18
+        $15, $16, $17, $18, $19, $20
       ) RETURNING *`,
       [
         siteName,
@@ -135,15 +170,20 @@ export const createAssistedSite = asyncHandler(async (req, res) => {
         formatDate(initialEOIDate),
         formatDate(bidSubmissionDate),
         manageBidsProcess || false,
+        paymentSessionId || null,
+        isPaid,
       ]
     );
 
-    // Send notifications to admin users
-    try {
-      await sendAdminNotifications(site, user);
-    } catch (error) {
-      console.error("Failed to send admin notifications:", error);
-      // Don't fail the request if notifications fail
+    // Only send notifications if the site is paid or if we're not requiring payment
+    if (isPaid) {
+      // Send notifications to admin users
+      try {
+        await sendAdminNotifications(site, user);
+      } catch (error) {
+        console.error("Failed to send admin notifications:", error);
+        // Don't fail the request if notifications fail
+      }
     }
 
     res.status(201).json({
@@ -303,5 +343,35 @@ export const deleteAssistedSite = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: "Assisted site deleted successfully",
+  });
+});
+
+// @desc    Update assisted site payment status
+// @route   PATCH /api/assisted-sites/:id/payment
+// @access  Private/Admin
+export const updatePaymentStatus = asyncHandler(async (req, res) => {
+  const { isPaid, paymentSessionId } = req.body;
+
+  const site = await db.oneOrNone(
+    `
+    UPDATE assisted_sites
+    SET 
+      is_paid = $1,
+      payment_session_id = $2,
+      updated_at = NOW()
+    WHERE id = $3
+    RETURNING *
+  `,
+    [isPaid, paymentSessionId, req.params.id]
+  );
+
+  if (!site) {
+    res.status(404);
+    throw new Error("Assisted site not found");
+  }
+
+  res.json({
+    success: true,
+    data: site,
   });
 });

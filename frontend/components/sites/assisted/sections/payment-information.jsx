@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Coins, Loader2, Mail } from "lucide-react";
 
+import { createAssistedSite } from "@/lib/api/assistedSites";
 import { createCheckoutSession } from "@/lib/api/stripe";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export function PaymentInformation({
   const { toast } = useToast();
   const router = useRouter();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [siteId, setSiteId] = useState(null);
 
   // Calculate payment details
   const basePrice = 250;
@@ -49,17 +51,41 @@ export function PaymentInformation({
 
       setIsProcessingPayment(true);
 
-      // Create Stripe checkout session
-      const { sessionId } = await createCheckoutSession();
+      // First save the form data to get a site ID
+      try {
+        console.log("Submitting form data:", formData);
+        const response = await createAssistedSite(formData);
 
-      // Redirect to Stripe checkout
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error("Failed to load Stripe");
+        if (response.success && response.data.id) {
+          const newSiteId = response.data.id;
+          setSiteId(newSiteId);
+
+          // Now create Stripe checkout session with the site ID
+          const { sessionId } = await createCheckoutSession({
+            siteId: newSiteId,
+          });
+
+          // Redirect to Stripe checkout
+          const stripe = await stripePromise;
+          if (!stripe) {
+            throw new Error("Failed to load Stripe");
+          }
+
+          const { error } = await stripe.redirectToCheckout({ sessionId });
+          if (error) throw error;
+        } else {
+          throw new Error("Failed to save site data");
+        }
+      } catch (saveError) {
+        console.error("Error saving site data:", saveError);
+        toast({
+          variant: "destructive",
+          title: "Error Saving Data",
+          description:
+            "Failed to save your site information. Please try again.",
+        });
+        setIsProcessingPayment(false);
       }
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      if (error) throw error;
     } catch (error) {
       console.error("Payment error:", error);
       toast({

@@ -143,6 +143,8 @@ const formatDate = (date) => {
 };
 
 const generateAdminNotificationEmail = (site, user) => {
+  const paymentStatus = site.is_paid ? "Paid" : "Pending Payment";
+
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -159,7 +161,7 @@ const generateAdminNotificationEmail = (site, user) => {
             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="container">
               <tr>
                 <td class="header">
-                  <h2>New Site Submission</h2>
+                  <h2>New Assisted Site Submission</h2>
                 </td>
               </tr>
               <tr>
@@ -183,72 +185,37 @@ const generateAdminNotificationEmail = (site, user) => {
                         site.plots
                       }</li>
                       <li><span class="label">Status:</span> ${site.status}</li>
+                      <li><span class="label">Payment Status:</span> ${paymentStatus}</li>
                     </ul>
                   </div>
 
                   <div class="section">
-                    <div class="section-title">Developer Information</div>
+                    <div class="section-title">Contact Information</div>
                     <ul class="info-list">
-                      <li><span class="label">Developer Name:</span> ${
-                        site.developer_name
+                      <li><span class="label">Contact Email:</span> ${
+                        site.contact_email
                       }</li>
-                      <li><span class="label">Developer Region:</span> ${
-                        site.developer_region?.join(", ") || "Not specified"
+                      <li><span class="label">Contact Phone:</span> ${
+                        site.contact_phone || "Not provided"
                       }</li>
-                      ${
-                        site.developer_info
-                          ? `<li><span class="label">Additional Info:</span> ${site.developer_info}</li>`
-                          : ""
-                      }
+                      <li><span class="label">Queries Contact:</span> ${
+                        site.queries_contact_name
+                      }</li>
                     </ul>
                   </div>
 
                   <div class="section">
-                    <div class="section-title">Planning Information</div>
+                    <div class="section-title">Response Details</div>
                     <ul class="info-list">
-                      <li><span class="label">Planning Status:</span> ${
-                        site.planning_status
+                      <li><span class="label">Initial EOI Date:</span> ${formatDate(
+                        site.initial_eoi_date
+                      )}</li>
+                      <li><span class="label">Bid Submission Date:</span> ${formatDate(
+                        site.bid_submission_date
+                      )}</li>
+                      <li><span class="label">Manage Bids Process:</span> ${
+                        site.manage_bids_process ? "Yes" : "No"
                       }</li>
-                      <li><span class="label">Land Purchase Status:</span> ${
-                        site.land_purchase_status
-                      }</li>
-                      ${
-                        site.planning_overview
-                          ? `<li><span class="label">Planning Overview:</span> ${site.planning_overview}</li>`
-                          : ""
-                      }
-                      ${
-                        site.proposed_development
-                          ? `<li><span class="label">Proposed Development:</span> ${site.proposed_development}</li>`
-                          : ""
-                      }
-                    </ul>
-                  </div>
-
-                  <div class="section">
-                    <div class="section-title">Timeline</div>
-                    <ul class="info-list">
-                      <li><span class="label">Planning Submission:</span> ${formatDate(
-                        site.planning_submission_date
-                      )}</li>
-                      <li><span class="label">Planning Determination:</span> ${formatDate(
-                        site.planning_determination_date
-                      )}</li>
-                      <li><span class="label">Start on Site:</span> ${formatDate(
-                        site.start_on_site_date
-                      )}</li>
-                      <li><span class="label">First Golden Brick:</span> ${formatDate(
-                        site.first_golden_brick_date
-                      )}</li>
-                      <li><span class="label">Final Golden Brick:</span> ${formatDate(
-                        site.final_golden_brick_date
-                      )}</li>
-                      <li><span class="label">First Handover:</span> ${formatDate(
-                        site.first_handover_date
-                      )}</li>
-                      <li><span class="label">Final Handover:</span> ${formatDate(
-                        site.final_handover_date
-                      )}</li>
                     </ul>
                   </div>
 
@@ -313,7 +280,7 @@ export const sendAdminNotifications = async (site, user) => {
     return;
   }
 
-  const subject = `New Site Submission: ${site.site_name}`;
+  const subject = `New Assisted Site Submission: ${site.site_name}`;
   const html = generateAdminNotificationEmail(site, user);
 
   // Send individual emails to each admin
