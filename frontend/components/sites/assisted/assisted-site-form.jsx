@@ -29,6 +29,7 @@ export function AssistedSiteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [opportunityId] = useState(() => crypto.randomUUID());
   const formRef = useRef(null);
+  const [formData, setFormData] = useState(null);
 
   const {
     register,
@@ -56,7 +57,6 @@ export function AssistedSiteForm() {
       bidSubmissionDate: null,
       queriesContactName: "",
     },
-
     mode: "onChange",
   });
 
@@ -101,6 +101,59 @@ export function AssistedSiteForm() {
     setValue("sitePlanImage", fileUrl);
   };
 
+  const validateAndPrepareData = async () => {
+    try {
+      // Trigger validation for all fields
+      const isValid = await trigger();
+
+      if (!isValid) {
+        return false;
+      }
+
+      if (!selectedLocation) {
+        toast({
+          variant: "destructive",
+          title: "Location Required",
+          description: "Please select a site location using the map.",
+        });
+        const mapElement = document.querySelector(
+          '[data-map-container="true"]'
+        );
+        if (mapElement) {
+          mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return false;
+      }
+
+      // Get form values
+      const data = watch();
+
+      // Prepare the data
+      const siteData = {
+        ...data,
+        coordinates: selectedLocation,
+        boundary:
+          polygonPath.length > 0
+            ? {
+                type: "Polygon",
+                coordinates: [
+                  [
+                    ...polygonPath.map((point) => [point.lng, point.lat]),
+                    [polygonPath[0].lng, polygonPath[0].lat],
+                  ],
+                ],
+              }
+            : null,
+      };
+
+      setFormData(siteData);
+      return true;
+    } catch (error) {
+      console.error("Form validation error:", error);
+      return false;
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       if (!selectedLocation) {
@@ -115,7 +168,7 @@ export function AssistedSiteForm() {
         if (mapElement) {
           mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-        return;
+        return false;
       }
 
       setIsSubmitting(true);
@@ -146,6 +199,7 @@ export function AssistedSiteForm() {
       });
 
       router.push("/dashboard/opportunities");
+      return true;
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
@@ -154,6 +208,7 @@ export function AssistedSiteForm() {
         description:
           error.message || "Failed to submit site. Please try again.",
       });
+      return false;
     } finally {
       setIsSubmitting(false);
     }
@@ -257,6 +312,8 @@ export function AssistedSiteForm() {
             manageBidsProcess={manageBidsProcess}
             isSubmitting={isSubmitting || isFormSubmitting}
             setValue={setValue}
+            formData={formData}
+            onSubmitForm={validateAndPrepareData}
           />
         </div>
       </div>

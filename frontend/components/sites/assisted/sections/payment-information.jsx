@@ -1,7 +1,11 @@
 "use client";
 
-import { Coins, Mail } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
+import { Coins, Loader2, Mail } from "lucide-react";
 
+import { createCheckoutSession } from "@/lib/api/stripe";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,14 +16,61 @@ import {
 } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/components/ui/use-toast";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 export function PaymentInformation({
   manageBidsProcess,
   isSubmitting,
   setValue,
+  formData,
+  onSubmitForm,
 }) {
+  const { toast } = useToast();
+  const router = useRouter();
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
   // Calculate payment details
   const basePrice = 250;
+
+  const handlePayment = async (e) => {
+    e.preventDefault();
+
+    try {
+      // First validate and submit the form data
+      const isValid = await onSubmitForm();
+
+      if (!isValid) {
+        return; // Form validation failed
+      }
+
+      setIsProcessingPayment(true);
+
+      // Create Stripe checkout session
+      const { sessionId } = await createCheckoutSession();
+
+      // Redirect to Stripe checkout
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error("Failed to load Stripe");
+      }
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) throw error;
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description:
+          error.message || "Failed to process payment. Please try again.",
+      });
+      setIsProcessingPayment(false);
+    }
+  };
 
   return (
     <Card>
@@ -82,13 +133,14 @@ export function PaymentInformation({
 
           <div className="flex justify-end mt-6">
             <Button
-              type="submit"
+              type="button"
               className="bg-web-orange hover:bg-web-orange/90 text-white font-semibold"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isProcessingPayment}
+              onClick={handlePayment}
             >
-              {isSubmitting ? (
+              {isSubmitting || isProcessingPayment ? (
                 <>
-                  <Spinner size="sm" className="mr-2" />
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Processing...
                 </>
               ) : (

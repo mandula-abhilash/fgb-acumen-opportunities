@@ -19,12 +19,12 @@ export default function CancelPage() {
               Your payment was cancelled. No charges were made.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full">
-              <Link href="/pricing" className="w-full">
+              <Link href="/dashboard/sites/assisted" className="w-full">
                 <Button variant="outline" className="w-full">
                   Try Again
                 </Button>
               </Link>
-              <Link href="/dashboard" className="w-full">
+              <Link href="/dashboard/opportunities" className="w-full">
                 <Button className="w-full bg-web-orange hover:bg-web-orange/90 text-white">
                   Back to Dashboard
                 </Button>

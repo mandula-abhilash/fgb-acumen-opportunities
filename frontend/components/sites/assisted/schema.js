@@ -14,8 +14,6 @@ export const assistedSiteSchema = z.object({
   sitePlanImage: z.string().optional(),
   sitePlanDocument: z.string().optional(),
   manageBidsProcess: z.boolean().optional(),
-  initialEOIDate: z.date().optional(),
-  bidSubmissionDate: z.date().optional(),
   queriesContactName: z
     .string()
     .min(

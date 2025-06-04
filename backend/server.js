@@ -7,13 +7,14 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 
 import visdakSesamModule from "visdak-sesam";
-import visdakWalletRoutes, { handleStripeWebhook } from "visdak-wallet";
+import visdakWalletRoutes from "visdak-wallet";
 import liveOpportunityRoutes from "./routes/liveOpportunityRoutes.js";
 import assistedSiteRoutes from "./routes/assistedSiteRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import regionsRoutes from "./routes/regionsRoutes.js";
 import lpaRoutes from "./routes/lpaRoutes.js";
 import shortlistRoutes from "./routes/shortlistRoutes.js";
+import stripeRoutes from "./routes/stripeRoutes.js";
 
 const startServer = async () => {
   const app = express();
@@ -42,7 +43,13 @@ const startServer = async () => {
   app.post(
     "/api/checkout/webhook",
     bodyParser.raw({ type: "application/json" }),
-    handleStripeWebhook
+    (req, res, next) => {
+      if (req.originalUrl === "/api/checkout/webhook") {
+        next();
+      } else {
+        bodyParser.json()(req, res, next);
+      }
+    }
   );
 
   app.use(express.json());
@@ -88,6 +95,9 @@ const startServer = async () => {
 
     // Mount the shortlist routes
     app.use("/api/shortlists", shortlistRoutes);
+
+    // Mount the Stripe routes
+    app.use("/api/checkout", stripeRoutes);
 
     // Catch-all for undefined routes
     app.use((req, res) => {
