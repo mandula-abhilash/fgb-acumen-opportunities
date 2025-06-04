@@ -10,6 +10,7 @@ const ASSISTED_SITE_PRICE = 25000; // £250.00 in pence
 // @access  Private
 export const createCheckoutSession = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
+  const { planId } = req.body;
 
   try {
     // Get user details
@@ -39,6 +40,7 @@ export const createCheckoutSession = asyncHandler(async (req, res) => {
       metadata: {
         userId: userId,
         service: "assisted-site-submission",
+        planId: planId,
       },
       customer_email: user.email,
       success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
