@@ -60,9 +60,10 @@ export function PaymentInformation({
           const newSiteId = response.data.id;
           setSiteId(newSiteId);
 
-          // Now create Stripe checkout session with the site ID
+          // Now create Stripe checkout session with the site ID and plan ID
           const { sessionId } = await createCheckoutSession({
             siteId: newSiteId,
+            planId: "674de95d1948d7d51a9c16a7",
           });
 
           // Redirect to Stripe checkout

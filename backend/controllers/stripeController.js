@@ -161,6 +161,7 @@ export const handleStripeWebhook = asyncHandler(async (req, res) => {
         const userId = session.metadata.userId;
         const service = session.metadata.service;
         const siteId = session.metadata.siteId;
+        const planId = session.metadata.planId;
 
         if (service === "assisted-site-submission" && siteId) {
           try {
@@ -179,7 +180,7 @@ export const handleStripeWebhook = asyncHandler(async (req, res) => {
             );
 
             console.log(
-              `Payment successful for assisted site submission by user ${userId} for site ${siteId}`
+              `Payment successful for assisted site submission by user ${userId} for site ${siteId} with plan ${planId}`
             );
 
             // Get the site details to send notification

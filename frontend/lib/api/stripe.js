@@ -4,6 +4,7 @@ export async function createCheckoutSession(siteData = null) {
   try {
     const response = await api.post("/api/checkout/session", {
       siteId: siteData?.siteId,
+      planId: "674de95d1948d7d51a9c16a7", // Using the specific plan ID
     });
     return response.data;
   } catch (error) {
